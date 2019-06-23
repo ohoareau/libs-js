@@ -1,17 +1,15 @@
 {
-  "name": "@ohoareau/crud",
-  "version": "0.2.0",
+  "name": "@ohoareau/types",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "directories": {
-    "bin": "bin",
     "lib": "lib",
     "test": "__tests__"
   },
   "files": [
-    "lib",
-    "bin"
+    "lib"
   ],
   "publishConfig": {
     "access": "public"
@@ -19,11 +17,5 @@
   "scripts": {
     "tsc": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
-  },
-  "dependencies": {
-    "uuid": "^3.3.2"
-  },
-  "bin": {
-    "export-rules": "./bin/export-rules.js"
   }
 }
