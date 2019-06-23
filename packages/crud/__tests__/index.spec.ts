@@ -2,6 +2,8 @@ import CrudService from '..';
 
 describe('', () => {
     it('', async () => {
-        expect(new CrudService()).toBeDefined();
+        const s = new CrudService('xxx');
+        expect(s).toBeDefined();
+        expect(s.getName()).toEqual('xxx');
     });
 });

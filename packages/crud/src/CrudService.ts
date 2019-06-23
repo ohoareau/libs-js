@@ -8,16 +8,21 @@ import DefaultExecutor from "./DefaultExecutor";
 import RuleService from "./RuleService";
 
 export default class CrudService<M = object> {
+    private readonly name: string;
     private rules: Rule[];
     private backend: IBackend;
     private executor: IExecutor;
     private ruleService: RuleService;
-    public constructor(backend: IBackend|undefined = undefined, rules: object = {}, executor: IExecutor|undefined = undefined, ruleService: RuleService|undefined = undefined) {
+    public constructor(name: string, backend: IBackend|undefined = undefined, rules: object = {}, executor: IExecutor|undefined = undefined, ruleService: RuleService|undefined = undefined) {
+        this.name = name;
         this.rules = [];
         this.backend = backend || new MemoryBackend();
         this.executor = executor || new DefaultExecutor();
         this.ruleService = ruleService || new RuleService();
         this.setRawRules(rules);
+    }
+    public getName(): string {
+        return this.name;
     }
     public setRawRules(rules: object): this {
         return this.setRules(this.ruleService.convert(rules));
