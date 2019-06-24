@@ -50,7 +50,7 @@ export default class CrudService<M = object> {
         return this;
     }
     protected async processCreate(data: object, options: object = {}): Promise<M> {
-        const [opts, ctx, payload] = CrudService.prepare(['#write', '@create', 'created'], options, {data});
+        const [opts, ctx, payload] = this.prepare(['#write', '@create', 'created'], options, {data});
         return this.executor.execute(
             ctx,
             await this.preSelectRules(ctx),
@@ -58,7 +58,7 @@ export default class CrudService<M = object> {
         );
     }
     protected async processUpdate(id: string, data: object, options: object = {}): Promise<M> {
-        const [opts, ctx, payload] = CrudService.prepare(['#write', '@update', 'updated'], options, {id, data});
+        const [opts, ctx, payload] = this.prepare(['#write', '@update', 'updated'], options, {id, data});
         return this.executor.execute(
             ctx,
             await this.preSelectRules(ctx),
@@ -67,7 +67,7 @@ export default class CrudService<M = object> {
         );
     }
     protected async processGet(id: string, fields: string[] = [], options: object = {}): Promise<M> {
-        const [opts, ctx, payload] = CrudService.prepare(['#read', '@get'], options, {id, fields});
+        const [opts, ctx, payload] = this.prepare(['#read', '@get'], options, {id, fields});
         return this.executor.execute(
             ctx,
             await this.preSelectRules(ctx),
@@ -75,7 +75,7 @@ export default class CrudService<M = object> {
         );
     }
     protected async processRemove(id: string, options: object = {}): Promise<M> {
-        const [opts, ctx, payload] = CrudService.prepare(['#write', '@remove', 'removed'], options, {id});
+        const [opts, ctx, payload] = this.prepare(['#write', '@remove', 'removed'], options, {id});
         return this.executor.execute(
             ctx,
             await this.preSelectRules(ctx),
@@ -84,7 +84,7 @@ export default class CrudService<M = object> {
         );
     }
     protected async processFind(criteria: object = {}, fields: string[] = [], limit: number|undefined = undefined, sort: object|undefined = undefined, nextToken: string|undefined = undefined, options: object = {}): Promise<Page<M>> {
-        const [opts, ctx, payload] = CrudService.prepare(['#read', '@find'], options, {criteria, fields, limit, sort, nextToken});
+        const [opts, ctx, payload] = this.prepare(['#read', '@find'], options, {criteria, fields, limit, sort, nextToken});
         return this.executor.execute(
             ctx,
             await this.preSelectRules(ctx),
@@ -98,28 +98,28 @@ export default class CrudService<M = object> {
             1,
             undefined,
             undefined,
-            CrudService.prepare(['findOne'], options)[0]
+            this.prepare(['findOne'], options)[0]
         );
         return (!page || !page.items || page.items.length < 1) ? undefined : page.items[0];
     }
     protected async processSet(id: string, key: string, value: any, options: object = {}): Promise<M> {
-        return this.processUpdate(id, {[key]: value}, CrudService.prepare(['set'], options)[0]);
+        return this.processUpdate(id, {[key]: value}, this.prepare(['set'], options)[0]);
     }
     protected async processSetStatus(id: string, value: any, options: object = {}): Promise<M> {
-        return this.processSet(id, 'status', value, CrudService.prepare(['status', value], options)[0]);
+        return this.processSet(id, 'status', value, this.prepare(['status', value], options)[0]);
     }
     protected async processSuspend(id: string, options: object = {}): Promise<M> {
-        return this.processSet(id, 'suspended', true, CrudService.prepare(['suspend', 'suspended'], options)[0]);
+        return this.processSet(id, 'suspended', true, this.prepare(['suspend', 'suspended'], options)[0]);
     }
     protected async processUnsuspend(id: string, options: object = {}): Promise<M> {
-        return this.processSet(id, 'suspended', false, CrudService.prepare(['unsuspend', 'unsuspended'], options)[0]);
+        return this.processSet(id, 'suspended', false, this.prepare(['unsuspend', 'unsuspended'], options)[0]);
     }
     protected async processList(fields: string[], limit: number|undefined = undefined, sort: object|undefined = undefined, nextToken: string|undefined = undefined, options: object = {}): Promise<Page<M>> {
-        return this.processFind({}, fields, limit, sort, nextToken, CrudService.prepare(['list', 'listed'], options)[0]);
+        return this.processFind({}, fields, limit, sort, nextToken, this.prepare(['list', 'listed'], options)[0]);
     }
-    protected static prepare(operations: string[], options: object|undefined, payload: any = {}): [object, Context, object] {
+    protected prepare(operations: string[], options: object|undefined, payload: any = {}): [object, Context, object] {
         options = options || {};
-        options = {caller: undefined, ...options, operations: operations.concat((<{operations?: any}>options).operations || [])};
+        options = {caller: undefined, ...options, operations: operations.concat((<{operations?: any}>options).operations || []), service: this.getName()};
         return [options, new Context({...payload, ...options}), payload];
     }
     protected async executeBackendOperation(operation: string, data: any, options: object): Promise<any> {
