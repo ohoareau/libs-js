@@ -7,11 +7,11 @@ export const tenant = (allowed: string[]|undefined = undefined, field: string = 
     values({
         [field]: ({tenant}) => tenant,
     }, (ctx: Context) => {
-        const tenant = ctx.get('tenant', defaultValue);
+        const tenant = ctx.get('tenant', defaultValue) || defaultValue;
         if (allowed && !allowed.includes(tenant)) {
             throw new UnauthorizedTenantError(tenant);
         }
         return { tenant };
     }),
-    required_context('tenant'),
+    defaultValue ? undefined : required_context('tenant'),
 ];
