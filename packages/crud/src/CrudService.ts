@@ -129,13 +129,14 @@ export default class CrudService<M = object> {
         return this.getBackend().execute(operation, data, options);
     }
     protected async preSelectRules(ctx: Context): Promise<Rule[]> {
-        return Object.keys(this.contextualRules || {}).reduce((acc, k) => {
+        return (await Promise.all(Object.keys(this.contextualRules || {}).map(async (k) => {
             const v = ctx.get(k, undefined);
+            let acc = <Rule[]>[];
             if (v && this.contextualRules[k][v]) {
                 const rr = this.contextualRules[k][v];
-                acc = (<Rule[]>[]).concat(acc, this.ruleService.convert('function' === typeof rr ? rr() : rr));
+                acc = this.ruleService.convert('function' === typeof rr ? await rr() : rr);
             }
             return acc;
-        }, this.rules);
+        }))).reduce((acc, rr) => (<Rule[]>[]).concat(acc, rr), this.rules);
     }
 }
