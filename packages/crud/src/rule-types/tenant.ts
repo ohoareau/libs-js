@@ -2,7 +2,7 @@ import { values } from './values';
 import Context from "../Context";
 import UnauthorizedTenantError from "../errors/UnauthorizedTenantError";
 
-export const tenant = (field: string = 'tenant', allowed: string[]|undefined = undefined) => [
+export const tenant = (allowed: string[]|undefined = undefined, field: string = 'tenant') => [
     values({
         [field]: ({tenant}) => tenant,
     }, (ctx: Context) => {
