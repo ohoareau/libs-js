@@ -19,6 +19,7 @@ export * from './restrict';
 export * from './role';
 export * from './rule';
 export * from './tags';
+export * from './tenant';
 export * from './timestamps';
 export * from './track_change_with_timestamp';
 export * from './ttl';
