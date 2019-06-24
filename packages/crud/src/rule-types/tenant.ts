@@ -1,6 +1,7 @@
 import { values } from './values';
 import Context from "../Context";
 import UnauthorizedTenantError from "../errors/UnauthorizedTenantError";
+import { required_context } from "./required_context";
 
 export const tenant = (allowed: string[]|undefined = undefined, field: string = 'tenant') => [
     values({
@@ -12,4 +13,5 @@ export const tenant = (allowed: string[]|undefined = undefined, field: string = 
         }
         return { tenant };
     }),
+    required_context('tenant'),
 ];
