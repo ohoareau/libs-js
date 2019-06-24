@@ -6,18 +6,19 @@ import IExecutor from "./IExecutor";
 export default class DefaultExecutor implements IExecutor {
     public async execute(ctx: Context, rules: Rule[], action: Function, prePopulate: Function|undefined = undefined): Promise<any> {
         ctx.set('plugins', {});
-        const preExecuteOnce = (i: number): ((ctx: Context, execCtx: Context) => any)|undefined => {
-            if (ctx.enabled('preExecuteExecuted')) {
+        let preExecuteExecuted = false;
+        const preExecuteOnce = (): ((ctx: Context, execCtx: Context) => any)|undefined => {
+            if (preExecuteExecuted) {
                 return undefined;
             }
             if (!prePopulate) {
-                ctx.set('preExecuteExecuted', true);
+                preExecuteExecuted = true;
                 return undefined;
             }
-            if (0 !== i) {
-                return undefined;
-            }
-            return async (ctx: Context) => ctx.setMultiple({...(await prePopulate()), preExecuteExecuted: true});
+            return async (ctx: Context) => {
+                preExecuteExecuted = true;
+                ctx.setMultiple(await prePopulate());
+            };
         };
         const rlz = rules.reduce((acc, r: Rule) => Object.keys(r.getTypes()).reduce((acc2, t) => {
                 if (!acc2[t]) {
