@@ -23,4 +23,13 @@ export default class Context {
     dec(k: string, offset: number = 1) {
         return this.inc(k, - offset);
     }
+    has(k: string): boolean {
+        return this.hasOwnProperty(k);
+    }
+    enabled(k: string): boolean {
+        return this.has(k) && true === this[k];
+    }
+    disabled(k: string): boolean {
+        return !this.enabled(k);
+    }
 }

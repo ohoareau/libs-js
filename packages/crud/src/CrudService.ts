@@ -11,12 +11,15 @@ import Context from "./Context";
 export default class CrudService<M = object> {
     private readonly name: string;
     private rules: Rule[];
+    private contextualRules: object;
     private backend: IBackend;
     private executor: IExecutor;
     private ruleService: RuleService;
-    public constructor(name: string, backend: IBackend|undefined = undefined, rules: object = {}, executor: IExecutor|undefined = undefined, ruleService: RuleService|undefined = undefined) {
+    public constructor(name: string, backend: IBackend|undefined = undefined, rules: object = {}, contextualRules: object = {}, executor: IExecutor|undefined = undefined, ruleService: RuleService|undefined = undefined) {
         this.name = name;
         this.rules = [];
+        this.contextualRules = {};
+        this.setContextualRules(contextualRules);
         this.backend = backend || new MemoryBackend();
         this.executor = executor || new DefaultExecutor();
         this.ruleService = ruleService || new RuleService();
@@ -24,6 +27,10 @@ export default class CrudService<M = object> {
     }
     public getName(): string {
         return this.name;
+    }
+    public setContextualRules(rules: object): this {
+        this.contextualRules = rules;
+        return this;
     }
     public setRawRules(rules: object): this {
         return this.setRules(this.ruleService.convert(rules));
@@ -43,58 +50,45 @@ export default class CrudService<M = object> {
         return this;
     }
     protected async processCreate(data: object, options: object = {}): Promise<M> {
-        const [opts, operations, caller, ctx] = this.optize(['@create', 'created'], options);
+        const [opts, ctx, payload] = CrudService.prepare(['#write', '@create', 'created'], options, {data});
         return this.executor.execute(
-            this.rules,
-            {data, caller},
-            operations,
-            async () => this.executeBackendOperation('create', {data}, opts),
-            undefined,
-            ctx
+            ctx,
+            await this.preSelectRules(ctx),
+            async () => this.executeBackendOperation('create', payload, opts)
         );
     }
     protected async processUpdate(id: string, data: object, options: object = {}): Promise<M> {
-        const [opts, operations, caller, ctx] = this.optize(['@update', 'updated'], options);
+        const [opts, ctx, payload] = CrudService.prepare(['#write', '@update', 'updated'], options, {id, data});
         return this.executor.execute(
-            this.rules,
-            {id, data, caller},
-            operations,
-            async () => this.executeBackendOperation('update', {id, data}, opts),
-            async () => ({old: await this.processGet(id, [], {...options, noPreAuthorize: true, noAuthorize: true})}),
-            ctx
+            ctx,
+            await this.preSelectRules(ctx),
+            async () => this.executeBackendOperation('update', payload, opts),
+            async () => ({old: await this.processGet(id, [], {...options, noPreAuthorize: true, noAuthorize: true})})
         );
     }
     protected async processGet(id: string, fields: string[] = [], options: object = {}): Promise<M> {
-        const [opts, operations, caller, ctx] = this.optize(['@get'], options);
+        const [opts, ctx, payload] = CrudService.prepare(['#read', '@get'], options, {id, fields});
         return this.executor.execute(
-            this.rules,
-            {id, fields, caller},
-            operations,
-            async () => this.executeBackendOperation('get', {id, fields}, opts),
-            undefined,
-            ctx
+            ctx,
+            await this.preSelectRules(ctx),
+            async () => this.executeBackendOperation('get', payload, opts)
         );
     }
     protected async processRemove(id: string, options: object = {}): Promise<M> {
-        const [opts, operations, caller, ctx] = this.optize(['@remove', 'removed'], options);
+        const [opts, ctx, payload] = CrudService.prepare(['#write', '@remove', 'removed'], options, {id});
         return this.executor.execute(
-            this.rules,
-            {id, caller},
-            operations,
-            async () => this.executeBackendOperation('remove', {id}, opts),
-            async () => ({old: await this.processGet(id, [], {...options, noPreAuthorize: true, noAuthorize: true})}),
-            ctx
+            ctx,
+            await this.preSelectRules(ctx),
+            async () => this.executeBackendOperation('remove', payload, opts),
+            async () => ({old: await this.processGet(id, [], {...options, noPreAuthorize: true, noAuthorize: true})})
         );
     }
     protected async processFind(criteria: object = {}, fields: string[] = [], limit: number|undefined = undefined, sort: object|undefined = undefined, nextToken: string|undefined = undefined, options: object = {}): Promise<Page<M>> {
-        const [opts, operations, caller, ctx] = this.optize(['@find'], options);
+        const [opts, ctx, payload] = CrudService.prepare(['#read', '@find'], options, {criteria, fields, limit, sort, nextToken});
         return this.executor.execute(
-            this.rules,
-            {criteria, fields, limit, sort, nextToken, caller},
-            operations,
-            async () => this.executeBackendOperation('find', {criteria, fields, limit, sort, nextToken}, opts),
-            undefined,
-            ctx
+            ctx,
+            await this.preSelectRules(ctx),
+            async () => this.executeBackendOperation('find', payload, opts)
         );
     }
     protected async processFindOne(criteria: object = {}, fields: string[] = [], options: object = {}): Promise<M|undefined> {
@@ -104,41 +98,44 @@ export default class CrudService<M = object> {
             1,
             undefined,
             undefined,
-            this.optize(['findOne'], options)[0]
+            CrudService.prepare(['findOne'], options)[0]
         );
-        if (!page || !page.items || page.items.length < 1) {
-            return undefined;
-        }
-        return page.items[0];
+        return (!page || !page.items || page.items.length < 1) ? undefined : page.items[0];
     }
     protected async processSet(id: string, key: string, value: any, options: object = {}): Promise<M> {
-        return this.processUpdate(id, {[key]: value}, this.optize(['set'], options)[0]);
+        return this.processUpdate(id, {[key]: value}, CrudService.prepare(['set'], options)[0]);
     }
     protected async processSetStatus(id: string, value: any, options: object = {}): Promise<M> {
-        return this.processSet(id, 'status', value, this.optize(['status', value], options)[0]);
+        return this.processSet(id, 'status', value, CrudService.prepare(['status', value], options)[0]);
     }
     protected async processSuspend(id: string, options: object = {}): Promise<M> {
-        return this.processSet(id, 'suspended', true, this.optize(['suspend', 'suspended'], options)[0]);
+        return this.processSet(id, 'suspended', true, CrudService.prepare(['suspend', 'suspended'], options)[0]);
     }
     protected async processUnsuspend(id: string, options: object = {}): Promise<M> {
-        return this.processSet(id, 'suspended', false, this.optize(['unsuspend', 'unsuspended'], options)[0]);
+        return this.processSet(id, 'suspended', false, CrudService.prepare(['unsuspend', 'unsuspended'], options)[0]);
     }
     protected async processList(fields: string[], limit: number|undefined = undefined, sort: object|undefined = undefined, nextToken: string|undefined = undefined, options: object = {}): Promise<Page<M>> {
-        return this.processFind({}, fields, limit, sort, nextToken, this.optize(['list', 'listed'], options)[0]);
+        return this.processFind({}, fields, limit, sort, nextToken, CrudService.prepare(['list', 'listed'], options)[0]);
     }
-    protected optize(operations: string[], options: object|undefined): [object, string[], object, Context] {
+    protected static prepare(operations: string[], options: object|undefined, payload: any = {}): [object, Context, object] {
         options = options || {};
         options = {caller: undefined, ...options, operations: operations.concat((<{operations?: any}>options).operations || [])};
-        const ctxData = {};
-        (<any>options).noPreAuthorize && (ctxData['noPreAuthorize'] = true);
-        (<any>options).noAuthorize && (ctxData['noAuthorize'] = true);
-        const ctx = new Context(ctxData);
-        return [options, (<{operations?: any}>options).operations, (<{caller?: any}>options).caller, ctx];
+        return [options, new Context({...payload, ...options}), payload];
     }
     protected async executeBackendOperation(operation: string, data: any, options: object): Promise<any> {
         if (!this.getBackend().supports(operation)) {
             throw new OperationNotSupportedBackendError(this.getBackend().getName(), operation);
         }
         return this.getBackend().execute(operation, data, options);
+    }
+    protected async preSelectRules(ctx: Context): Promise<Rule[]> {
+        return Object.keys(this.contextualRules || {}).reduce((acc, k) => {
+            const v = ctx.get(k, undefined);
+            if (v && this.contextualRules[k][v]) {
+                const rr = this.contextualRules[k][v];
+                acc = (<Rule[]>[]).concat(acc, this.ruleService.convert('function' === typeof rr ? rr() : rr));
+            }
+            return acc;
+        }, this.rules);
     }
 }

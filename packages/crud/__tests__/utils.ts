@@ -10,10 +10,10 @@ export const expectRules = async (rules: any, data: object, operations: string[]
     const executor = new DefaultExecutor();
     expect(rules).toEqual(expectedRules);
     const action = jest.fn();
-    const ctx = new Context(ctxData);
+    const ctx = new Context({...ctxData, ...data, operations});
     let error = undefined;
     try {
-        await executor.execute((<Rule[]>[]).concat(<Rule[]>rules, <Rule[]>extraRules), data, operations, action, undefined, ctx);
+        await executor.execute(ctx, (<Rule[]>[]).concat(<Rule[]>rules, <Rule[]>extraRules), action, undefined);
     } catch (e) {
         error = e;
     }
