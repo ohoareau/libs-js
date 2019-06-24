@@ -230,11 +230,20 @@ describe('predefined_role', () => {
             ],
             new UnsatisfiedRoleError('member!'),
         ],
+        ['member! - when is owner BUT noPreAuthorize enabled is allowed',
+            {caller: {id: 'xxx'}, old: {members: {xxx: {role: 'owner'}}}}, ['@create'], 'member!',
+            [protect('@create', 'member!')],
+            [
+                matchingRule('@', 'prepare', 'define role `member!` as member who have exactly member role'),
+            ],
+            undefined,
+            {noPreAuthorize: true},
+        ],
     ].
-        forEach(([title, data, operations, name, extraRules, expectedRules, expectedResult]) => it(<string>title, async () => {
+        forEach(([title, data, operations, name, extraRules, expectedRules, expectedResult, ctxData = {}]) => it(<string>title, async () => {
             await expectRule(
                 predefined_role(<string|string[]>name),
-                <object>data, <string[]>operations, expectedRules, expectedResult, {}, extraRules
+                <object>data, <string[]>operations, expectedRules, expectedResult, ctxData, extraRules
             );
         }));
     it('throw an error if unknown predefined role', async () => {

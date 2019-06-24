@@ -28,10 +28,10 @@ export default class DefaultExecutor implements IExecutor {
         const rlz = this.splitRules(rules);
         try {
             plgs['prepare'] = await this.hook(rlz['prepare'], operations, ctx, 'prepare', preExecuteOnce);
-            plgs['preAuthorize'] = await this.hook(rlz['preAuthorize'], operations, ctx, 'preAuthorize', preExecuteOnce);
+            ctx.get('noPreAuthorize', false) || (plgs['preAuthorize'] = await this.hook(rlz['preAuthorize'], operations, ctx, 'preAuthorize', preExecuteOnce));
             plgs['validate'] = await this.hook(rlz['validate'], operations, ctx, 'validate', preExecuteOnce, false);
             plgs['fetch'] = await this.hook(rlz['fetch'], operations, ctx, 'fetch', preExecuteOnce, false);
-            plgs['authorize'] = await this.hook(rlz['authorize'], operations, ctx, 'authorize', preExecuteOnce);
+            ctx.get('noAuthorize', false) || (plgs['authorize'] = await this.hook(rlz['authorize'], operations, ctx, 'authorize', preExecuteOnce));
             plgs['before'] = await this.hook(rlz['before'], operations, ctx, 'before', preExecuteOnce);
             ctx.set('result', await action());
             plgs['result'] = await this.hook(rlz['result'], operations, ctx, 'result', preExecuteOnce);
