@@ -4,7 +4,7 @@ import UnauthorizedTenantError from "../errors/UnauthorizedTenantError";
 
 export const tenant = (field: string = 'tenant', allowed: string[]|undefined = undefined) => [
     values({
-        [field]: ({tenant}) => ({tenant}),
+        [field]: ({tenant}) => tenant,
     }, (ctx: Context) => {
         const tenant = ctx.get('tenant');
         if (allowed && !allowed.includes(tenant)) {
