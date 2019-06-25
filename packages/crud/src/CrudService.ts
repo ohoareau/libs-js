@@ -118,9 +118,12 @@ export default class CrudService<M = object> {
         return this.processFind({}, fields, limit, sort, nextToken, this.prepare(['list', 'listed'], options)[0]);
     }
     protected prepare(operations: string[], options: object|undefined, payload: any = {}): [object, Context, object] {
+        const opts = this.ops(operations, options, {caller: undefined, service: this.getName()});
+        return [opts, new Context({...payload, ...opts}), payload];
+    }
+    protected ops(operations: string[], options: object|undefined, extra: {[k: string]: any} = {}): object {
         options = options || {};
-        options = {caller: undefined, ...options, operations: operations.concat((<{operations?: any}>options).operations || []), service: this.getName()};
-        return [options, new Context({...payload, ...options}), payload];
+        return {...extra, ...options, operations: operations.concat((<{operations?: any}>options).operations || [])};
     }
     protected async executeBackendOperation(operation: string, data: any, options: object): Promise<any> {
         if (!this.getBackend().supports(operation)) {
