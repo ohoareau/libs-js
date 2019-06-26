@@ -21,6 +21,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
+    "@ohoareau/handler": "^0.6.1",
     "@ohoareau/identity": "^0.1.0",
     "uuid": "^3.3.2"
   },
