@@ -21,7 +21,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "uuid": "^3.3.2"
+    "uuid": "^3.3.2",
+    "@ohoareau/identity": "^0.1.0"
   },
   "bin": {
     "export-rules": "./bin/export-rules.js"

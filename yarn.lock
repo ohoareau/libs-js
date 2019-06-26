@@ -1101,6 +1101,13 @@
     universal-user-agent "^2.0.0"
     url-template "^2.0.8"
 
+"@ohoareau/identity@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@ohoareau/identity/-/identity-0.1.0.tgz#96ec6a7be85fdb4abfc727578c6c39e666fd94e0"
+  integrity sha512-ibiS27g2j9ONzy0Lz/g0MmQBlzCGwVoLG6O7NafSfs6ZV75JzJXNyIBB/tPCOLGMZhIY4J5wsxw4+qfaY+SMQA==
+  dependencies:
+    axios "^0.19.0"
+
 "@types/babel__core@^7.1.0":
   version "7.1.2"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.2.tgz#608c74f55928033fce18b99b213c16be4b3d114f"
