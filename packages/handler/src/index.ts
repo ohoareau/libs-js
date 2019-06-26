@@ -8,7 +8,7 @@ const configurableMiddlewares = {
     caller: callerMiddleware,
 };
 
-export default (handler: Function, config: object = {}, ctx: object = {}): Function => {
+export const h = (handler: Function, config: object = {}, ctx: object = {}): Function => {
     if ('function' !== typeof handler) {
         throw new Error(`Handler callback is not a function`);
     }
@@ -29,4 +29,7 @@ export default (handler: Function, config: object = {}, ctx: object = {}): Funct
         }
     }
     return enhancedHandler;
-}
+};
+
+
+export default h;

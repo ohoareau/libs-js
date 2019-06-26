@@ -12,7 +12,16 @@ import Rule from './Rule';
 import JsonRuleExporter from './rule-exporters/JsonRuleExporter';
 import StringRuleExporter from './rule-exporters/StringRuleExporter';
 import Container from './Container';
+import handler, { h } from './handler';
 
 const container = new Container();
 
-export { container, Container, IExecutor, DefaultExecutor, rules, Rule, Options, RuleService, JsonRuleExporter, StringRuleExporter, CrudService, DynamodbBackend, MemoryBackend, IBackend, Context, CrudService as default };
+export {
+    handler, h,
+    Context,
+    container, Container,
+    CrudService, CrudService as default,
+    IExecutor, DefaultExecutor,
+    rules, Rule, Options, RuleService, JsonRuleExporter, StringRuleExporter,
+    DynamodbBackend, MemoryBackend, IBackend,
+};
