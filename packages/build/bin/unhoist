@@ -1,0 +1,31 @@
+#!/usr/bin/env node
+
+const path = require('path');
+const fs = require('fs');
+const r = new RegExp(process.argv[2] ? `^${process.argv[2]}` : `^.+$`);
+const root = process.cwd();
+
+require('child_process').exec('yarn workspaces info --json --prod', (e, raw) => {
+    const o = JSON.parse(JSON.parse(raw).data);
+    Object.keys(o).forEach(p => r.test(o[p].location) && (({ location }) => {
+        const pd = require(`${root}/${location}/package.json`).dependencies || {};
+        const deps = Object.keys(pd);
+        deps.length ? console.log(`unhoisting ${deps.length} for ${p}`) : console.log(`no deps to unhoist for ${p}`);
+        unhoistToLocation(pd, `${root}/${location}`, `${root}/node_modules`);
+    })(o[p]));
+});
+
+function unhoistToLocation(pd, to, from) {
+    Object.keys(pd).forEach(d => {
+        const targetDir = `${to}/node_modules`;
+        const target = `${targetDir}/${d}`;
+        fs.existsSync(path.dirname(target)) || fs.mkdirSync(path.dirname(target), {recursive: true});
+        fs.existsSync(targetDir) || fs.mkdirSync(targetDir, {recursive: true});
+        fs.existsSync(target) || fs.symlinkSync(`${from}/${d}`, target);
+        const subPd = require(`${target}/package.json`).dependencies || {};
+        const deps = Object.keys(subPd);
+        if (deps.length) {
+            unhoistToLocation(subPd, to, `${root}/node_modules`);
+        }
+    })
+}
