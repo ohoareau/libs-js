@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/crud",
-  "version": "0.6.13",
+  "version": "0.6.14",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/handler": "^0.6.1",
+    "@ohoareau/handler": "^0.6.2",
     "@ohoareau/identity": "^0.1.0",
     "uuid": "^3.3.2"
   },
