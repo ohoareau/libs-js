@@ -1,6 +1,6 @@
 all: install
 
-install: yarn-install bootstrap compile
+install: yarn-install bootstrap build
 
 yarn-install:
 	@yarn --silent install
@@ -8,10 +8,10 @@ yarn-install:
 bootstrap:
 	@yarn --silent lerna bootstrap
 
-compile:
-	@yarn --silent lerna run tsc --stream
+build:
+	@yarn --silent lerna run build --stream
 
-test: compile
+test: build
 	@yarn --silent test --runInBand --coverage
 
 publish:
@@ -37,4 +37,4 @@ clean-buildinfo:
 	@find packages/ -name tsconfig.tsbuildinfo -exec rm -rf {} +
 
 
-.PHONY: all install test yarn-install compile bootstrap publish clean-buildinfo clean-modules clean-lib clean-coverage clean
+.PHONY: all install test yarn-install build bootstrap publish clean-buildinfo clean-modules clean-lib clean-coverage clean

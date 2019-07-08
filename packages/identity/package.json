@@ -15,7 +15,7 @@
     "access": "public"
   },
   "scripts": {
-    "tsc": "tsc",
+    "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
