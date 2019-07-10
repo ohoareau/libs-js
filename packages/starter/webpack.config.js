@@ -7,7 +7,7 @@ let config = {
     },
     output: {
         path: path.resolve(__dirname, "lib"),
-        filename: '[name].js'
+        filename: '[name].js',
     },
     module: {
         rules: [
@@ -21,6 +21,12 @@ let config = {
                 }
             }
         ],
+    },
+    devServer: {
+        compress: true,
+        open: true,
+        port: 3000,
+        openPage: 'demo/',
     }
 };
 

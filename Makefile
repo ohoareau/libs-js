@@ -36,5 +36,7 @@ clean-coverage:
 clean-buildinfo:
 	@find packages/ -name tsconfig.tsbuildinfo -exec rm -rf {} +
 
+starter-start:
+	@cd packages/starter && yarn start
 
-.PHONY: all install test yarn-install build bootstrap publish clean-buildinfo clean-modules clean-lib clean-coverage clean
+.PHONY: all install test yarn-install build bootstrap publish clean-buildinfo clean-modules clean-lib clean-coverage clean starter-start

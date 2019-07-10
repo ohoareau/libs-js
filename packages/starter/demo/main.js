@@ -1,3 +1,3 @@
-window['xwl'] = function (id, config) {
-    document.getElementById(id).innerHTML = `<h1>Widget #${config.id}</h1>`;
+window['xwl-1'] = function (node, config) {
+    node.innerHTML = `<h1>Widget #${config.id} : ${JSON.stringify(config)}</h1>`;
 };
