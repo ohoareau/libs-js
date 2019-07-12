@@ -127,7 +127,7 @@ module.exports = function (w, d) {
                 div.parentNode.insertBefore(link, div);
             }
         } else {
-            createWidgetLoader(div.dataset['xwl'] || 'xwl', div.id, groups, div.dataset['xwa'], {id: div.dataset['xwi']})();
+            w.addEventListener('load', createWidgetLoader(div.dataset['xwl'] || 'xwl', div.id, groups, div.dataset['xwa'], {id: div.dataset['xwi']}));
         }
     };
     const start = function () {
