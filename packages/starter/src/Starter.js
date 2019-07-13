@@ -60,7 +60,6 @@ module.exports = function (w, d) {
         return defaultConfig;
     };
     const parseConfiguration = function (c, callback) {
-        console.log(c);
         callback(c);
     };
     const computeWidgetActiveConfiguration = function (id, context, callback) {
