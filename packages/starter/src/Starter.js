@@ -77,10 +77,11 @@ module.exports = function (w, d) {
         const ww = w;
         const dd = d;
         computeWidgetActiveConfiguration(id, context, function (selected) {
+            const node = dd.getElementById(id);
             ww[widget.key].configure(selected, function (c) {
-                ww[widget.key].render(dd.getElementById(id), c);
+                ww[widget.key].render(node, c);
                 widget.rendered = true;
-            });
+            }, node);
         });
     };
     const createWidgetLoader = function (key, id, groups, api, parser, config) {
