@@ -176,7 +176,7 @@ module.exports = function (w, d) {
                         throw new Error('xw1');
                     }
                     map = JSON.parse(req.responseText);
-                    c[manifest] = map;
+                    c[manifest] = map.files;
                     attach(firstDiv, map);
                     for (let i = 0; i < lists[manifest].length; i++) {
                         attach(lists[manifest][i], map);
