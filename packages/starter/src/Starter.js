@@ -9,6 +9,9 @@ module.exports = function (w, d) {
 
         });
     };
+    const getCache = function () {
+        return c;
+    };
     const getWidgets = function () {
         return widgets;
     };
