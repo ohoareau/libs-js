@@ -56,26 +56,34 @@ module.exports = function (w, d) {
 
         return defaultConfig;
     };
-    const computeWidgetActiveConfiguration = function (id, context) {
-        if (!definitions[id]) {
-            return widgets[id].config;
+    const parseConfiguration = function (c, callback) {
+        console.log(c);
+        callback(c);
+    };
+    const computeWidgetActiveConfiguration = function (id, context, callback) {
+        let selected = undefined;
+        if (definitions[id]) {
+            selected = definitions[id].configurations
+                ? selectActiveConfiguration(definitions[id].configurations, context)
+                : definitions[id]
+            ;
         }
-        if (!definitions[id].configurations) {
-            return definitions[id];
-        }
-        const selected = selectActiveConfiguration(definitions[id].configurations, context);
-        if (!selected) {
-            return widgets[id].config;
-        }
+        selected = selected || widgets[id].config;
         selected.id = widgets[id].config.id;
-        return selected;
+        parseConfiguration(selected, callback);
     };
     const renderWidget = function (id, context) {
         const widget = widgets[id];
-        w[widget.key](d.getElementById(id), computeWidgetActiveConfiguration(id, context));
-        widget.rendered = true;
+        const ww = w;
+        const dd = d;
+        computeWidgetActiveConfiguration(id, context, function (selected) {
+            ww[widget.key].configure(selected, function (c) {
+                ww[widget.key].render(dd.getElementById(id), c);
+                widget.rendered = true;
+            });
+        });
     };
-    const createWidgetLoader = function (key, id, groups, api, config) {
+    const createWidgetLoader = function (key, id, groups, api, parser, config) {
         const gg = [];
         for (let ii = 0; ii < groups.length; ii++) {
             if (',' === groups[ii]) {
@@ -115,7 +123,7 @@ module.exports = function (w, d) {
         const groups = (div.dataset['xwg'] || '');
         if (map && map['main.js']) {
             const js = d.createElement('script');
-            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], {id: div.dataset['xwi']});
+            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
             js.src = div.dataset['xwu'] + '/' + map['main.js'];
             div.parentNode.insertBefore(js, div);
             if (map['main.css']) {
@@ -127,7 +135,7 @@ module.exports = function (w, d) {
                 div.parentNode.insertBefore(link, div);
             }
         } else {
-            w.addEventListener('load', createWidgetLoader(div.dataset['xwl'] || 'xwl', div.id, groups, div.dataset['xwa'], {id: div.dataset['xwi']}));
+            w.addEventListener('load', createWidgetLoader(div.dataset['xwl'] || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']}));
         }
     };
     const start = function () {

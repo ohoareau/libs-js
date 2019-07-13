@@ -11,8 +11,13 @@
         <div class="xw" data-xwm="./assets-manifest-2.json" data-xwa="./api" data-xwu="./" data-xwi="xx5" data-xwl="xwl-2"></div>
         <script src="../lib/index.js"></script>
         <script type="text/javascript">
-            window['xwl'] = function (node, config) {
-                node.innerHTML = JSON.stringify(config);
+            window['xwl'] = {
+                render: function (node, config) {
+                    node.innerHTML = JSON.stringify(config);
+                },
+                configure: function (c, callback) {
+                    callback(c);
+                }
             }
         </script>
     </body>
