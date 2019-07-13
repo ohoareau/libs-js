@@ -126,10 +126,19 @@ module.exports = function (w, d) {
     const attach = function (div, map = {}) {
         const groups = (div.dataset['xwg'] || '');
         if (map && map.files && map.files['main.js']) {
+            const toInsert = [];
+            if (map && map.files && map.files['"runtime~main.js"']) {
+                const jsr = d.createElement('script');
+                jsr.src = div.dataset['xwu'] + '/' + map.files['runtime~main.js'];
+                toInsert.push(jsr);
+            }
             const js = d.createElement('script');
-            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
             js.src = div.dataset['xwu'] + '/' + map.files['main.js'];
-            div.parentNode.insertBefore(js, div);
+            toInsert.push(js);
+            for (let jj = toInsert.length - 1; jj >= 0; jj--) {
+                div.parentNode.insertBefore(toInsert[jj], div);
+            }
+            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
             if (map.files['main.css']) {
                 const link = d.createElement('link');
                 link.rel = 'stylesheet';
