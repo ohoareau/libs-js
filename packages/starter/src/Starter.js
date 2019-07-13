@@ -196,5 +196,6 @@ module.exports = function (w, d) {
         getWidgets,
         getWidgetGroup,
         getWidgetGroups,
+        getCache,
     };
 };
