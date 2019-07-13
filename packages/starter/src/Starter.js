@@ -127,7 +127,7 @@ module.exports = function (w, d) {
         const groups = (div.dataset['xwg'] || '');
         if (map && map.files && map.files['main.js']) {
             const toInsert = [];
-            if (map && map.files && map.files['"runtime~main.js"']) {
+            if (map && map.files && map.files['runtime~main.js']) {
                 const jsr = d.createElement('script');
                 jsr.src = div.dataset['xwu'] + '/' + map.files['runtime~main.js'];
                 toInsert.push(jsr);
