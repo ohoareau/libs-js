@@ -133,12 +133,12 @@ module.exports = function (w, d) {
                 toInsert.push(jsr);
             }
             const js = d.createElement('script');
+            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
             js.src = div.dataset['xwu'] + '/' + map.files['main.js'];
             toInsert.push(js);
-            for (let jj = toInsert.length - 1; jj >= 0; jj--) {
+            for (let jj = 0, jl = toInsert.length; jj < jl; jj++) {
                 div.parentNode.insertBefore(toInsert[jj], div);
             }
-            js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
             if (map.files['main.css']) {
                 const link = d.createElement('link');
                 link.rel = 'stylesheet';
