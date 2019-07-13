@@ -125,17 +125,17 @@ module.exports = function (w, d) {
     };
     const attach = function (div, map = {}) {
         const groups = (div.dataset['xwg'] || '');
-        if (map && map['main.js']) {
+        if (map && map.files && map.files['main.js']) {
             const js = d.createElement('script');
             js.onload = createWidgetLoader(div.dataset.xwl || 'xwl', div.id, groups, div.dataset['xwa'], div.dataset['xwp'], {id: div.dataset['xwi']});
-            js.src = div.dataset['xwu'] + '/' + map['main.js'];
+            js.src = div.dataset['xwu'] + '/' + map.files['main.js'];
             div.parentNode.insertBefore(js, div);
-            if (map['main.css']) {
+            if (map.files['main.css']) {
                 const link = d.createElement('link');
                 link.rel = 'stylesheet';
                 link.type = 'text/css';
                 link.media = 'all';
-                link.href = div.dataset['xwu'] + '/' + map['main.css'];
+                link.href = div.dataset['xwu'] + '/' + map.files['main.css'];
                 div.parentNode.insertBefore(link, div);
             }
         } else {
@@ -179,7 +179,7 @@ module.exports = function (w, d) {
                         throw new Error('xw1');
                     }
                     map = JSON.parse(req.responseText);
-                    c[manifest] = map.files;
+                    c[manifest] = map;
                     attach(firstDiv, map);
                     for (let i = 0; i < lists[manifest].length; i++) {
                         attach(lists[manifest][i], map);
