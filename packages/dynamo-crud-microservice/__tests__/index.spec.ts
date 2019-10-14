@@ -6,5 +6,6 @@ describe('', () => {
         expect(m).toBeDefined();
         expect(m.getAbcd).toBeDefined();
         expect(m.getAbcds).toBeDefined();
+        expect(m.abcdService).toBeDefined();
     });
 });
