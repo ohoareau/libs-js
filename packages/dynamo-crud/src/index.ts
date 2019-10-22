@@ -28,9 +28,10 @@ const hooked = (operation, callback, hooks, service) => async (...args) => {
     const operationUpper = `${operation.substr(0, 1).toUpperCase()}${operation.substr(1)}`;
     await applyHook(`before${operationUpper}`, hooks, ctx);
     ctx.result = await callback.apply(null, args);
-    await applyHook(``, hooks, ctx);
+    await applyHook(operation, hooks, ctx);
     await applyHook(`${operation}Job`, hooks, ctx, createJobHook);
     await applyHook(`${operation}Message`, hooks, ctx, createMessageHook);
+    return ctx.result;
 };
 
 export default ({ type, schema, hooks = {} }) => {
