@@ -23,7 +23,7 @@ const createHook = callback => (callback instanceof Function)
 
 const applyHook = async (name, hooks, ctx, hookFactory = createHook) => hooks[name] ? hookFactory(hooks[name]).apply(null, [ctx]) : undefined;
 
-const hooked = (operation, callback, hooks, service) => async (...args) => {
+const hooked = (operation, callback, hooks, service) => async (...args): Promise<any> => {
     const ctx = { args, result: undefined, service};
     const operationUpper = `${operation.substr(0, 1).toUpperCase()}${operation.substr(1)}`;
     await applyHook(`before${operationUpper}`, hooks, ctx);
