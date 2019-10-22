@@ -51,8 +51,9 @@ const buildQueryDefinitionFromCriteria = (criteria) => {
 
 const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => {
     let q = m.query(buildQueryDefinitionFromCriteria(criteria));
+    console.log(q);
     if (limit) {
-        q = q.limit(limit);
+        q.limit(limit);
     }
     if (fields && fields.length) {
         q.attributes(fields);
@@ -71,6 +72,7 @@ const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => 
     if (options.all) {
         q.all();
     }
+    console.log(q);
     return q.exec();
 };
 
