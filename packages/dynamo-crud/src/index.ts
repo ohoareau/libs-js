@@ -44,14 +44,14 @@ const hooked = (operation, callback, hooks, service) => async (...args): Promise
 };
 const buildQueryDefinitionFromCriteria = (criteria) => {
     return Object.keys(criteria).reduce((acc, k) => {
-        acc[k] = criteria[k];
+        acc[k] = {eq: criteria[k]};
         return acc;
     }, {});
 };
 
 const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => {
     let q = m.query(buildQueryDefinitionFromCriteria(criteria));
-    console.log(q);
+    console.log(m, criteria, fields, limit, offset, sort, options, q);
     if (limit) {
         q.limit(limit);
     }
