@@ -43,14 +43,22 @@ const hooked = (operation, callback, hooks, service) => async (...args): Promise
     return ctx.result;
 };
 const buildQueryDefinitionFromCriteria = (criteria) => {
-    return Object.keys(criteria).reduce((acc, k) => {
+    const keys = Object.keys(criteria);
+    if (!keys.length) {
+        return undefined;
+    }
+    return keys.reduce((acc, k) => {
         acc[k] = {eq: criteria[k]};
         return acc;
     }, {});
 };
 
 const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => {
-    let q = m.query(buildQueryDefinitionFromCriteria(criteria));
+    const cfg = buildQueryDefinitionFromCriteria(criteria);
+    let q = cfg ? m.query(cfg) : m.scan();
+    if (!q || !q.exec) {
+        throw new Error('Unable to build query/scan from definition');
+    }
     if (limit) {
         q.limit(limit);
     }
@@ -68,7 +76,7 @@ const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => 
     if (options.consistent) {
         q.consistent();
     }
-    if (options.all) {
+    if (options.all && q.all) {
         q.all();
     }
     return q.exec();
