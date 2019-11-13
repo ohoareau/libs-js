@@ -82,10 +82,11 @@ const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => 
     return q.exec();
 };
 
-export default ({ type, schema, hooks = {}, options: overriddenOptions = {} }) => {
+export default ({ type, schema, hooks = {} }) => {
+    schema = Array.isArray(schema) ? schema : [schema, {}];
     const service = {};
-    const options = {create: false, update: false, waitForActive: false, ...globalOptions, ...overriddenOptions};
-    const Model = dynamoose.model(type, schema, options);
+    const options = {create: false, update: false, waitForActive: false, ...globalOptions};
+    const Model = dynamoose.model(type, new dynamoose.Schema(schema[0], schema[1]), options);
     const get = hooked('get', async (id: string): Promise<any> => {
         const doc = await Model.get(id);
         if (!doc) {
