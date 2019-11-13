@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/dynamo-crud-microservice",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,6 +19,6 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/dynamo-crud": "^0.2.10"
+    "@ohoareau/dynamo-crud": "^0.2.11"
   }
 }
