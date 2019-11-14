@@ -95,7 +95,7 @@ export default ({ type, schema, hooks = {} }) => {
         return doc;
     }, hooks, service);
     const find = hooked('find', async (criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined, options = {}): Promise<any> => ({ items: await runQuery(Model, {criteria, fields, limit, offset, sort, options}) }), hooks, service);
-    const create = hooked('create', async (data): Promise<any> => Model.create({...data, id: uuidv4()}), hooks, service);
+    const create = hooked('create', async (data): Promise<any> => Model.create({...data, ...((data && data.id) ? {} : {id: uuidv4()})}), hooks, service);
     const update = hooked('update', async (id: string, data: any): Promise<any> => Model.update({ id }, data), hooks, service);
     const remove = hooked('remove', async (id: string): Promise<any> => Model.delete({ id }), hooks, service);
     return Object.assign(service, { get, find, create, update, remove });
