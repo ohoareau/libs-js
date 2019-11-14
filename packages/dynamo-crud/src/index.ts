@@ -1,5 +1,8 @@
 import dynamoose from 'dynamoose';
 import uuidv4 from 'uuid/v4';
+import AWS from 'aws-sdk';
+
+const sns = new AWS.SNS();
 
 class DocumentNotFoundError extends Error {
     public type: String;
@@ -19,8 +22,25 @@ const createJobHook = def => ctx => {
     console.log(ctx, def);
 };
 
-const createMessageHook = def => ctx => {
-    console.log(ctx, def);
+const createMessageHook = def => async ctx => {
+    await sns.publish({
+        Message: JSON.stringify(ctx.result),
+        MessageAttributes: {
+            fullType: {
+                DataType: 'String', /* required */
+                StringValue: `${ctx.type}_${ctx.operation}`,
+            },
+            type: {
+                DataType: 'String', /* required */
+                StringValue: ctx.type,
+            },
+            operation: {
+                DataType: 'String', /* required */
+                StringValue: ctx.operation,
+            },
+        },
+        TopicArn: def.topic,
+    }).promise();
 };
 
 const createHook = callback => (callback instanceof Function)
@@ -32,8 +52,8 @@ const createHook = callback => (callback instanceof Function)
 
 const applyHook = async (name, hooks, ctx, hookFactory = createHook) => hooks[name] ? hookFactory(hooks[name]).apply(null, [ctx]) : undefined;
 
-const hooked = (operation, callback, hooks, service) => async (...args): Promise<any> => {
-    const ctx = { args, result: undefined, service};
+const hooked = (operation, callback, hooks, service, type) => async (...args): Promise<any> => {
+    const ctx = { args, result: undefined, service, type, operation};
     const operationUpper = `${operation.substr(0, 1).toUpperCase()}${operation.substr(1)}`;
     await applyHook(`before${operationUpper}`, hooks, ctx);
     ctx.result = await callback.apply(null, args);
@@ -93,10 +113,10 @@ export default ({ type, schema, hooks = {} }) => {
             throw new DocumentNotFoundError(type, id);
         }
         return doc;
-    }, hooks, service);
-    const find = hooked('find', async (criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined, options = {}): Promise<any> => ({ items: await runQuery(Model, {criteria, fields, limit, offset, sort, options}) }), hooks, service);
-    const create = hooked('create', async (data): Promise<any> => Model.create({...data, ...((data && data.id) ? {} : {id: uuidv4()})}), hooks, service);
-    const update = hooked('update', async (id: string, data: any): Promise<any> => Model.update({ id }, data), hooks, service);
-    const remove = hooked('remove', async (id: string): Promise<any> => Model.delete({ id }), hooks, service);
+    }, hooks, service, type);
+    const find = hooked('find', async (criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined, options = {}): Promise<any> => ({ items: await runQuery(Model, {criteria, fields, limit, offset, sort, options}) }), hooks, service, type);
+    const create = hooked('create', async (data): Promise<any> => Model.create({...data, ...((data && data.id) ? {} : {id: uuidv4()})}), hooks, service, type);
+    const update = hooked('update', async (id: string, data: any): Promise<any> => Model.update({ id }, data), hooks, service, type);
+    const remove = hooked('remove', async (id: string): Promise<any> => Model.delete({ id }), hooks, service, type);
     return Object.assign(service, { get, find, create, update, remove });
 };
