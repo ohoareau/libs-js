@@ -9,6 +9,36 @@ const buildQueueUrlFromArn = (sqs, arn): string => {
 const sqs = new AWS.SQS();
 const lambda = new AWS.Lambda();
 
+export class ServiceInvokeLambdaInvokeError extends Error {
+    protected type: string;
+    protected operation: string;
+    protected arn: string;
+    protected requestPayload: {[key: string]: any};
+    protected responsePayload: {errorType: string, errorMessage: string};
+    constructor(type, operation, arn, requestPayload, responsePayload) {
+        super(`Invoking operation '${operation}' on service '${type}' raise an error when invoking lambda '${arn}': ${responsePayload.errorMessage} (errorType: ${responsePayload.errorType})`);
+        this.type = type;
+        this.operation = operation;
+        this.arn = arn;
+        this.requestPayload = requestPayload;
+        this.responsePayload = responsePayload;
+    }
+    getType(): string {
+        return this.type;
+    }
+    getOperation(): string {
+        return this.operation;
+    }
+    getArn(): string {
+        return this.arn;
+    }
+    getRequestPayload(): {[key: string]: any} {
+        return this.requestPayload;
+    }
+    getResponsePayload(): {errorType: string, errorMessage: string} {
+        return this.responsePayload;
+    }
+}
 export default (definition): any => {
     const lambdaArns = {
         create: process.env.LAMBDA_CREATE_ARN || undefined,
@@ -24,14 +54,24 @@ export default (definition): any => {
         }
         const lambdaArn = lambdaArns[name];
         (opts.logger || console).log(`Invoking lambda '${lambdaArn}' to execute operation '${name}'`, name, data);
+        const payload = {
+            params: data
+        };
         const result = await lambda.invoke({
             FunctionName: lambdaArn,
             InvocationType: 'RequestResponse',
             LogType: 'None',
-            Payload: JSON.stringify({
-                params: data
-            }),
+            Payload: JSON.stringify(payload),
         }).promise();
+        if (result.FunctionError) {
+            throw new ServiceInvokeLambdaInvokeError(
+                definition.type,
+                name,
+                lambdaArn,
+                payload,
+                JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'))
+            );
+        }
         (opts.logger || console).log(`Lambda '${lambdaArn}' responded with: `, result);
         return result;
     }};
