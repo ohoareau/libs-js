@@ -21,6 +21,11 @@ export default (definition): any => {
         [`create${t}`]: ({ params: { input } }) => create(input),
         [`${st}Service`]: crudService,
     };
+    if (definition.migrations) {
+        handlers.migrate = async (event, context) => {
+          console.log('migration requested !');
+        };
+    }
     if (definition.receiveExternalEvents) {
         handlers.receiveExternalEvents = async (event, context) => {
             if (!event.Records || !event.Records.length) {
