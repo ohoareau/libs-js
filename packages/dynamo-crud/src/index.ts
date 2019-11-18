@@ -13,9 +13,11 @@ class DocumentNotFoundError extends Error {
         this.id = id;
     }
 }
-const globalOptions = {
-    prefix: process.env.DYNAMODB_TABLE_PREFIX || undefined,
-    suffix: process.env.DYNAMODB_TABLE_SUFFIX || undefined,
+const globalOptions = type => {
+    return {
+        prefix: process.env[`DYNAMODB_${type.toUpperCase()}_TABLE_PREFIX`] || process.env.DYNAMODB_TABLE_PREFIX || undefined,
+        suffix: process.env[`DYNAMODB_${type.toUpperCase()}_TABLE_SUFFIX`] || process.env.DYNAMODB_TABLE_SUFFIX || undefined,
+    };
 };
 
 const createJobHook = def => ctx => {
@@ -105,7 +107,7 @@ const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => 
 export default ({ type, schema, hooks = {} }) => {
     schema = Array.isArray(schema) ? schema : [schema, {}];
     const service = {};
-    const options = {create: false, update: false, waitForActive: false, ...globalOptions};
+    const options = {create: false, update: false, waitForActive: false, ...globalOptions(type)};
     const Model = dynamoose.model(type, new dynamoose.Schema(schema[0], schema[1]), options);
     const get = hooked('get', async (id: string): Promise<any> => {
         const doc = await Model.get(id);

@@ -92,15 +92,20 @@ export default (definition): any => {
             const ctx = {
                 service: crudService,
             };
+            const migrationService = crud({type: 'Migration', schema: [{
+                    id: String,
+                }, {
+                    timestamps: true,
+                }]});
             const fetchMigrationsFromDb = async (): Promise<string[]> => {
-                console.log('@todo implement fetch list of migrations from db');
-                return [];
+                const { items } = await migrationService.find();
+                return items.map(i => i.id);
             };
-            const addMigrationToDb = async (migration: {data: string}): Promise<void> => {
-                console.log('@todo update db to add migration entry', migration);
+            const addMigrationToDb = async (migration: {name: string}): Promise<void> => {
+                await migrationService.create({id: migration.name});
             };
-            const removeMigrationFromDb = async (migration: {data: string}): Promise<void> => {
-                console.log('@todo update db to remove migration entry', migration);
+            const removeMigrationFromDb = async (migration: {name: string}): Promise<void> => {
+                await migrationService.remove(migration.name);
             };
             const logger = async (event, data): Promise<void>  => {
                 switch (event) {
