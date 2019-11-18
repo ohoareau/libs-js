@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/migrate",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,7 +17,5 @@
   "scripts": {
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
-  },
-  "dependencies": {
   }
 }
