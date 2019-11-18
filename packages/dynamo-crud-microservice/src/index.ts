@@ -78,7 +78,7 @@ export default (definition): any => {
                 ctx,
                 event.action || 'up',
                 logger
-            )
+            );
         };
     }
     if (definition.receiveExternalEvents) {
