@@ -14,6 +14,12 @@ build:
 test: build
 	@yarn --silent test --runInBand --coverage
 
+build-package:
+	@cd packages/$(package) && yarn --silent build
+
+test-package: build-package
+	@cd packages/$(package) && yarn --silent test
+
 publish:
 	@yarn --silent lerna publish
 
