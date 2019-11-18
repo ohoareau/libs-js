@@ -42,6 +42,10 @@ describe('migrate up', () => {
             [], {planned: ['03.js', '07.js', '11.js', '12.js'], failed: [], failures: {}, deployed: ['03.js', '07.js', '11.js', '12.js']}, {value: 33},
             [
                 ['migrateStarting', {planned: ['03.js', '07.js', '11.js', '12.js'], failed: [], failures: {}, deployed: []}],
+                ['migrationSucceed', {action: 'up', name: '03.js'}],
+                ['migrationSucceed', {action: 'up', name: '07.js'}],
+                ['migrationSucceed', {action: 'up', name: '11.js'}],
+                ['migrationSucceed', {action: 'up', name: '12.js'}],
                 ['migrateCompleted', {planned: ['03.js', '07.js', '11.js', '12.js'], failed: [], failures: {}, deployed: ['03.js', '07.js', '11.js', '12.js']}],
             ],
         ],
@@ -49,6 +53,9 @@ describe('migrate up', () => {
             `${__dirname}/../__fixtures__/test2`, ['07.js'], {planned: ['03.js', '11.js', '12.js'], failed: [], failures: {}, deployed: ['03.js', '11.js', '12.js']}, {value: 26},
             [
                 ['migrateStarting', {planned: ['03.js', '11.js', '12.js'], failed: [], failures: {}, deployed: []}],
+                ['migrationSucceed', {action: 'up', name: '03.js'}],
+                ['migrationSucceed', {action: 'up', name: '11.js'}],
+                ['migrationSucceed', {action: 'up', name: '12.js'}],
                 ['migrateCompleted', {planned: ['03.js', '11.js', '12.js'], failed: [], failures: {}, deployed: ['03.js', '11.js', '12.js']}],
             ],
         ],

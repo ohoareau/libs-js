@@ -42,9 +42,11 @@ export const applyMigration = async (repo: string, migration: string, ctx: {[key
         if (!m[action]) {
             throw new Error(`Unknown action '${action}' for migration '${migration}' (repo: ${repo})`);
         }
-        return m[action](ctx, {logger: migrationLoggerFactory({name: migration, action}, logger)});
+        const r = m[action](ctx, {logger: migrationLoggerFactory({name: migration, action}, logger)});
+        await logger('migrationSucceed', {name: migration, action});
+        return r;
     } catch (e) {
-        await logger('migrationFailed', {name: migration, error: e});
+        await logger('migrationFailed', {name: migration, action, error: e});
         throw e;
     }
 };
@@ -71,8 +73,7 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
             } catch (e) {
                 result.failed.push(<string>r[0]);
                 result.failures[<string>r[0]] = e.message;
-                await logger('migrationFailed', {...result});
-                throw new Error('Failure');
+                throw e;
             }
             if (i.length) {
                 return [<string>i, <Promise<any>>applyMigration(repo, i, ctx, action, logger)];
