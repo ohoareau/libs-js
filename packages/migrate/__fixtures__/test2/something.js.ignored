@@ -1,0 +1,12 @@
+const up = async ctx => {
+    ctx.value += 1000;
+};
+
+const down = async ctx => {
+    ctx.value -= 1000;
+};
+
+module.exports = {
+    up,
+    down,
+};

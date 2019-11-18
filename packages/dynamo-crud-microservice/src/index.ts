@@ -1,4 +1,5 @@
 import crud from '@ohoareau/dynamo-crud';
+import migrate from '@ohoareau/migrate';
 import AWS from 'aws-sdk';
 
 const buildQueueUrlFromArn = (sqs, arn): string => {
@@ -22,8 +23,62 @@ export default (definition): any => {
         [`${st}Service`]: crudService,
     };
     if (definition.migrations) {
-        handlers.migrate = async (event, context) => {
-          console.log('migration requested !');
+        handlers.migrate = async event => {
+            const ctx = {
+                operation: async(name: string, data: {[key: string]: any}): Promise<any> => {
+                    console.log('@todo implement operation in ctx', name, data);
+                }
+            };
+            const fetchMigrationsFromDb = async (): Promise<string[]> => {
+                console.log('@todo implement fetch list of migrations from db');
+                return [];
+            };
+            const addMigrationToDb = async (migration: {data: string}): Promise<void> => {
+                console.log('@todo update db to add migration entry', migration);
+            };
+            const removeMigrationFromDb = async (migration: {data: string}): Promise<void> => {
+                console.log('@todo update db to remove migration entry', migration);
+            };
+            const logger = async (event, data): Promise<void>  => {
+                switch (event) {
+                    case 'migrationSucceed':
+                        switch (data.action) {
+                            case 'up':
+                                await addMigrationToDb(data);
+                                console.log(`Migration '${data.name}' succeed (up), add to db`);
+                                break;
+                            case 'down':
+                                await removeMigrationFromDb(data);
+                                console.log(`Migration '${data.name}' succeed (down), removed from db`);
+                                break;
+                        }
+                        break;
+                    case 'migrationFailed':
+                        console.log(`Migration '${data.name}' failed with message: ${data.error.message}`, data.error);
+                        break;
+                    case 'migrateStarting':
+                        console.log(`Starting migration process with ${data.planned.length} migrations selected [${data.planned.join(', ')}]`);
+                        break;
+                    case 'migrateSkipped':
+                        console.log(`No migrations to deploy, skipping.`);
+                        break;
+                    case 'migrateCompleted':
+                        console.log(`Completed migration process with ${data.planned.length} migrations selected and ${data.deployed} migrations deployed [${data.deployed.join(', ')}]`);
+                        break;
+                    case 'migrateFailed':
+                        console.log(`Failed migration process with ${data.planned.length} migrations selected and ${data.deployed} migrations deployed [${data.deployed.join(', ')}] and ${data.failed} migrations failed [${data.failed.join(', ')}]`);
+                        break;
+                    default:
+                        break;
+                }
+            };
+            await migrate(
+                definition.migratations,
+                await fetchMigrationsFromDb(),
+                ctx,
+                event.action || 'up',
+                logger
+            )
         };
     }
     if (definition.receiveExternalEvents) {
