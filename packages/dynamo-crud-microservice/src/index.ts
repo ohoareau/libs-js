@@ -25,9 +25,9 @@ export default (definition): any => {
     if (definition.migrations) {
         handlers.migrate = async event => {
             const ctx = {
-                operation: async(name: string, data: {[key: string]: any}): Promise<any> => {
-                    console.log('@todo implement operation in ctx', name, data);
-                }
+                operation: async(name: string, data: {[key: string]: any}, opts: {logger?: {log: Function, error: Function}}): Promise<any> => {
+                    (opts.logger || console).log('@todo implement operation in ctx', name, data);
+                },
             };
             const fetchMigrationsFromDb = async (): Promise<string[]> => {
                 console.log('@todo implement fetch list of migrations from db');
@@ -41,6 +41,12 @@ export default (definition): any => {
             };
             const logger = async (event, data): Promise<void>  => {
                 switch (event) {
+                    case 'migrationLog':
+                        console.log(`[migration-${data.action}(${data.name})]`, data.args);
+                        break;
+                    case 'migrationLogError':
+                        console.error(`[migration-${data.action}(${data.name})]`, data.args);
+                        break;
                     case 'migrationSucceed':
                         switch (data.action) {
                             case 'up':
@@ -63,10 +69,10 @@ export default (definition): any => {
                         console.log(`No migrations to deploy, skipping.`);
                         break;
                     case 'migrateCompleted':
-                        console.log(`Completed migration process with ${data.planned.length} migrations selected and ${data.deployed} migrations deployed [${data.deployed.join(', ')}]`);
+                        console.log(`Completed migration process with ${data.planned.length} migrations selected and ${data.deployed.length} migrations deployed [${data.deployed.join(', ')}]`);
                         break;
                     case 'migrateFailed':
-                        console.log(`Failed migration process with ${data.planned.length} migrations selected and ${data.deployed} migrations deployed [${data.deployed.join(', ')}] and ${data.failed} migrations failed [${data.failed.join(', ')}]`);
+                        console.log(`Failed migration process with ${data.planned.length} migrations selected and ${data.deployed.length} migrations deployed [${data.deployed.join(', ')}] and ${data.failed.length} migrations failed [${data.failed.join(', ')}]`);
                         break;
                     default:
                         break;

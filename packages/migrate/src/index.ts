@@ -27,13 +27,22 @@ export const plan = async (repo: string, deployed: string[], action: string): Pr
     return all;
 };
 
+export const migrationLoggerFactory = (migration, logger) => ({
+    log: async (...args) => {
+        await logger('migrationLog', {...migration, args});
+    },
+    error: async (...args) => {
+        await logger('migrationLogError', {...migration, args});
+    },
+});
+
 export const applyMigration = async (repo: string, migration: string, ctx: {[key: string]: any}, action: string, logger: Function): Promise<void> => {
     try {
         const m = require(`${repo}/${migration}`);
         if (!m[action]) {
             throw new Error(`Unknown action '${action}' for migration '${migration}' (repo: ${repo})`);
         }
-        return m[action](ctx);
+        return m[action](ctx, {logger: migrationLoggerFactory({name: migration, action}, logger)});
     } catch (e) {
         await logger('migrationFailed', {name: migration, error: e});
         throw e;
