@@ -7,9 +7,34 @@ const buildQueueUrlFromArn = (sqs, arn): string => {
     return sqs.endpoint.href + splits[4] + '/' + splits[5];
 };
 const sqs = new AWS.SQS();
+const lambda = new AWS.Lambda();
 
 export default (definition): any => {
-    const crudService = crud(definition);
+    const lambdaArns = {
+        create: process.env.LAMBDA_CREATE_ARN || undefined,
+        get: process.env.LAMBDA_GET_ARN || undefined,
+        list: process.env.LAMBDA_LIST_ARN || undefined,
+        delete: process.env.LAMBDA_DELETE_ARN || undefined,
+        update: process.env.LAMBDA_UPDATE_ARN || undefined,
+        events: process.env.LAMBDA_EVENTS_ARN || undefined,
+    };
+    const crudService = {...crud(definition), invoke: async(name: string, data: {[key: string]: any}, opts: {logger?: {log: Function, error: Function}}): Promise<any> => {
+        if (!lambdaArns[name]) {
+            throw new Error(`No invokable lambda for operation '${name}'`);
+        }
+        const lambdaArn = lambdaArns[name];
+        (opts.logger || console).log(`Invoking lambda '${lambdaArn}' to execute operation '${name}'`, name, data);
+        const result = await lambda.invoke({
+            FunctionName: lambdaArn,
+            InvocationType: 'RequestResponse',
+            LogType: 'None',
+            Payload: JSON.stringify({
+                params: data
+            }),
+        }).promise();
+        (opts.logger || console).log(`Lambda '${lambdaArn}' responded with: `, result);
+        return result;
+    }};
     const { get, find, update, remove, create } = crudService;
     const t = `${definition.type.substr(0, 1).toUpperCase()}${definition.type.substr(1)}`;
     const st = `${definition.type.substr(0, 1).toLowerCase()}${definition.type.substr(1)}`;
@@ -25,9 +50,7 @@ export default (definition): any => {
     if (definition.migrations) {
         handlers.migrate = async event => {
             const ctx = {
-                operation: async(name: string, data: {[key: string]: any}, opts: {logger?: {log: Function, error: Function}}): Promise<any> => {
-                    (opts.logger || console).log('@todo implement operation in ctx', name, data);
-                },
+                service: crudService,
             };
             const fetchMigrationsFromDb = async (): Promise<string[]> => {
                 console.log('@todo implement fetch list of migrations from db');
@@ -42,10 +65,10 @@ export default (definition): any => {
             const logger = async (event, data): Promise<void>  => {
                 switch (event) {
                     case 'migrationLog':
-                        console.log(`[migration-${data.action}(${data.name})]`, data.args);
+                        console.log(`[migration-${data.action}(${data.name})]`, ...data.args);
                         break;
                     case 'migrationLogError':
-                        console.error(`[migration-${data.action}(${data.name})]`, data.args);
+                        console.error(`[migration-${data.action}(${data.name})]`, ...data.args);
                         break;
                     case 'migrationSucceed':
                         switch (data.action) {
