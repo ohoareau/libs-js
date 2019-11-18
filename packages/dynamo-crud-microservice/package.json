@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/dynamo-crud-microservice",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,6 +20,6 @@
   },
   "dependencies": {
     "@ohoareau/dynamo-crud": "^0.2.14",
-    "@ohoareau/migrate": "^0.1.0"
+    "@ohoareau/migrate": "^0.1.1"
   }
 }
