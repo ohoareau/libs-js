@@ -73,7 +73,7 @@ export default (definition): any => {
                 }
             };
             await migrate(
-                definition.migratations,
+                definition.migrations,
                 await fetchMigrationsFromDb(),
                 ctx,
                 event.action || 'up',
