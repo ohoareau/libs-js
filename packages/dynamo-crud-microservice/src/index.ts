@@ -39,6 +39,19 @@ export class ServiceInvokeLambdaInvokeError extends Error {
         return this.responsePayload;
     }
 }
+export const mutateQuery = (s: string|undefined, params: {[key: string]: any} = {}) => {
+    if (!s) {
+        return s;
+    }
+    const r = /@\[([a-z_]+)]/i;
+    let matches;
+    let ss = `${s}`;
+    while ((matches = r.exec(ss)) !== null) {
+        ss = ss.replace(matches[0], params[matches[1]] || '');
+    }
+    return ss;
+};
+
 export default (definition): any => {
     const lambdaArns = {
         create: process.env.LAMBDA_CREATE_ARN || undefined,
@@ -81,7 +94,7 @@ export default (definition): any => {
     const ts = `${t}s`;
     const handlers: {[key: string]: any} = {
         [`get${t}`]: ({ params: { id } }) => get(id),
-        [`get${ts}`]: ({ params: { query = undefined, criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined} = {}}) => find({...criteria, _: query}, fields, limit, offset, sort),
+        [`get${ts}`]: ({ params: { query = undefined, criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined, ...rest} = {}}) => find({...criteria, _: mutateQuery(query, rest)}, fields, limit, offset, sort),
         [`update${t}`]: ({ params: { id, input } }) => update(id, input),
         [`delete${t}`]: ({ params: { id } }) => remove(id),
         [`create${t}`]: ({ params: { input } }) => create(input),
