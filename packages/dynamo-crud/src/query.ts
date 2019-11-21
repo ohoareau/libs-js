@@ -69,8 +69,8 @@ export const buildQueryDefinitionFromCriteria = criteria => {
     let query: any = undefined;
     if (localCriteria._) {
         modifiers = buildQueryModifiers(localCriteria._);
-        delete localCriteria._;
     }
+    delete localCriteria._; // always delete even if empty
     const keys = Object.keys(localCriteria);
     if (keys.length) {
         query = keys.reduce((acc, k) => {
