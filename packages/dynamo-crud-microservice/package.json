@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/dynamo-crud-microservice",
-  "version": "0.3.31",
+  "version": "0.3.32",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
