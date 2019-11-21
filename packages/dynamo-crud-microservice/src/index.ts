@@ -81,7 +81,7 @@ export default (definition): any => {
     const ts = `${t}s`;
     const handlers: {[key: string]: any} = {
         [`get${t}`]: ({ params: { id } }) => get(id),
-        [`get${ts}`]: ({ params: { criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined} = {}}) => find(criteria, fields, limit, offset, sort),
+        [`get${ts}`]: ({ params: { query = undefined, criteria = {}, fields = [], limit = undefined, offset = undefined, sort = undefined} = {}}) => find({...criteria, _: query}, fields, limit, offset, sort),
         [`update${t}`]: ({ params: { id, input } }) => update(id, input),
         [`delete${t}`]: ({ params: { id } }) => remove(id),
         [`create${t}`]: ({ params: { input } }) => create(input),
