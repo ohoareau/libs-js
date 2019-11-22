@@ -18,7 +18,7 @@ build-package:
 	@cd packages/$(package) && yarn --silent build
 
 test-package: build-package
-	@cd packages/$(package) && yarn --silent test
+	@cd packages/$(package) && yarn --silent test --coverage --detectOpenHandles
 
 publish:
 	@yarn --silent lerna publish
