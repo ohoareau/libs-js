@@ -1,11 +1,9 @@
-import {Map, Context, Config} from "../..";
+import {Map, Context, Config, normalizeDefinition} from "../..";
 import m from '../middleware/backend';
 
 export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
-    c['middlewares'].push(m);
-    const backend: {type: string, config: Map} = ('string' === typeof c['backend']) ? {type: c['backend'], config: {}} : {...c['backend']};
-    if (!plugins.backend || !plugins.backend[backend.type]) {
-        throw new Error(`Unknown backend type '${backend.type}'`);
-    }
-    c['backendExecutor'] = plugins.backend[backend.type](backend.config, c);
+    const def = normalizeDefinition(c.backend);
+    if (!plugins.backend || !plugins.backend[def.type]) throw new Error(`Unknown backend type '${def.type}'`);
+    c.middlewares.push(m);
+    c.backendExecutor = plugins.backend[def.type](def.config, c);
 }

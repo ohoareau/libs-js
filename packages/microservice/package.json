@@ -19,7 +19,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/migrate": "^0.1.2"
+    "@ohoareau/migrate": "^0.1.2",
+    "uuid": "^3.3.3"
   },
   "peerDependencies": {
     "dynamoose": "^1.11.1"

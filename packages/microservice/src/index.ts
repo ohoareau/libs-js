@@ -3,6 +3,7 @@ import * as handlerTypes from './handlers';
 
 export type Map<T = any> = {[key: string]: T}
 export type TypedMap = Map & {type: string}
+export type Definition = TypedMap & {config?: Map}
 export type Context = Map & {root: string}
 export type Handler = (event: any, ctx: any) => Promise<any>|any;
 export type HandlerConfig = Map & {pattern: string, name: string}
@@ -21,6 +22,7 @@ const handlerMap: Map<{pattern: string}> = {
     events: {pattern: 'receive{FullType}ExternalEvents'},
 };
 
+export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : {...a});
 export const compose = (...f: Function[]) => {
     const l = f.length;
     return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));

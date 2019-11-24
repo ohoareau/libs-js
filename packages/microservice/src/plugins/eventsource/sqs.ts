@@ -3,7 +3,7 @@ import {Map, TypedMap, Handler, Config} from "../..";
 
 const sqs = new AWS.SQS();
 
-export default (ec: TypedMap, c: Config) => async (event: any, context: any, listeners: Map<Handler>): Promise<any> => {
+export default (ec: TypedMap, c: Config) => async (event: any, context: any): Promise<any> => {
     if (!event.Records || !event.Records.length) return;
     await Promise.all(event.Records.map(async r => {
         const receiptHandle = r.receiptHandle;
@@ -11,12 +11,12 @@ export default (ec: TypedMap, c: Config) => async (event: any, context: any, lis
         const eventType = body.MessageAttributes.fullType.Value.toLowerCase().replace(/_/, '.');
         const splits = r.eventSourceARN.split(':');
         const queueUrl = sqs.endpoint.href + splits[4] + '/' + splits[5];
-        if (listeners[eventType]) {
+        if (c.eventListeners && c.eventListeners[eventType]) {
             const attributes = Object.entries(body.MessageAttributes).reduce((acc, [k, m]) => {
                 acc[k] = (<Map>m).Value;
                 return acc;
             }, {});
-            await (<Handler>listeners[eventType])(
+            await (<Handler>c.eventListeners[eventType])(
                 JSON.parse(body.Message),
                 {
                     attributes,

@@ -1,6 +1,6 @@
-import {Map} from "../..";
+import {TypedMap} from "../..";
 
-export default (config: Map<Map>) => async (operation: string, payload: any) => {
+export default (config: TypedMap) => async (operation: string, payload: any) => {
     switch (operation) {
         case 'find':
             return {items: Object.values(config.data)};
