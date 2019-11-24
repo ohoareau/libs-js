@@ -1,151 +1,83 @@
-import {
-    Service,
-    Config,
-    HandlerList,
-    DeclarativeTypesList,
-    TypeConfig,
-    Microservice,
-    DeclarativeTypeConfig,
-    Context,
-    InvokableOperations,
-    InvokableList,
-    InvokableOperation,
-    InvokableBackendConfig,
-    EventSourceBackendConfig,
-    EventListener, EventList, EventListeners, EventListenerConfig,
-} from './types';
-import {registerTypeHandlers} from "./handler";
-import BackendInterface from "./BackendInterface";
-import InvokableBackendInterface from "./InvokableBackendInterface";
-import EventSourceBackendInterface from "./InvokableBackendInterface";
+import * as config from "./plugins/config";
+import * as handlerTypes from './handlers';
 
-const plugins: {
-    backends: { [key: string]: BackendInterface },
-    invokableBackends: { [key: string]: InvokableBackendInterface },
-    eventSourceBackends: { [key: string]: EventSourceBackendInterface },
-} = {
-    backends: {},
-    invokableBackends: {},
-    eventSourceBackends: {},
+export type Map<T = any> = {[key: string]: T}
+export type TypedMap = Map & {type: string}
+export type Context = Map & {root: string}
+export type Handler = (event: any, ctx: any) => Promise<any>|any;
+export type HandlerConfig = Map & {pattern: string, name: string}
+export type Executor = (operation: string, payload: any, options?: Map) => Promise<any>|any
+export type RootConfig = Context & {types: Config[]}
+export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?: Executor}
+
+const plugins: Map<Map> = {config};
+const handlerMap: Map<{pattern: string}> = {
+    get: {pattern: 'get{FullType}'},
+    list: {pattern: 'get{FullTypes}'},
+    update: {pattern: 'update{FullType}'},
+    remove: {pattern: 'delete{FullType}'},
+    create: {pattern: 'create{FullType}'},
+    migrate: {pattern: 'migrate{ParentFullTypes}'},
+    events: {pattern: 'receive{FullType}ExternalEvents'},
 };
 
-export const buildTypeService = (config: TypeConfig): Service => {
-    const backendRaw = config.backend;
-    const eventSourceBackendRaw = config.eventSourceBackend;
-    let backend: {type: string, config: {[key: string]: any}};
-    let eventSourceBackend: {type: string, config: EventSourceBackendConfig};
-    if ('string' === typeof backendRaw) {
-        backend = {type: backendRaw, config: {}};
-    } else {
-        backend = {...backendRaw};
-    }
-    if (!eventSourceBackendRaw || 'string' === typeof eventSourceBackendRaw) {
-        eventSourceBackend = {type: eventSourceBackendRaw || 'none', config: <EventSourceBackendConfig>{}};
-    } else {
-        eventSourceBackend = {...<any>eventSourceBackendRaw};
-    }
-    if (!plugins.backends[backend.type]) {
-        throw new Error(`Unknown backend type '${backend.type}'`);
-    }
-    if ('none' !== eventSourceBackend.type && !plugins.eventSourceBackends[eventSourceBackend.type]) {
-        throw new Error(`Unknown event source backend type '${eventSourceBackend.type}'`);
-    }
-    return new Service(
-        config,
-        new (<any>plugins.backends[backend.type])(backend.config, config),
-        config.invokableOperations,
-        'none' !== eventSourceBackend.type ? new (<any>plugins.eventSourceBackends[eventSourceBackend.type])(eventSourceBackend.config, config) : undefined
-    );
+export const compose = (...f: Function[]) => {
+    const l = f.length;
+    return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));
 };
-
-export const isMigrationRequired = (context: Context, typeConfig: TypeConfig): boolean => {
-    return false !== typeConfig.migration;
-};
-
-export const loadMigrationType = (context: Context, typeConfig: TypeConfig): void => {
-    if (!typeConfig.types) {
-        typeConfig.types = {};
-    }
-    typeConfig.migration = ('string' === typeof typeConfig.migration) ? typeConfig.migration : `${context.root}/migrations/${typeConfig.type}`;
-    typeConfig.types.migration = {
-        backend: typeConfig.backend,
-        migration: false,
+export const register = (t: string, n: string, p: any): any => (plugins[t] = (plugins[t] || {}))[n] = p;
+export const needHandler = (n: string, c: Config): boolean => (c.type === 'migration') ? (n === 'migrate') : (n !== 'migrate');
+export const buildFullTypeName = (config: Config): {parentFullType: string|undefined, fullType: string} => {
+    const pFullTypeName = config.parentType ? buildFullTypeName(config.parentType).fullType : undefined;
+    return {
+        parentFullType: pFullTypeName,
+        fullType: pFullTypeName
+            ? `${pFullTypeName}${config.type.substr(0, 1).toUpperCase()}${config.type.substr(1)}`
+            : config.type
     };
 };
-
-export const hasInvokables = (context: Context, typeConfig: TypeConfig): boolean => {
-    return !!typeConfig.invokables && ('object' === typeof typeConfig.invokables) && (0 < Object.keys(typeConfig.invokables).length);
-};
-
-export const buildInvokableOperation = (name: string, config: InvokableBackendConfig, typeConfig: TypeConfig): InvokableOperation => {
-    return new (<any>plugins.invokableBackends[config.type])(config, typeConfig);
-};
-
-export const loadInvokables = (context: Context, config: TypeConfig): void => {
-    config.invokableOperations = Object.keys(<InvokableList>config.invokables).reduce((acc, name) => {
-        acc[name] = buildInvokableOperation(name, (<InvokableList>config.invokables)[name], config);
-        return acc;
-    }, <InvokableOperations>{})
-};
-
-export const hasEventTypes = (context: Context, typeConfig: TypeConfig): boolean => {
-    return !!typeConfig.events && ('object' === typeof typeConfig.events) && (0 < Object.keys(typeConfig.events).length);
-};
-
-export const buildEventListener = (name: string, config: EventListenerConfig, typeConfig: TypeConfig): EventListener => {
-    if ('function' === typeof config) {
-        config = {callback: config};
+export const loadHandler = (hc: HandlerConfig, c: Config): Map<Handler> => {
+    if (!needHandler(hc.name, c)) return {};
+    let n = hc.pattern;
+    const pattern = /{([^}]+)}/;
+    let matches;
+    while((matches = pattern.exec(n)) != null) {
+        n = n.replace(matches[0], `${((c.vars||{})[matches[1]]) ? (c.vars||{})[matches[1]] : ''}`);
     }
-    return config.callback;
+    return {[n]: (...args) => handlerTypes[hc.name](hc, c)(...args)};
 };
-
-export const loadEventTypes = (context: Context, config: TypeConfig): void => {
-    config.eventListeners = Object.keys(<EventList>config.events).reduce((acc, name) => {
-        acc[name] = buildEventListener(name, (<EventList>config.events)[name], config);
-        return acc;
-    }, <EventListeners>{})
+export const loadType = (ctx: Context, c: Config, loadTypes: (ctx: Context, types: Config[]|undefined, parentType?: Config) => Map<Handler>, pc?: Config): Map<Handler> => {
+    const {parentFullType, fullType} = buildFullTypeName(c);
+    c.vars = {
+        type: c.type,
+        types: `${c.type}s`,
+        Type: `${c.type.substr(0, 1).toUpperCase()}${c.type.substr(1)}`,
+        Types: `${c.type.substr(0, 1).toUpperCase()}${c.type.substr(1)}s`,
+        fullType: fullType,
+        fullTypes: `${fullType}s`,
+        FullType: `${fullType.substr(0, 1).toUpperCase()}${fullType.substr(1)}`,
+        FullTypes: `${fullType.substr(0, 1).toUpperCase()}${fullType.substr(1)}s`,
+        ParentFullTypes: parentFullType ? `${parentFullType.substr(0, 1).toUpperCase()}${parentFullType.substr(1)}s` : undefined,
+    };
+    return {
+        ...Object.entries(handlerMap).reduce((handlers, [name, hConfig]) => ({
+            ...handlers,
+            ...loadHandler({...hConfig, name}, {...c, parentType: pc}),
+        }), {}),
+        ...loadTypes(ctx, c.types, c),
+    };
 };
-
-export const buildTypeConfig = (context: Context, typeName: string, typeConfig: DeclarativeTypeConfig, parentConfig?: TypeConfig): TypeConfig => {
-    const config = <TypeConfig>{...typeConfig, type: typeName, parentType: parentConfig};
-    isMigrationRequired(context, config) && loadMigrationType(context, config);
-    hasInvokables(context, config) && loadInvokables(context, config);
-    hasEventTypes(context, config) && loadEventTypes(context, config);
-    return config;
-};
-
-export const registerTypesHandlers = (context: Context, handlers: HandlerList, types: DeclarativeTypesList, parentConfig?: TypeConfig): HandlerList =>
-    Object.keys(types).reduce((handlers: HandlerList, typeName: string) => {
-        const config = buildTypeConfig(context, typeName, types[typeName], parentConfig);
-        return registerTypeHandlers(context, handlers, {...config, service: buildTypeService({...config, parentType: parentConfig})}, registerTypesHandlers, parentConfig);
-    }, handlers)
+export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config): Map<Handler> =>
+    (types||[]).reduce((handlers: Map<Handler>, type) => {
+        const c = {middlewares: [], ...type, parentType: pc};
+        Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
+        return {...handlers, ...loadType(ctx, {...c, execute: async (operation: string, payload: any, options: Map = {}) => {
+            const x = {config: {...c, parentType: pc}};
+            const execute = compose(
+                ...(c['middlewares'] || []).map((m: (ctx: {config: Config}) => (next: () => any) => any) => m(x))
+            )(({req, res}) => ({req, res}));
+            return execute({req: {operation, payload, options}, res: {result: undefined}});
+        }}, loadTypes, pc)};
+    }, {})
 ;
-
-export default (config: Config): Microservice => (<Microservice>{
-    handlers: registerTypesHandlers({root: config.root}, <HandlerList>{}, config.types),
-    config: <TypeConfig><any>config,
-});
-
-export const registerBackendType = (type: string, backendClass: any): void => {
-    plugins.backends[type] = backendClass;
-};
-
-export const registerInvokableBackendType = (type: string, backendClass: any): void => {
-    plugins.invokableBackends[type] = backendClass;
-};
-
-export const registerEventSourceBackendType = (type: string, backendClass: any): void => {
-    plugins.eventSourceBackends[type] = backendClass;
-};
-
-export const getBackendTypeNames = (): string[] => {
-    return Object.keys(plugins.backends);
-};
-
-export const getInvokableBackendTypeNames = (): string[] => {
-    return Object.keys(plugins.invokableBackends);
-};
-
-export const getEventSourceBackendTypeNames = (): string[] => {
-    return Object.keys(plugins.eventSourceBackends);
-};
+export default (c: RootConfig): Map<Handler> => loadTypes({...c}, c.types);

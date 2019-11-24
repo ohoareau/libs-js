@@ -20,5 +20,12 @@
   },
   "dependencies": {
     "@ohoareau/migrate": "^0.1.2"
-  }
+  },
+  "peerDependencies": {
+    "dynamoose": "^1.11.1"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.578.0"
+  },
+  "gitHead": "c7ac3cb3047f5583c5f0a0217ebac24d64f9a221"
 }

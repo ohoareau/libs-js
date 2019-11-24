@@ -1,28 +1,28 @@
-jest.mock('dynamoose');
-import microservice, {registerBackendType} from '..';
-import { memory, mock } from '../src/backends';
+import microservice from '../src';
+import '../src/registers/backend-memory';
+import '../src/registers/backend-mock';
 
-registerBackendType('mock', mock);
-registerBackendType('memory', memory);
-
-beforeEach(() => {
-    jest.resetAllMocks();
-});
-describe('', () => {
-    it('', () => {
+describe('microservice', () => {
+    it('handlers method generated', () => {
         expect(microservice({
             root: '.',
-            types: {
-                organization: {
+            types: [
+                {
+                    type: 'organization',
                     backend: 'mock',
-                    types: {
-                        user: {
+                    types: [
+                        {
+                            type: 'user',
                             backend: 'mock',
                         },
-                    }
+                        {
+                            type: 'project',
+                            backend: 'mock',
+                        },
+                    ],
                 },
-            }
-        }).handlers).toEqual({
+            ],
+        })).toEqual({
             getOrganization: expect.any(Function),
             getOrganizations: expect.any(Function),
             deleteOrganization: expect.any(Function),
@@ -33,23 +33,50 @@ describe('', () => {
             deleteOrganizationUser: expect.any(Function),
             createOrganizationUser: expect.any(Function),
             updateOrganizationUser: expect.any(Function),
+            getOrganizationProject: expect.any(Function),
+            getOrganizationProjects: expect.any(Function),
+            deleteOrganizationProject: expect.any(Function),
+            createOrganizationProject: expect.any(Function),
+            updateOrganizationProject: expect.any(Function),
             migrateOrganizations: expect.any(Function),
             migrateOrganizationUsers: expect.any(Function),
+            migrateOrganizationProjects: expect.any(Function),
             receiveOrganizationExternalEvents: expect.any(Function),
             receiveOrganizationUserExternalEvents: expect.any(Function),
+            receiveOrganizationProjectExternalEvents: expect.any(Function),
         });
     });
-    it('', async () => {
+    it('backend called', async () => {
         const handlers = microservice({
             root: '.',
-            types: {
-                project: {
+            types: [
+                {
+                    type: 'project',
                     backend: {type: 'memory', config: {data: {abcde: {id: 'abcde', name: 'project name'}}}},
                 },
-            }
-        }).handlers;
+            ],
+        });
         expect(await handlers['getProject']({params: {id: 'abcde'}}, {})).toEqual({
             id: 'abcde', name: 'project name',
         })
+    });
+    it('middlewares called', async () => {
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'project',
+                    backend: {type: 'memory', config: {data: {abcde: {id: 'abcde', name: 'project name'}}}},
+                    prefix: 'something://',
+                    middlewares: [
+                        require('../src/plugins/middleware/prefix').default,
+                        require('../src/plugins/middleware/jsonstringify').default,
+                    ]
+                },
+            ],
+        });
+        expect(await handlers['getProject']({params: {id: 'abcde'}}, {})).toEqual(
+            `something://${JSON.stringify({id: 'abcde', name: 'project name'})}`
+        )
     })
 });

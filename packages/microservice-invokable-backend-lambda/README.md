@@ -1,1 +1,0 @@
-# microservice-invokable-backend-lambda
