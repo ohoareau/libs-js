@@ -205,14 +205,14 @@ const prepareUpdateHook = c => (action) => {
 };
 const prepareDeleteHook = c => () => {};
 const createHook = c => async (action) => {
-    if (!action.req.payload.volatileData || 0 === action.req.payload.volatileData.length) return;
+    if (!action.req.payload.volatileData || 0 === Object.keys(action.req.payload.volatileData).length) return;
     Object.assign(action.req.payload.data, action.req.payload.volatileData);
     action.res.result = await action.res.result;
     Object.assign(action.res.result, action.req.payload.volatileData);
     delete action.req.payload.volatileData;
 };
 const updateHook = c => async (action) => {
-    if (!action.req.payload.volatileData || 0 === action.req.payload.volatileData.length) return;
+    if (!action.req.payload.volatileData || 0 === Object.keys(action.req.payload.volatileData).length) return;
     Object.assign(action.req.payload.data, action.req.payload.volatileData);
     action.res.result = await action.res.result;
     Object.assign(action.res.result, action.req.payload.volatileData);

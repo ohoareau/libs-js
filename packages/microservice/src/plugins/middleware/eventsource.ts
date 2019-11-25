@@ -1,7 +1,7 @@
 import {Config} from '../..';
 
 export default (ctx: {config: Config}) => next => ({req, res}) => {
-    if ('event' !== req.operation) return next({req, res});
+    if ('events' !== req.operation) return next({req, res});
     return next({req, res: {
         ...res,
         result: ctx.config.eventSourceBackendExecutor
