@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/microservice",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -28,5 +28,5 @@
   "devDependencies": {
     "aws-sdk": "^2.578.0"
   },
-  "gitHead": "b4caeb4b5503a6dab74054cfc7c74bd752d9e7f8"
+  "gitHead": "7d945f5c8fa0b321a897058460f4d805308c11b4"
 }
