@@ -9,7 +9,7 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
         if (!plugins.fieldtype || !plugins.fieldtype[def.type]) {
             throw new Error(`Unknown field type '${def.type}'`);
         }
-        return plugins.fieldtype[def.type](def.config);
+        return plugins.fieldtype[def.type]((def || {}).config || {});
     };
     c.setSchemaModel = sm => {
         c.schemaModel = sm;

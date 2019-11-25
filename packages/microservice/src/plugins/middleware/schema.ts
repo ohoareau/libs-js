@@ -1,4 +1,4 @@
-import {Config} from '../..';
+import {Map,Config} from '../..';
 import {ValidationError} from "../../errors/ValidationError";
 
 export default ({config: c}: {config: Config}) => {
@@ -22,21 +22,25 @@ const parseSchema = (c: Config) => {
     const def = c.schema;
     return Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = ('string' === typeof d) ? parseFieldString(d) : d;
+        const forcedDef = {...(<Map>d || {})};
+        delete forcedDef.config;
+        delete forcedDef.type;
+        let officialDef = c.createField(d);
+        const def = {...officialDef, ...forcedDef};
         const {
             type, list, required, index, internal, validators, primaryKey,
-            value, defaultValue,
-            updateValue, updateDefaultValue,
-        } = c.createField(d);
+            value, defaultValue, updateValue, updateDefaultValue,
+        } = def;
         acc.fields[k] = {type, ...(index ? {index} : {}), primaryKey, ...(list ? {list} : {})};
-        (((<any>d).config && (<any>d).config.required) || required) && (acc.requiredFields[k] = true);
+        required && (acc.requiredFields[k] = true);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
-        !!value && (acc.values[k] = value);
-        !!updateValue && (acc.updateValues[k] = updateValue);
-        !!defaultValue && (acc.defaultValues[k] = defaultValue);
-        !!updateDefaultValue && (acc.updateDefaultValues[k] = updateDefaultValue);
-        !!internal && (acc.privateFields[k] = true);
-        !!index && (acc.indexes[k] = index);
-        !!primaryKey && (acc.primaryKey = k);
+        value && (acc.values[k] = value);
+        updateValue && (acc.updateValues[k] = updateValue);
+        defaultValue && (acc.defaultValues[k] = defaultValue);
+        updateDefaultValue && (acc.updateDefaultValues[k] = updateDefaultValue);
+        internal && (acc.privateFields[k] = true);
+        index && (acc.indexes[k] = index);
+        primaryKey && (acc.primaryKey = k);
         return acc;
     }, {
         primaryKey: <any>undefined,
