@@ -1,19 +1,19 @@
 import dynamoose from 'dynamoose';
 import uuidv4 from 'uuid/v4';
-import {Config, TypedMap} from "../..";
+import {Map,Config, TypedMap} from "../..";
 import {DocumentNotFoundError} from "../../errors/DocumentNotFoundError";
 
-const globalOptions = (config: TypedMap) => ({
-    prefix: process.env[`DYNAMODB_${config.type.toUpperCase()}_TABLE_PREFIX`] || process.env.DYNAMODB_TABLE_PREFIX || undefined,
-    suffix: process.env[`DYNAMODB_${config.type.toUpperCase()}_TABLE_SUFFIX`] || process.env.DYNAMODB_TABLE_SUFFIX || undefined,
+const globalOptions = (config: TypedMap, c: Config) => ({
+    prefix: process.env[`DYNAMODB_${c.type.toUpperCase()}_TABLE_PREFIX`] || process.env.DYNAMODB_TABLE_PREFIX || undefined,
+    suffix: process.env[`DYNAMODB_${c.type.toUpperCase()}_TABLE_SUFFIX`] || process.env.DYNAMODB_TABLE_SUFFIX || undefined,
 });
 
 export default (bc: TypedMap, c: Config) => {
-    const { name, schema, schemaOptions, options } = {name: bc.type, ...parseSchemaModel(c.schemaModel)};
+    const { name, schema, schemaOptions, options } = {name: c.type, ...parseSchemaModel(c.schemaModel)};
     const model = dynamoose.model(
         name,
         new dynamoose.Schema(schema, schemaOptions),
-        {...globalOptions(bc), ...options}
+        {...globalOptions(bc, c), ...options}
     );
     return async (operation: string, payload: any) => {
         switch (operation) {
@@ -189,7 +189,7 @@ export const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     }
 }, q);
 
-export const runQuery = async (m, {criteria, fields, limit, offset, sort, options}) => {
+export const runQuery = async (m, {criteria, fields, limit, offset, sort, options = {}}) => {
     const {query, modifiers} = buildQueryDefinitionFromCriteria(criteria);
     let q = query ? m.query(query) : m.scan();
     if (!q || !q.exec) throw new Error('Unable to build query/scan from definition');
@@ -198,7 +198,9 @@ export const runQuery = async (m, {criteria, fields, limit, offset, sort, option
     if (fields && fields.length) q.attributes(fields);
     if (offset) q.startAt(offset);
     if (sort) Object.entries(sort).reduce((qq, [k, s]) => qq.where(k)[s === -1 ? 'descending' : 'ascending' ](), q);
-    if (options.consistent) q.consistent();
-    if (options.all && q.all) q.all();
+    if (options) {
+        if ((<Map>options).consistent) q.consistent();
+        if ((<Map>options).all && q.all) q.all();
+    }
     return q.exec();
 };

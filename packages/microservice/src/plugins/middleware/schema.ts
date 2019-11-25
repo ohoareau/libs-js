@@ -23,11 +23,11 @@ const parseSchema = (c: Config) => {
     return Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = ('string' === typeof d) ? parseFieldString(d) : d;
         const {
-            type, required, index, internal, validators, primaryKey,
+            type, list, required, index, internal, validators, primaryKey,
             value, defaultValue,
             updateValue, updateDefaultValue,
         } = c.createField(d);
-        acc.fields[k] = {type, ...(index ? {index} : {}), primaryKey};
+        acc.fields[k] = {type, ...(index ? {index} : {}), primaryKey, ...(list ? {list} : {})};
         (((<any>d).config && (<any>d).config.required) || required) && (acc.requiredFields[k] = true);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
         !!value && (acc.values[k] = value);
