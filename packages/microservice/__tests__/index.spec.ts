@@ -78,5 +78,35 @@ describe('microservice', () => {
         expect(await handlers['getProject']({params: {id: 'abcde'}}, {})).toEqual(
             `something://${JSON.stringify({id: 'abcde', name: 'project name'})}`
         )
+    });
+    it('data transformed', async () => {
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'user',
+                    backend: {type: 'memory', config: {data: {}}},
+                    schema: {
+                        attributes: {
+                            id: ':autoUuid',
+                            email: 'email',
+                            firstName: 'firstName!',
+                            lastName: 'lastName!',
+                            createdAt: ':createdAt',
+                            updatedAt: ':updatedAt',
+                            tags: 'tags',
+                        }
+                    }
+                },
+            ],
+        });
+        expect(await handlers['createUser']({params: {input: {email: 'me@email.com', firstName: 'Olivier', lastName: 'Hoareau'}}}, {})).toEqual({
+            id: expect.any(String),
+            email: 'me@email.com',
+            firstName: 'Olivier',
+            lastName: 'Hoareau',
+            createdAt: expect.any(Number),
+            tags: [],
+        })
     })
 });

@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import {Definition} from "../../index";
+import {Definition} from "../..";
 
 const sns = new AWS.SNS();
 

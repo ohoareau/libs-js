@@ -1,3 +1,3 @@
-import {Definition, Map} from "../..";
+import {Map} from "../..";
 
-export default (hc: Definition) => (...args) => (<Map>hc.config).callback(...args);
+export default (hc: Map) => (...args) => hc.callback(...args);

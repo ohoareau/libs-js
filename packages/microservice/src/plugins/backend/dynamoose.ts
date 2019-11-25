@@ -1,6 +1,6 @@
 import dynamoose from 'dynamoose';
 import uuidv4 from 'uuid/v4';
-import {TypedMap} from "../..";
+import {Config, TypedMap} from "../..";
 import {DocumentNotFoundError} from "../../errors/DocumentNotFoundError";
 
 const globalOptions = (config: TypedMap) => ({
@@ -8,17 +8,12 @@ const globalOptions = (config: TypedMap) => ({
     suffix: process.env[`DYNAMODB_${config.type.toUpperCase()}_TABLE_SUFFIX`] || process.env.DYNAMODB_TABLE_SUFFIX || undefined,
 });
 
-export default (config: TypedMap) => {
-    const { name, schema, schemaOptions, options } = {
-        name: config.type,
-        schema: {},
-        schemaOptions: {},
-        options: {},
-    };
+export default (bc: TypedMap, c: Config) => {
+    const { name, schema, schemaOptions, options } = {name: bc.type, ...parseSchemaModel(c.schemaModel)};
     const model = dynamoose.model(
         name,
         new dynamoose.Schema(schema, schemaOptions),
-        {...globalOptions(config), ...options}
+        {...globalOptions(bc), ...options}
     );
     return async (operation: string, payload: any) => {
         switch (operation) {
@@ -26,7 +21,7 @@ export default (config: TypedMap) => {
                 return {items: await runQuery(model, payload)};
             case 'get':
                 const doc = await model.get(payload.id);
-                if (!doc) throw new DocumentNotFoundError(config.type, payload.id);
+                if (!doc) throw new DocumentNotFoundError(bc.type, payload.id);
                 return doc;
             case 'delete':
                 return model.delete({id: payload.id});
@@ -39,6 +34,43 @@ export default (config: TypedMap) => {
         }
     }
 }
+
+const parseSchemaModelField = def => {
+    const field: {type: Function, [key: string]: any} = {type: String};
+    switch (def.type) {
+        case 'string':
+            field.type = String;
+            break;
+        case 'number':
+            field.type = Number;
+            break;
+    }
+    if (def.hasOwnProperty('default')) {
+        field.default = def.default;
+    }
+    if (def.primaryKey) {
+        field.hashKey = true;
+    }
+    if (def.index) {
+        field.index = def.index.map(i => {
+            return {
+                global: true,
+                name: i.name,
+                throughput: {read: 1, write: 1},
+                project: true,
+            };
+        });
+    }
+    return def.list ? [field] : field;
+};
+
+const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc, [k, v]) => {
+    acc.schema[k] = parseSchemaModelField(v);
+    if (s.requiredFields && s.requiredFields[k]) {
+        acc.schema[k].required = true;
+    }
+    return acc;
+}, {schema: {}, schemaOptions: {}, options: {}});
 
 const parseAndModifiers = (modifiers: any[], s: string, callback: Function) =>
     s.split(/\s*&\s*/).reduce((acc, t, i) => {

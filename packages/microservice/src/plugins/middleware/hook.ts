@@ -4,6 +4,9 @@ export default (ctx: {config: Config}) => next => async action => {
     if (ctx.config.hooks && ctx.config.hooks[`validate_${action.req.operation}`]) {
         await applyHooks(ctx.config.hooks[`validate_${action.req.operation}`], ctx, action);
     }
+    if (ctx.config.hooks && ctx.config.hooks[`populate_${action.req.operation}`]) {
+        await applyHooks(ctx.config.hooks[`populate_${action.req.operation}`], ctx, action);
+    }
     if (ctx.config.hooks && ctx.config.hooks[`before_${action.req.operation}`]) {
         await applyHooks(ctx.config.hooks[`before_${action.req.operation}`], ctx, action);
     }
@@ -15,8 +18,8 @@ export default (ctx: {config: Config}) => next => async action => {
     return r;
 };
 
-export const applyHooks = async (hooks: any[], ctx: {config: Config}, action: Map): Promise<any> =>
-    await hooks.reduce(async (acc, h) => {
+export const applyHooks = async (hooks: any[]|any, ctx: {config: Config}, action: Map): Promise<any> =>
+    await (Array.isArray(hooks) ? hooks : [hooks]).reduce(async (acc, h) => {
         await acc;
         return ctx.config.createHook(
             ('function' === typeof h) ? {type: 'callback', config: {callback: h}} : normalizeDefinition(h), ctx.config

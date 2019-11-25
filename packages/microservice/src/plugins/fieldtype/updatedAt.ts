@@ -1,0 +1,1 @@
+export default () => ({type: 'number', updateValue: () => new Date().valueOf()});
