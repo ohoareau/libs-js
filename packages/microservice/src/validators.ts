@@ -1,3 +1,4 @@
+export const boolean = () => ({test: v => 'boolean' === typeof v, message: v => `Not a boolean (actual: ${v})`});
 export const maxLength = x => ({test: v => v.length <= x, message: v => `Max length exceeded (${v.length} > ${x})`});
 export const minLength = x => ({test: v => v.length >= x, message: v => `Min length not satisfied (${v.length} < ${x})`});
 export const values = x => ({test: v => !!x.find(a => a === v), message: v => `Value not allowed (actual: ${v}, allowed: ${x.join(',')})`});

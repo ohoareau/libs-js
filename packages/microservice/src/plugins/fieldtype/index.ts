@@ -9,3 +9,4 @@ export {default as createdAt} from './createdAt';
 export {default as updatedAt} from './updatedAt';
 export {default as tags} from './tags';
 export {default as phone} from './phone';
+export {default as flag} from './flag';

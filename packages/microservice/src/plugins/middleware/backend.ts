@@ -1,9 +1,6 @@
 import {Config} from '../..';
 
-export default (ctx: {config: Config}) => {
-    const execute = ctx.config.createBackendExecutor();
-    return next => ({req, res}) => {
-        res.result = res.result || execute(req.operation, req.payload, req.options);
-        return next({req, res});
-    }
+export default (ctx: {config: Config}) => next => ({req, res}) => {
+    res.result = res.result || ctx.config.createBackendExecutor()(req.operation, req.payload, req.options);
+    return next({req, res});
 }

@@ -44,6 +44,9 @@ const parseSchemaModelField = def => {
         case 'number':
             field.type = Number;
             break;
+        case 'boolean':
+            field.type = Boolean;
+            break;
     }
     if (def.hasOwnProperty('default')) {
         field.default = def.default;
