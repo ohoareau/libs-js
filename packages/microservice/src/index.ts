@@ -82,4 +82,4 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         }}, loadTypes, pc)};
     }, {})
 ;
-export default (c: RootConfig): Map<Handler> => loadTypes({...c}, c.types)
+export default (c: RootConfig): Map<Handler> => loadTypes({...c}, c.types);
