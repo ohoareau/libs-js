@@ -17,17 +17,17 @@ export default (bc: TypedMap, c: Config) => {
     return async (operation: string, payload: any) => {
         switch (operation) {
             case 'find':
-                return {items: await runQuery(model, payload)};
+                return {items: (await runQuery(model, payload) || []).map(d => ({...(d || {})}))};
             case 'get':
                 const doc = await model.get(payload.id);
                 if (!doc) throw new DocumentNotFoundError(bc.type, payload.id);
-                return doc;
+                return {...(doc || {})};
             case 'delete':
-                return model.delete({id: payload.id});
+                return {...(await model.delete({id: payload.id}) || {})};
             case 'create':
-                return model.create({...(payload.data || {})});
+                return {...(await model.create({...(payload.data || {})}) || {})};
             case 'update':
-                return model.update({id: payload.id}, payload.data || {});
+                return {...(await model.update({id: payload.id}, payload.data || {}) || {})};
             default:
                 return undefined;
         }
