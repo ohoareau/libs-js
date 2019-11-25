@@ -29,7 +29,7 @@ const parseSchema = (c: Config) => {
         const def = {...officialDef, ...forcedDef};
         const {
             type, list, required, index, internal, validators, primaryKey,
-            value, defaultValue, updateValue, updateDefaultValue,
+            value, default: rawDefaultValue, defaultValue, updateValue, updateDefault: rawUpdateDefaultValue, updateDefaultValue,
         } = def;
         acc.fields[k] = {type, ...(index ? {index} : {}), primaryKey, ...(list ? {list} : {})};
         required && (acc.requiredFields[k] = true);
@@ -37,7 +37,9 @@ const parseSchema = (c: Config) => {
         value && (acc.values[k] = value);
         updateValue && (acc.updateValues[k] = updateValue);
         defaultValue && (acc.defaultValues[k] = defaultValue);
+        rawDefaultValue && (acc.defaultValues[k] = () => rawDefaultValue);
         updateDefaultValue && (acc.updateDefaultValues[k] = updateDefaultValue);
+        rawUpdateDefaultValue && (acc.updateDefaultValues[k] = () => rawUpdateDefaultValue);
         internal && (acc.privateFields[k] = true);
         index && (acc.indexes[k] = index);
         primaryKey && (acc.primaryKey = k);
@@ -77,7 +79,7 @@ const parseFieldString = s => {
         s = s.substr(1);
         index = [{name: s}];
     }
-    return {type: s, config: {index, internal, required, primaryKey}};
+    return {type: s, index, internal, required, primaryKey, config: {}};
 };
 
 const validateCreateHook = c => ({req: {payload: {data}}}) => {
