@@ -70,8 +70,8 @@ const parseFieldString = s => {
         s = s.substr(1);
     }
     if (/^@/.test(s)) {
-        index = [{name: s}];
         s = s.substr(1);
+        index = [{name: s}];
     }
     return {type: s, config: {index, internal, required, primaryKey}};
 };
