@@ -3,7 +3,7 @@ import {Config, Map} from "../..";
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
-export default ({config: cfg}: {config: Config}) => async (ctx, {req: {data}}: {req: {data: Map}}) => {
+export default ({config: cfg}: {config: Config}) => async ({req: {data}}: {req: {data: Map}}) => {
     const userAttributes = [{Name: 'email', Value: data.email}, {Name: 'email_verified', Value: 'True'}];
     if (data.phone) {
         userAttributes.push({Name: 'phone_number', Value: data.phone});

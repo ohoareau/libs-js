@@ -3,7 +3,7 @@ import {Config} from "../..";
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
-export default ({config: cfg}: {config: Config}) => async (ctx, {req: {id}}: {req: {id}}) => {
+export default ({config: cfg}: {config: Config}) => async ({req: {id}}: {req: {id}}) => {
     const { Users: users } = await cognito.listUsers({
         UserPoolId: cfg.userPool, Filter: `sub = "${id}"`, Limit: 1,
     }).promise();
