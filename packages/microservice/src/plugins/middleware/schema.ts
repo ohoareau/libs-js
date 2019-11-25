@@ -21,15 +21,17 @@ export default ({config: c}: {config: Config}) => {
 const parseSchema = (c: Config) => {
     const def = c.schema;
     return Object.entries(def.attributes).reduce((acc, [k, d]) => {
-        d = ('string' === typeof d) ? parseFieldString(d) : d;
+        d = {
+            ...('string' === typeof d) ? parseFieldString(d, k) : d,
+        };
         const forcedDef = {...(<Map>d || {})};
         delete forcedDef.config;
         delete forcedDef.type;
         let officialDef = c.createField(d);
         const def = {...officialDef, ...forcedDef};
         const {
-            type, list, required, index, internal, validators, primaryKey,
-            value, default: rawDefaultValue, defaultValue, updateValue, updateDefault: rawUpdateDefaultValue, updateDefaultValue,
+            type = 'string', list = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
+            value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
         } = def;
         acc.fields[k] = {type, ...((index && index.length > 0) ? {index} : {}), primaryKey, ...(list ? {list} : {})};
         required && (acc.requiredFields[k] = true);
@@ -58,7 +60,7 @@ const parseSchema = (c: Config) => {
     });
 };
 
-const parseFieldString = s => {
+const parseFieldString = (s, name) => {
     let required = false;
     let internal = false;
     let primaryKey = false;
@@ -77,7 +79,7 @@ const parseFieldString = s => {
     }
     if (/^@/.test(s)) {
         s = s.substr(1);
-        index = [{name: s}];
+        index = [{name}];
     }
     return {type: s, index, internal, required, primaryKey, config: {}};
 };
