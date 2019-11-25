@@ -31,7 +31,7 @@ const parseSchema = (c: Config) => {
             type, list, required, index, internal, validators, primaryKey,
             value, default: rawDefaultValue, defaultValue, updateValue, updateDefault: rawUpdateDefaultValue, updateDefaultValue,
         } = def;
-        acc.fields[k] = {type, ...(index ? {index} : {}), primaryKey, ...(list ? {list} : {})};
+        acc.fields[k] = {type, ...((index && index.length > 0) ? {index} : {}), primaryKey, ...(list ? {list} : {})};
         required && (acc.requiredFields[k] = true);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
         value && (acc.values[k] = value);
@@ -41,7 +41,7 @@ const parseSchema = (c: Config) => {
         updateDefaultValue && (acc.updateDefaultValues[k] = updateDefaultValue);
         rawUpdateDefaultValue && (acc.updateDefaultValues[k] = () => rawUpdateDefaultValue);
         internal && (acc.privateFields[k] = true);
-        index && (acc.indexes[k] = index);
+        index && (index.length > 0) && (acc.indexes[k] = index);
         primaryKey && (acc.primaryKey = k);
         return acc;
     }, {
