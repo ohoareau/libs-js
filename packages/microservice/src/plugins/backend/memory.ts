@@ -11,8 +11,9 @@ export default (config: TypedMap) => async (operation: string, payload: any) => 
             delete config.data[payload.id];
             return r;
         case 'create':
-            config.data[payload.id] = payload.data;
-            return config.data[payload.id];
+            console.log(payload);
+            config.data[payload.data.id] = payload.data;
+            return config.data[payload.data.id];
         case 'update':
             config.data[payload.id] = {...config.data[payload.id], ...payload.data};
             return config.data[payload.id];

@@ -107,6 +107,6 @@ describe('microservice', () => {
             lastName: 'Hoareau',
             createdAt: expect.any(Number),
             tags: [],
-        })
+        });
     })
 });
