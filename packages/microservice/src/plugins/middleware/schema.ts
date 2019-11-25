@@ -3,27 +3,29 @@ import {ValidationError} from "../../errors/ValidationError";
 
 export default ({config: c}: {config: Config}) => {
     c.setSchemaModel(parseSchema(c));
-    c.registerHook('validate_create', validateCreateHook(c));
-    c.registerHook('validate_update', validateUpdateHook(c));
-    c.registerHook('validate_delete', validateDeleteHook(c));
-    c.registerHook('populate_create', populateCreateHook(c));
-    c.registerHook('populate_update', populateUpdateHook(c));
-    c.registerHook('populate_delete', populateDeleteHook(c));
-    c.registerHook('before_create', beforeCreateHook(c));
-    c.registerHook('before_update', beforeUpdateHook(c));
-    c.registerHook('before_delete', beforeDeleteHook(c));
-    c.registerHook('prepare_create', prepareCreateHook(c));
-    c.registerHook('prepare_update', prepareUpdateHook(c));
-    c.registerHook('prepare_delete', prepareDeleteHook(c));
-    c.registerHook('create', createHook(c));
-    c.registerHook('update', updateHook(c));
-    c.registerHook('delete', deleteHook(c));
-    c.registerHook('notify_create', notifyCreateHook(c));
-    c.registerHook('notify_update', notifyUpdateHook(c));
-    c.registerHook('notify_delete', notifyDeleteHook(c));
-    c.registerHook('clean_create', cleanCreateHook(c));
-    c.registerHook('clean_update', cleanUpdateHook(c));
-    c.registerHook('clean_delete', cleanDeleteHook(c));
+    c.registerHooks([
+        ['validate_create', validateCreateHook(c)],
+        ['validate_update', validateUpdateHook(c)],
+        ['validate_delete', validateDeleteHook(c)],
+        ['populate_create', populateCreateHook(c)],
+        ['populate_update', populateUpdateHook(c)],
+        ['populate_delete', populateDeleteHook(c)],
+        ['before_create', beforeCreateHook(c)],
+        ['before_update', beforeUpdateHook(c)],
+        ['before_delete', beforeDeleteHook(c)],
+        ['prepare_create', prepareCreateHook(c)],
+        ['prepare_update', prepareUpdateHook(c)],
+        ['prepare_delete', prepareDeleteHook(c)],
+        ['create', createHook(c)],
+        ['update', updateHook(c)],
+        ['delete', deleteHook(c)],
+        ['notify_create', notifyCreateHook(c)],
+        ['notify_update', notifyUpdateHook(c)],
+        ['notify_delete', notifyDeleteHook(c)],
+        ['clean_create', cleanCreateHook(c)],
+        ['clean_update', cleanUpdateHook(c)],
+        ['clean_delete', cleanDeleteHook(c)],
+    ], true);
     return next => async action => next(action);
 };
 
