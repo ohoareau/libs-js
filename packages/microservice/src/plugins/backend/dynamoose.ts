@@ -72,7 +72,7 @@ const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc, [k, v]) =>
         acc.schema[k].required = true;
     }
     return acc;
-}, {schema: {}, schemaOptions: {}, options: {}});
+}, {schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}});
 
 const parseAndModifiers = (modifiers: any[], s: string, callback: Function) =>
     s.split(/\s*&\s*/).reduce((acc, t, i) => {
