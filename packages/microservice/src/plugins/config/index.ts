@@ -1,3 +1,4 @@
+export { default as debug } from './debug';
 export { default as hooks } from './hooks';
 export { default as backends } from './backends';
 export { default as migrations } from './migrations';
