@@ -1,12 +1,12 @@
 import {Config} from '../..';
 
-export default (ctx: {config: Config}) => next => (req, res) => {
-    if (!ctx.config['invokableOperations'] || !ctx.config['invokableOperations'][req.operation]) {
-        return next({req, res});
+export default (ctx: {config: Config}) => next => (action) => {
+    if (!ctx.config['invokableOperations'] || !ctx.config['invokableOperations'][action.req.operation]) {
+        return next(action);
     }
-    res.result = ctx.config['invokableOperations'][req.operation](
-        req.payload,
-        {...req.options, operation: res.operation}
+    action.res.result = ctx.config['invokableOperations'][action.req.operation](
+        action.req.payload,
+        {...action.req.options, operation: action.req.operation}
     );
-    return next({req, res});
+    return next(action);
 }

@@ -1,11 +1,11 @@
 import {Config} from '../..';
 
-export default (ctx: {config: Config}) => next => ({req, res}) => {
-    if ('events' !== req.operation) return next({req, res});
-    return next({req, res: {
-        ...res,
+export default (ctx: {config: Config}) => next => (action) => {
+    if ('events' !== action.req.operation) return next(action);
+    return next({...action, res: {
+        ...action.res,
         result: ctx.config.eventSourceBackendExecutor
-            ? ctx.config.eventSourceBackendExecutor(req.payload.event, req.payload.context, req.options)
+            ? ctx.config.eventSourceBackendExecutor(action.req.payload.event, action.req.payload.context, action.req.options)
             : undefined,
     }});
 }

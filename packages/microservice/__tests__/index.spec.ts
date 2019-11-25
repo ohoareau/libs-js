@@ -87,6 +87,11 @@ describe('microservice', () => {
                 {
                     type: 'user',
                     backend: {type: 'memory', config: {data: mockData}},
+                    hooks: {
+                        create: [async ({req: {options: {config}}, res}) => {
+                            res.result.x = await config.subTypeRun('test', 'someOp', {x: 12});
+                        }],
+                    },
                     schema: {
                         attributes: {
                             id: ':autoUuid',
@@ -98,7 +103,14 @@ describe('microservice', () => {
                             tags: 'tags',
                             xyz: '#string!'
                         }
-                    }
+                    },
+                    types: [{
+                        type: 'test',
+                        backend: {type: 'memory', config: {data: {}}},
+                        invokables: {
+                            someOp: ({x}) => x + 34,
+                        },
+                    }],
                 },
             ],
         });
@@ -121,6 +133,7 @@ describe('microservice', () => {
             updatedAt: expect.any(Number),
             tags: [],
             xyz: 'volatile value',
+            x: 46, // dynamically generated from sub type invokable
         });
         expect(mockData).toEqual({
             [r.id]: {

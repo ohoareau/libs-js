@@ -8,8 +8,9 @@ export type Context = Map & {root: string}
 export type Handler = (event: any, ctx: any) => Promise<any>|any;
 export type HandlerConfig = Map & {pattern: string, name: string}
 export type Executor = (operation: string, payload: any, options?: Map) => Promise<any>|any
+export type SubTypeExecutor = (subType: string, operation: string, payload: any, options?: Map) => Promise<any>|any
 export type RootConfig = Context & {types: Config[]}
-export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?: Executor}
+export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?: Executor, run?: Executor, subTypeExecute?: SubTypeExecutor, subTypeRun?: SubTypeExecutor}
 
 const plugins: Map<Map> = {config};
 const handlerMap: Map<{pattern: string}> = {
@@ -70,16 +71,29 @@ export const loadType = (ctx: Context, c: Config, loadTypes: (ctx: Context, type
     };
 };
 export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config): Map<Handler> =>
-    (types||[]).reduce((handlers: Map<Handler>, type) => {
+    (types||[]).reduce((handlers: Map<Handler>, type, i) => {
         const c = {middlewares: [], ...type, parentType: pc};
+        if (pc) (<any>pc).types[i] = c;
         Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
-        return {...handlers, ...loadType(ctx, {...c, execute: async (operation: string, payload: any, options: Map = {}) => {
-            const x = {config: {...c, parentType: pc}};
-            const execute = compose(
+        c.execute = async (operation: string, payload: any, options: Map = {}) => {
+            const x = {config: c};
+            return compose(
                 ...(c['middlewares'] || []).map((m: (ctx: {config: Config}) => (next: () => any) => any) => m(x))
-            )(({req, res}) => ({req, res}));
-            return execute({req: {operation, payload, options}, res: {result: undefined}});
-        }}, loadTypes, pc)};
+            )(({req, res}) => ({req, res}))({req: {operation, payload, options: {...options, ...x}}, res: {result: undefined}});
+        };
+        (<any>c).run = async (...args) => (await (<any>c).execute(...args)).res.result;
+        (<any>c).subTypeExecute = async (subType: string, operation: string, payload: any, options: Map = {}) => {
+            const subTypeConfig = (c.types || []).find(t => t.type === subType);
+            if (!subTypeConfig) {
+                throw new Error(`Unknown sub type '${subType}' for type '${c.type}' (registered: ${(c.types || []).map(t => t.type).join(', ')})`);
+            }
+            if (!subTypeConfig.execute) {
+                throw new Error(`No executor for sub type '${subType}' of type '${c.type}'`);
+            }
+            return (<any>subTypeConfig).execute(operation, payload, options);
+        };
+        (<any>c).subTypeRun = async (...args) => (await (<any>c).subTypeExecute(...args)).res.result;
+        return {...handlers, ...loadType(ctx, c, loadTypes, pc)};
     }, {})
 ;
 export default (c: RootConfig): Map<Handler> => loadTypes({...c}, c.types);
