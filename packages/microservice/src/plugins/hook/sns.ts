@@ -1,10 +1,9 @@
 import AWS from "aws-sdk";
-import {Config, Definition} from "../..";
+import {Config} from "../..";
 
 const sns = new AWS.SNS();
 
-export default (hc: Definition, c: Config) => async (action) => {
-    const cfg = hc.config || {};
+export default (cfg, c: Config) => async (action) => {
     await sns.publish({
         Message: JSON.stringify(await action.res.result),
         MessageAttributes: {

@@ -1,5 +1,4 @@
 import dynamoose from 'dynamoose';
-import uuidv4 from 'uuid/v4';
 import {Map,Config, TypedMap} from "../..";
 import {DocumentNotFoundError} from "../../errors/DocumentNotFoundError";
 
@@ -26,9 +25,9 @@ export default (bc: TypedMap, c: Config) => {
             case 'delete':
                 return model.delete({id: payload.id});
             case 'create':
-                return model.create({...payload, ...((payload && payload.id) ? {} : {id: uuidv4()})});
+                return model.create({...(payload.data || {})});
             case 'update':
-                return model.update({id: payload.id}, payload);
+                return model.update({id: payload.id}, payload.data || {});
             default:
                 return undefined;
         }

@@ -1,9 +1,9 @@
 import AWS from "aws-sdk";
-import {Config, Map} from "../..";
+import {Map} from "../..";
 
 const cognito = new AWS.CognitoIdentityServiceProvider();
 
-export default ({config: cfg}: {config: Config}) => async ({req: {data}}: {req: {data: Map}}) => {
+export default cfg => async ({req: {payload: {data}}}: {req: {payload: {data: Map}}}) => {
     const userAttributes = [{Name: 'email', Value: data.email}, {Name: 'email_verified', Value: 'True'}];
     if (data.phone) {
         userAttributes.push({Name: 'phone_number', Value: data.phone});
