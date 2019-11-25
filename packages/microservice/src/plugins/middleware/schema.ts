@@ -12,9 +12,18 @@ export default ({config: c}: {config: Config}) => {
     c.registerHook('before_create', beforeCreateHook(c));
     c.registerHook('before_update', beforeUpdateHook(c));
     c.registerHook('before_delete', beforeDeleteHook(c));
+    c.registerHook('prepare_create', prepareCreateHook(c));
+    c.registerHook('prepare_update', prepareUpdateHook(c));
+    c.registerHook('prepare_delete', prepareDeleteHook(c));
     c.registerHook('create', createHook(c));
     c.registerHook('update', updateHook(c));
     c.registerHook('delete', deleteHook(c));
+    c.registerHook('notify_create', notifyCreateHook(c));
+    c.registerHook('notify_update', notifyUpdateHook(c));
+    c.registerHook('notify_delete', notifyDeleteHook(c));
+    c.registerHook('clean_create', cleanCreateHook(c));
+    c.registerHook('clean_update', cleanUpdateHook(c));
+    c.registerHook('clean_delete', cleanDeleteHook(c));
     return next => async action => next(action);
 };
 
@@ -30,10 +39,14 @@ const parseSchema = (c: Config) => {
         let officialDef = c.createField(d);
         const def = {...officialDef, ...forcedDef};
         const {
-            type = 'string', list = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
+            type = 'string', list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
             value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
         } = def;
-        acc.fields[k] = {type, ...((index && index.length > 0) ? {index} : {}), primaryKey, ...(list ? {list} : {})};
+        acc.fields[k] = {
+            type, primaryKey, volatile,
+            ...((index && index.length > 0) ? {index} : {}),
+            ...(list ? {list} : {}),
+        };
         required && (acc.requiredFields[k] = true);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
         value && (acc.values[k] = value);
@@ -44,6 +57,7 @@ const parseSchema = (c: Config) => {
         rawUpdateDefaultValue && (acc.updateDefaultValues[k] = () => rawUpdateDefaultValue);
         internal && (acc.privateFields[k] = true);
         index && (index.length > 0) && (acc.indexes[k] = index);
+        volatile && (acc.volatileFields[k] = true);
         primaryKey && (acc.primaryKey = k);
         return acc;
     }, {
@@ -57,6 +71,7 @@ const parseSchema = (c: Config) => {
         defaultValues: {},
         updateDefaultValues: {},
         indexes: {},
+        volatileFields: {},
     });
 };
 
@@ -64,6 +79,7 @@ const parseFieldString = (s, name) => {
     let required = false;
     let internal = false;
     let primaryKey = false;
+    let volatile = false;
     let index = <any[]>[];
     if (/!$/.test(s)) {
         required = true;
@@ -77,17 +93,25 @@ const parseFieldString = (s, name) => {
         internal = true;
         s = s.substr(1);
     }
+    if (/^#/.test(s)) {
+        s = s.substr(1);
+        volatile = true;
+    }
     if (/^@/.test(s)) {
         s = s.substr(1);
         index = [{name}];
     }
-    return {type: s, index, internal, required, primaryKey, config: {}};
+    return {type: s, index, internal, required, primaryKey, volatile, config: {}};
 };
 
 const validateCreateHook = c => ({req: {payload: {data}}}) => {
     const errors = {};
-    Object.keys(c.getSchemaModel().privateFields).forEach(k => {
-        delete data[k];
+    const fields = c.getSchemaModel().fields;
+    const privateFields = c.getSchemaModel().privateFields;
+    Object.keys(data).forEach(k => {
+        if (!fields[k] || privateFields[k]) {
+            delete data[k];
+        }
     });
     Object.keys(c.getSchemaModel().requiredFields).forEach(k => {
         if (!data.hasOwnProperty(k)) {
@@ -112,8 +136,12 @@ const validateCreateHook = c => ({req: {payload: {data}}}) => {
 };
 const validateUpdateHook = c => ({req: {payload: {data}}}) => {
     const errors = {};
-    Object.keys(c.getSchemaModel().privateFields).forEach(k => {
-        delete data[k];
+    const fields = c.getSchemaModel().fields;
+    const privateFields = c.getSchemaModel().privateFields;
+    Object.keys(data).forEach(k => {
+        if (!fields[k] || privateFields[k]) {
+            delete data[k];
+        }
     });
     Object.entries(data).forEach(([k, v]) => {
         if (!c.getSchemaModel().validators[k]) {
@@ -153,6 +181,45 @@ const populateDeleteHook = c => () => {};
 const beforeCreateHook = c => () => {};
 const beforeUpdateHook = c => () => {};
 const beforeDeleteHook = c => () => {};
-const createHook = c => () => {};
-const updateHook = c => () => {};
+const prepareCreateHook = c => (action) => {
+    const volatileFields = c.getSchemaModel().volatileFields;
+    action.req.payload.volatileData = {};
+    Object.entries(action.req.payload.data).forEach(([k, v]) => {
+        if (volatileFields[k]) {
+            delete action.req.payload.data[k];
+            action.req.payload.volatileData[k] = v;
+        }
+    });
+};
+const prepareUpdateHook = c => (action) => {
+    const volatileFields = c.getSchemaModel().volatileFields;
+    action.req.payload.volatileData = {};
+    Object.entries(action.req.payload.data).forEach(([k, v]) => {
+        if (volatileFields[k]) {
+            delete action.req.payload.data[k];
+            action.req.payload.volatileData[k] = v;
+        }
+    });
+};
+const prepareDeleteHook = c => () => {};
+const createHook = c => async (action) => {
+    if (!action.req.payload.volatileData || 0 === action.req.payload.volatileData.length) return;
+    Object.assign(action.req.payload.data, action.req.payload.volatileData);
+    action.res.result = await action.res.result;
+    Object.assign(action.res.result, action.req.payload.volatileData);
+    delete action.req.payload.volatileData;
+};
+const updateHook = c => async (action) => {
+    if (!action.req.payload.volatileData || 0 === action.req.payload.volatileData.length) return;
+    Object.assign(action.req.payload.data, action.req.payload.volatileData);
+    action.res.result = await action.res.result;
+    Object.assign(action.res.result, action.req.payload.volatileData);
+    delete action.req.payload.volatileData;
+};
 const deleteHook = c => () => {};
+const notifyCreateHook = c => () => {};
+const notifyUpdateHook = c => () => {};
+const notifyDeleteHook = c => () => {};
+const cleanCreateHook = c => () => {};
+const cleanUpdateHook = c => () => {};
+const cleanDeleteHook = c => () => {};

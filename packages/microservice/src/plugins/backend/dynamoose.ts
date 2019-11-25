@@ -65,9 +65,11 @@ const parseSchemaModelField = def => {
 };
 
 const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc, [k, v]) => {
-    acc.schema[k] = parseSchemaModelField(v);
-    if (s.requiredFields && s.requiredFields[k]) {
-        acc.schema[k].required = true;
+    if (!(<any>v).volatile) {
+        acc.schema[k] = parseSchemaModelField(v);
+        if (s.requiredFields && s.requiredFields[k]) {
+            acc.schema[k].required = true;
+        }
     }
     return acc;
 }, {schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}});

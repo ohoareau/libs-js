@@ -1,21 +1,23 @@
 import {Map, Config, normalizeDefinition} from '../..';
 
+const hooked = async (ctx, name: string, action: Map, awaitResult = false) => {
+    const hks = ctx.config.hooks;
+    if (!hks || !hks[name]) return;
+    if (awaitResult) action.res.result = await (await action).res.result;
+    await applyHooks(hks[name], ctx, action);
+};
+
 export default (ctx: {config: Config}) => next => async action => {
-    if (ctx.config.hooks && ctx.config.hooks[`validate_${action.req.operation}`]) {
-        await applyHooks(ctx.config.hooks[`validate_${action.req.operation}`], ctx, action);
-    }
-    if (ctx.config.hooks && ctx.config.hooks[`populate_${action.req.operation}`]) {
-        await applyHooks(ctx.config.hooks[`populate_${action.req.operation}`], ctx, action);
-    }
-    if (ctx.config.hooks && ctx.config.hooks[`before_${action.req.operation}`]) {
-        await applyHooks(ctx.config.hooks[`before_${action.req.operation}`], ctx, action);
-    }
-    const r = await next(action);
-    if (ctx.config.hooks && ctx.config.hooks[action.req.operation]) {
-        r.res.result = await r.res.result;
-        await applyHooks(ctx.config.hooks[action.req.operation], ctx, action);
-    }
-    return r;
+    await hooked(ctx, `validate_${action.req.operation}`, action);
+    await hooked(ctx, `populate_${action.req.operation}`, action);
+    await hooked(ctx, `before_${action.req.operation}`, action);
+    await hooked(ctx, `prepare_${action.req.operation}`, action);
+    const result = await next(action);
+    await hooked(ctx, action.req.operation, result, true);
+    await hooked(ctx, `after_${action.req.operation}`, result, true);
+    await hooked(ctx, `notify_${action.req.operation}`, result, true);
+    await hooked(ctx, `clean_${action.req.operation}`, result, true);
+    return result;
 };
 
 export const applyHooks = async (hooks: any[]|any, ctx: {config: Config}, action: Map): Promise<any> =>

@@ -80,12 +80,13 @@ describe('microservice', () => {
         )
     });
     it('data transformed', async () => {
+        const mockData = {};
         const handlers = microservice({
             root: '.',
             types: [
                 {
                     type: 'user',
-                    backend: {type: 'memory', config: {data: {}}},
+                    backend: {type: 'memory', config: {data: mockData}},
                     schema: {
                         attributes: {
                             id: ':autoUuid',
@@ -95,18 +96,43 @@ describe('microservice', () => {
                             createdAt: ':createdAt',
                             updatedAt: ':updatedAt',
                             tags: 'tags',
+                            xyz: '#string!'
                         }
                     }
                 },
             ],
         });
-        expect(await handlers['createUser']({params: {input: {email: 'me@email.com', firstName: 'Olivier', lastName: 'Hoareau'}}}, {})).toEqual({
+        const r = await handlers['createUser']({
+            params: {
+                input: {
+                    email: 'me@email.com',
+                    firstName: 'Olivier',
+                    lastName: 'Hoareau',
+                    xyz: 'volatile value',
+                },
+            },
+        }, {});
+        expect(r).toEqual({
             id: expect.any(String),
             email: 'me@email.com',
             firstName: 'Olivier',
             lastName: 'Hoareau',
             createdAt: expect.any(Number),
+            updatedAt: expect.any(Number),
             tags: [],
+            xyz: 'volatile value',
+        });
+        expect(mockData).toEqual({
+            [r.id]: {
+                id: r.id,
+                email: 'me@email.com',
+                firstName: 'Olivier',
+                lastName: 'Hoareau',
+                createdAt: expect.any(Number),
+                updatedAt: expect.any(Number),
+                tags: [],
+                // xyz should not be preset (volatile value)
+            }
         });
     })
 });
