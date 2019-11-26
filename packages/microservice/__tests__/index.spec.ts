@@ -10,6 +10,7 @@ describe('microservice', () => {
             types: [
                 {
                     type: 'organization',
+                    migration: './some-dir',
                     backend: 'mock',
                     eventSourceBackend: 'blackhole',
                     handlers: {

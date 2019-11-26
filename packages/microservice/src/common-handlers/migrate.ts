@@ -1,21 +1,36 @@
-import {Executor, Config, RootConfig, Map, Handler} from "..";
+import {Config, RootConfig, Map, Handler} from "..";
 import migrate from "@ohoareau/migrate";
+import dynamodbFactory from "../factories/dynamodb";
 
-export const factory = (_, c: Config) => async (event: any) => {
-    await migrate(
-        <string>c.migration,
-        ((await (await (<Executor>c.execute)('find', {}))).res.result).items.map(i => i.id),
-        {},
-        event.action || 'up',
-        createLogger({
-            add: async (migration: {name: string}): Promise<void> => {
-                await (await (<Executor>c.execute)('create', {data: {id: migration.name}}));
-            },
-            remove: async (migration: {name: string}): Promise<void> => {
-                await (await (<Executor>c.execute)('delete', {id: migration.name}));
-            },
-        })
-    );
+export const factory = (ctx, c: Config) => {
+    ctx.migrationService || (ctx.migrationService = dynamodbFactory({
+        name: 'migration',
+        schema: {
+            id: {type: String, hashKey: true, required: true},
+        },
+        schemaOptions: {
+            timestamps: true,
+        },
+        options: {
+            create: false, update: false, waitForActive: false,
+        },
+    }));
+    return async (event: any) => {
+        await migrate(
+            <string>c.migration,
+            (await ctx.migrationService.find({})).items.map(i => i.id),
+            {},
+            event.action || 'up',
+            createLogger({
+                add: async (migration: {name: string}): Promise<any> =>
+                    ctx.migrationService.create({data: {id: migration.name}})
+                ,
+                remove: async (migration: {name: string}): Promise<any> =>
+                    ctx.migrationService.delete({id: migration.name})
+                ,
+            })
+        );
+    };
 };
 
 export const createLogger = ({add, remove}): Function => async (event, data): Promise<void>  => {

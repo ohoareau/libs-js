@@ -2,7 +2,6 @@ import {Map, Context, Config, Definition, register} from "../..";
 import m from '../middleware/hook';
 import callbackHook from '../hook/callback';
 
-
 export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     if (!c.hooks) c.hooks = {};
     register('hook', 'callback', callbackHook);
