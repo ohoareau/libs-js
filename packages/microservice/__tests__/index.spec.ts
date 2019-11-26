@@ -1,15 +1,20 @@
 import microservice from '../src';
 import '../src/registers/backend-memory';
 import '../src/registers/backend-mock';
+import '../src/registers/eventsource-blackhole';
 
 describe('microservice', () => {
-    it('handlers method generated', () => {
-        expect(microservice({
+    it('handlers method generated', async () => {
+        const handlers = microservice({
             root: '.',
             types: [
                 {
                     type: 'organization',
                     backend: 'mock',
+                    eventSourceBackend: 'blackhole',
+                    handlers: {
+                        abcde: async (e, c) => ({...e, x: 13, type: c.config.type}),
+                    },
                     types: [
                         {
                             type: 'user',
@@ -18,11 +23,15 @@ describe('microservice', () => {
                         {
                             type: 'project',
                             backend: 'mock',
+                            handlers: {
+                                xyz: async (e, c) => ({...e, x: 14, type: c.config.type}),
+                            },
                         },
                     ],
                 },
             ],
-        })).toEqual({
+        });
+        expect(handlers).toEqual({
             getOrganization: expect.any(Function),
             getOrganizations: expect.any(Function),
             deleteOrganization: expect.any(Function),
@@ -38,13 +47,13 @@ describe('microservice', () => {
             deleteOrganizationProject: expect.any(Function),
             createOrganizationProject: expect.any(Function),
             updateOrganizationProject: expect.any(Function),
-            migrateOrganizations: expect.any(Function),
-            migrateOrganizationUsers: expect.any(Function),
-            migrateOrganizationProjects: expect.any(Function),
-            receiveOrganizationExternalEvents: expect.any(Function),
-            receiveOrganizationUserExternalEvents: expect.any(Function),
-            receiveOrganizationProjectExternalEvents: expect.any(Function),
+            migrate: expect.any(Function),
+            receiveExternalEvents: expect.any(Function),
+            abcde: expect.any(Function),
+            xyz: expect.any(Function),
         });
+        expect(await handlers.abcde({a: 11}, {})).toEqual({a: 11, x: 13, type: 'organization'});
+        expect(await handlers.xyz({a: 12}, {})).toEqual({a: 12, x: 14, type: 'project'});
     });
     it('backend called', async () => {
         const handlers = microservice({

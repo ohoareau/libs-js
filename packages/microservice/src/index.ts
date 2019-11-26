@@ -1,5 +1,6 @@
 import * as config from "./plugins/config";
 import * as handlerTypes from './handlers';
+import * as internalHandlerTypes from './internal-handlers';
 
 export type Map<T = any> = {[key: string]: T}
 export type TypedMap = Map & {type: string}
@@ -13,15 +14,6 @@ export type RootConfig = Context & {types: Config[]}
 export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?: Executor, run?: Executor, subTypeExecute?: SubTypeExecutor, subTypeRun?: SubTypeExecutor}
 
 const plugins: Map<Map> = {config};
-const handlerMap: Map<{pattern: string}> = {
-    get: {pattern: 'get{FullType}'},
-    list: {pattern: 'get{FullTypes}'},
-    update: {pattern: 'update{FullType}'},
-    remove: {pattern: 'delete{FullType}'},
-    create: {pattern: 'create{FullType}'},
-    migrate: {pattern: 'migrate{ParentFullTypes}'},
-    events: {pattern: 'receive{FullType}ExternalEvents'},
-};
 
 export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : {...a});
 export const compose = (...f: Function[]) => {
@@ -29,7 +21,6 @@ export const compose = (...f: Function[]) => {
     return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));
 };
 export const register = (t: string, n: string, p: any): any => (plugins[t] = (plugins[t] || {}))[n] = p;
-export const needHandler = (n: string, c: Config): boolean => (c.type === 'migration') ? (n === 'migrate') : (n !== 'migrate');
 export const buildFullTypeName = (config: Config): {parentFullType: string|undefined, fullType: string} => {
     const pFullTypeName = config.parentType ? buildFullTypeName(config.parentType).fullType : undefined;
     return {
@@ -39,15 +30,14 @@ export const buildFullTypeName = (config: Config): {parentFullType: string|undef
             : config.type
     };
 };
-export const loadHandler = (hc: HandlerConfig, c: Config): Map<Handler> => {
-    if (!needHandler(hc.name, c)) return {};
+export const loadHandler = (factory, hc: HandlerConfig, c: Config): Map<Handler> => {
     let n = hc.pattern;
     const pattern = /{([^}]+)}/;
     let matches;
     while((matches = pattern.exec(n)) != null) {
         n = n.replace(matches[0], `${((c.vars||{})[matches[1]]) ? (c.vars||{})[matches[1]] : ''}`);
     }
-    return {[n]: (...args) => handlerTypes[hc.name](hc, c)(...args)};
+    return {[n]: (...args) => factory(hc, c)(...args)};
 };
 export const loadType = (ctx: Context, c: Config, loadTypes: (ctx: Context, types: Config[]|undefined, parentType?: Config) => Map<Handler>, pc?: Config): Map<Handler> => {
     const {parentFullType, fullType} = buildFullTypeName(c);
@@ -63,16 +53,20 @@ export const loadType = (ctx: Context, c: Config, loadTypes: (ctx: Context, type
         ParentFullTypes: parentFullType ? `${parentFullType.substr(0, 1).toUpperCase()}${parentFullType.substr(1)}s` : undefined,
     };
     return {
-        ...Object.entries(handlerMap).reduce((handlers, [name, hConfig]) => ({
+        ...Object.entries(handlerTypes).reduce((handlers, [name, {factory, ...hConfig}]) => ({
             ...handlers,
-            ...loadHandler({...hConfig, name}, {...c, parentType: pc}),
+            ...loadHandler(factory, {...hConfig, name}, {...c, parentType: pc}),
         }), {}),
         ...loadTypes(ctx, c.types, c),
+        ...(c.handlers ? Object.entries(c.handlers).reduce((acc, [k,h]) => {acc[k] = async (event, context) => (<Function>h)(event, {...context, config: c}); return acc;}, {}) : {}),
     };
 };
 export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config): Map<Handler> =>
     (types||[]).reduce((handlers: Map<Handler>, type, i) => {
-        const c = {middlewares: [], ...type, parentType: pc};
+        const c = type;
+        if (false === c.handlers) return handlers;
+        c.middlewares = c.middlewares || [];
+        c.parentType = pc;
         if (pc) (<any>pc).types[i] = c;
         Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
         c.execute = async (operation: string, payload: any, options: Map = {}) => {
@@ -96,4 +90,8 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         return {...handlers, ...loadType(ctx, c, loadTypes, pc)};
     }, {})
 ;
-export default (c: RootConfig): Map<Handler> => loadTypes({...c}, c.types);
+export default (c: RootConfig): Map<Handler> => {
+    const handlers = loadTypes(c, c.types);
+    Object.values(internalHandlerTypes).forEach((loader: Function) => loader(c, handlers));
+    return handlers;
+}

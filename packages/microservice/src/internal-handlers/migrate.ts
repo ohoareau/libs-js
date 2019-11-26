@@ -1,7 +1,7 @@
-import {Executor, Config} from "..";
+import {Executor, Config, RootConfig, Map, Handler} from "..";
 import migrate from "@ohoareau/migrate";
 
-export default (_, c: Config) => async (event: any) => {
+export const factory = (_, c: Config) => async (event: any) => {
     await migrate(
         <string>c.migration,
         ((await (await (<Executor>c.execute)('find', {}))).res.result).items.map(i => i.id),
@@ -57,3 +57,14 @@ export const createLogger = ({add, remove}): Function => async (event, data): Pr
             break;
     }
 };
+
+export default (c: RootConfig, handlers: Map<Handler>) => {
+    const configs = c.types.filter(t => !!t.migration);
+    if (!configs || (0 === configs.length)) return;
+    handlers.migrate = async (...args) => {
+        await configs.map(config => factory(c, config)).reduce(async (acc, f: Function) => {
+            await acc;
+            return f(...args);
+        }, Promise.resolve());
+    };
+}
