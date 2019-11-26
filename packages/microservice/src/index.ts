@@ -1,6 +1,6 @@
 import * as config from "./plugins/config";
 import * as handlerTypes from './handlers';
-import * as internalHandlerTypes from './internal-handlers';
+import * as commonHandlerTypes from './common-handlers';
 
 export type Map<T = any> = {[key: string]: T}
 export type TypedMap = Map & {type: string}
@@ -92,6 +92,6 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
 ;
 export default (c: RootConfig): Map<Handler> => {
     const handlers = loadTypes(c, c.types);
-    Object.values(internalHandlerTypes).forEach((loader: Function) => loader(c, handlers));
+    Object.values(commonHandlerTypes).forEach((loader: Function) => loader(c, handlers));
     return handlers;
 }
