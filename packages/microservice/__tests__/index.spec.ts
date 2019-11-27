@@ -13,7 +13,7 @@ describe('microservice', () => {
                     migration: './some-dir',
                     backend: 'mock',
                     eventSourceBackend: 'blackhole',
-                    actions: {
+                    globals: {
                         zzz: () => (a) => a + 45,
                     },
                     handlers: {
