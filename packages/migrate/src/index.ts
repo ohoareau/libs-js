@@ -63,7 +63,7 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
     result.failed = [];
     result.failures = {};
     try {
-        await [...toDeploy, ''].reduce(async (acc: Promise<[string, Promise<any>]>, i: string): Promise<[string, Promise<any>]> => {
+        const rr = await toDeploy.reduce(async (acc: Promise<[string, Promise<any>]>, i: string): Promise<[string, Promise<any>]> => {
             const r = await acc;
             try {
                 await r[1];
@@ -75,11 +75,16 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
                 result.failures[<string>r[0]] = e.message;
                 throw e;
             }
-            if (i.length) {
-                return [<string>i, <Promise<any>>applyMigration(repo, i, ctx, action, logger)];
-            }
-            return [<string>i, Promise.resolve()];
+            return [<string>i, <Promise<any>>applyMigration(repo, i, ctx, action, logger)];
         }, Promise.resolve([<string>'', <Promise<any>>Promise.resolve()]));
+        try {
+            await rr[1];
+            result.deployed.push(<string>rr[0]);
+        } catch (e) {
+            result.failed.push(<string>rr[0]);
+            result.failures[<string>rr[0]] = e.message;
+            throw e;
+        }
     } catch (e) {
         await logger('migrateFailed', {...result});
         throw new MigrateError(result);
