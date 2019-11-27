@@ -42,7 +42,7 @@ export const applyMigration = async (repo: string, migration: string, ctx: {[key
         if (!m[action]) {
             throw new Error(`Unknown action '${action}' for migration '${migration}' (repo: ${repo})`);
         }
-        const r = m[action](ctx, {logger: migrationLoggerFactory({name: migration, action}, logger)});
+        const r = await m[action](ctx, {logger: migrationLoggerFactory({name: migration, action}, logger)});
         await logger('migrationSucceed', {name: migration, action});
         return r;
     } catch (e) {

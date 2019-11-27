@@ -19,7 +19,7 @@ export const factory = (ctx, c: Config) => {
         await migrate(
             <string>c.migration,
             (await ctx.migrationService.find({})).items.map(i => i.id),
-            {},
+            c,
             event.action || 'up',
             createLogger({
                 add: async (migration: {name: string}): Promise<any> =>
