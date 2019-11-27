@@ -13,8 +13,11 @@ describe('microservice', () => {
                     migration: './some-dir',
                     backend: 'mock',
                     eventSourceBackend: 'blackhole',
+                    actions: {
+                        zzz: () => (a) => a + 45,
+                    },
                     handlers: {
-                        abcde: async (e, c) => ({...e, x: 13, type: c.config.type}),
+                        abcde: async (e, c) => ({...e, x: c.config.zzz(13), type: c.config.type}),
                     },
                     types: [
                         {
@@ -53,7 +56,7 @@ describe('microservice', () => {
             abcde: expect.any(Function),
             xyz: expect.any(Function),
         });
-        expect(await handlers.abcde({a: 11}, {})).toEqual({a: 11, x: 13, type: 'organization'});
+        expect(await handlers.abcde({a: 11}, {})).toEqual({a: 11, x: 58, type: 'organization'});
         expect(await handlers.xyz({a: 12}, {})).toEqual({a: 12, x: 14, type: 'project'});
     });
     it('backend called', async () => {

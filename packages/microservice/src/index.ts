@@ -15,6 +15,13 @@ export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?
 
 const plugins: Map<Map> = {config};
 
+const getRemoteExecutorFromDsn = dsn => {
+    const def = Object.entries(plugins.remoteExecutor || {}).find(([_, v]) => v.supports(dsn));
+    if (!def) throw new Error(`Unsupported remote execution format: '${dsn}'`);
+    const [,{execute}] = def;
+    return execute;
+};
+
 export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : {...a});
 export const compose = (...f: Function[]) => {
     const l = f.length;
@@ -68,7 +75,9 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         c.middlewares = c.middlewares || [];
         c.parentType = pc;
         if (pc) (<any>pc).types[i] = c;
-        Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
+        c.executeRemote = (dsn: string, payload: Map = {}, options: Map = {}): Promise<any> =>
+            getRemoteExecutorFromDsn(dsn)(payload, {...options, config: c, configContext: ctx})
+        ;
         c.execute = async (operation: string, payload: any, options: Map = {}) => {
             const x = {config: c};
             return compose(
@@ -87,6 +96,7 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
             return (<any>subTypeConfig).execute(operation, payload, options);
         };
         (<any>c).subTypeRun = async (...args) => (await (<any>c).subTypeExecute(...args)).res.result;
+        Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
         return {...handlers, ...loadType(ctx, c, loadTypes, pc)};
     }, {})
 ;
