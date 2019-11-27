@@ -75,7 +75,7 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         c.middlewares = c.middlewares || [];
         c.parentType = pc;
         if (pc) (<any>pc).types[i] = c;
-        c.executeRemote = (dsn: string, payload: Map = {}, options: Map = {}): Promise<any> =>
+        c.executeRemote = async (dsn: string, payload: Map = {}, options: Map = {}): Promise<any> =>
             getRemoteExecutorFromDsn(dsn)(dsn, payload, {...options, config: c, configContext: ctx})
         ;
         c.execute = async (operation: string, payload: any, options: Map = {}) => {

@@ -67,9 +67,7 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
             const r = await acc;
             try {
                 await r[1];
-                if (r[0].length) {
-                    result.deployed.push(<string>r[0]);
-                }
+                result.deployed.push(<string>r[0]);
             } catch (e) {
                 result.failed.push(<string>r[0]);
                 result.failures[<string>r[0]] = e.message;
