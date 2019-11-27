@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/microservice",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/migrate": "^0.1.2",
+    "@ohoareau/migrate": "^0.2.0",
     "uuid": "^3.3.3"
   },
   "peerDependencies": {
