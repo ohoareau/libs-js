@@ -2,7 +2,7 @@ import {Config, TypedMap} from "../..";
 import dynamodbFactory from "../../factories/dynamodb";
 
 export default (bc: TypedMap, c: Config) => {
-    const db = dynamodbFactory({name: c.type, ...parseSchemaModel(c.schemaModel)});
+    const db = dynamodbFactory({name: c.full_type, ...parseSchemaModel(c.schemaModel)});
     return async (operation: string, payload: any) => db[operation] ? db[operation](payload) : undefined;
 }
 

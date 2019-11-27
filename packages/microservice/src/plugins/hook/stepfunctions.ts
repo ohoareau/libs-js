@@ -9,6 +9,6 @@ export default (cfg, c: Config) => async (action) => {
     await stepfunctions.startExecution({
         stateMachineArn: cfg.stateMachine,
         input: JSON.stringify(await inputBuilder(action) || {}),
-        name: `${c.type}-${action.req.operation}-${uuidv4()}`,
+        name: `${c.full_type}-${action.req.operation}-${uuidv4()}`,
     }).promise();
 };

@@ -28,6 +28,9 @@ export const compose = (...f: Function[]) => {
     return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));
 };
 export const register = (t: string, n: string, p: any): any => (plugins[t] = (plugins[t] || {}))[n] = p;
+export const buildSnakeCasedFullTypeName = (c: Config): string =>
+    c.parentType ? `${buildSnakeCasedFullTypeName(c.parentType)}_${c.type}` : c.type
+;
 export const buildFullTypeName = (config: Config): {parentFullType: string|undefined, fullType: string} => {
     const pFullTypeName = config.parentType ? buildFullTypeName(config.parentType).fullType : undefined;
     return {
@@ -50,6 +53,7 @@ export const loadType = (ctx: Context, c: Config, loadTypes: (ctx: Context, type
     const {parentFullType, fullType} = buildFullTypeName(c);
     c.vars = {
         type: c.type,
+        full_type: c.full_type,
         types: `${c.type}s`,
         Type: `${c.type.substr(0, 1).toUpperCase()}${c.type.substr(1)}`,
         Types: `${c.type.substr(0, 1).toUpperCase()}${c.type.substr(1)}s`,
@@ -74,6 +78,7 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         if (false === c.handlers) return handlers;
         c.middlewares = c.middlewares || [];
         c.parentType = pc;
+        c.full_type = buildSnakeCasedFullTypeName(c);
         if (pc) (<any>pc).types[i] = c;
         c.executeRemote = async (dsn: string, payload: Map = {}, options: Map = {}): Promise<any> =>
             getRemoteExecutorFromDsn(dsn)(dsn, payload, {...options, config: c, configContext: ctx})
@@ -88,10 +93,10 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         (<any>c).subTypeExecute = async (subType: string, operation: string, payload: any, options: Map = {}) => {
             const subTypeConfig = (c.types || []).find(t => t.type === subType);
             if (!subTypeConfig) {
-                throw new Error(`Unknown sub type '${subType}' for type '${c.type}' (registered: ${(c.types || []).map(t => t.type).join(', ')})`);
+                throw new Error(`Unknown sub type '${subType}' for type '${c.full_type}' (registered: ${(c.types || []).map(t => t.type).join(', ')})`);
             }
             if (!subTypeConfig.execute) {
-                throw new Error(`No executor for sub type '${subType}' of type '${c.type}'`);
+                throw new Error(`No executor for sub type '${subType}' of type '${c.full_type}'`);
             }
             return (<any>subTypeConfig).execute(operation, payload, options);
         };

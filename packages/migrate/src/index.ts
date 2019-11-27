@@ -63,25 +63,38 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
     result.failed = [];
     result.failures = {};
     try {
-        const rr = await toDeploy.reduce(async (acc: Promise<[string, Promise<any>]>, i: string): Promise<[string, Promise<any>]> => {
-            const r = await acc;
+        if (1 === toDeploy.length) {
             try {
-                await r[1];
-                result.deployed.push(<string>r[0]);
+                await applyMigration(repo, toDeploy[0], ctx, action, logger);
+                result.deployed.push(toDeploy[0]);
             } catch (e) {
-                result.failed.push(<string>r[0]);
-                result.failures[<string>r[0]] = e.message;
+                result.failed.push(toDeploy[0]);
+                result.failures[toDeploy[0]] = e.message;
                 throw e;
             }
-            return [<string>i, <Promise<any>>applyMigration(repo, i, ctx, action, logger)];
-        }, Promise.resolve([<string>'', <Promise<any>>Promise.resolve()]));
-        try {
-            await rr[1];
-            result.deployed.push(<string>rr[0]);
-        } catch (e) {
-            result.failed.push(<string>rr[0]);
-            result.failures[<string>rr[0]] = e.message;
-            throw e;
+        } else {
+            const localToDeploy = [...toDeploy];
+            const firstI = <string>localToDeploy.shift();
+            const rr = await localToDeploy.reduce(async (acc: Promise<[string, Promise<any>]>, i: string): Promise<[string, Promise<any>]> => {
+                const r = await acc;
+                try {
+                    await r[1];
+                    result.deployed.push(<string>r[0]);
+                } catch (e) {
+                    result.failed.push(<string>r[0]);
+                    result.failures[<string>r[0]] = e.message;
+                    throw e;
+                }
+                return [<string>i, applyMigration(repo, i, ctx, action, logger)];
+            }, Promise.resolve([<string>firstI, applyMigration(repo, firstI, ctx, action, logger)]));
+            try {
+                await rr[1];
+                result.deployed.push(<string>rr[0]);
+            } catch (e) {
+                result.failed.push(<string>rr[0]);
+                result.failures[<string>rr[0]] = e.message;
+                throw e;
+            }
         }
     } catch (e) {
         await logger('migrateFailed', {...result});

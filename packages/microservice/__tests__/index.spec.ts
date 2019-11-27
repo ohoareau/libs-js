@@ -5,7 +5,7 @@ import '../src/registers/eventsource-blackhole';
 
 describe('microservice', () => {
     it('handlers method generated', async () => {
-        const handlers = microservice({
+        const c = {
             root: '.',
             types: [
                 {
@@ -34,7 +34,8 @@ describe('microservice', () => {
                     ],
                 },
             ],
-        });
+        };
+        const handlers = microservice(c);
         expect(handlers).toEqual({
             getOrganization: expect.any(Function),
             getOrganizations: expect.any(Function),
@@ -58,6 +59,8 @@ describe('microservice', () => {
         });
         expect(await handlers.abcde({a: 11}, {})).toEqual({a: 11, x: 58, type: 'organization'});
         expect(await handlers.xyz({a: 12}, {})).toEqual({a: 12, x: 14, type: 'project'});
+        expect((<any>c.types[0]).full_type).toEqual('organization');
+        expect((<any>c.types[0].types[0]).full_type).toEqual('organization_user');
     });
     it('backend called', async () => {
         const handlers = microservice({

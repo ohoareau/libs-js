@@ -7,8 +7,8 @@ export default (cfg, c: Config) => async (action) => {
     await sns.publish({
         Message: JSON.stringify(await action.res.result),
         MessageAttributes: {
-            fullType: {DataType: 'String', StringValue: `${c.type}_${action.req.operation}`},
-            type: {DataType: 'String', StringValue: c.type},
+            fullType: {DataType: 'String', StringValue: `${c.full_type}_${action.req.operation}`},
+            type: {DataType: 'String', StringValue: c.full_type},
             operation: {DataType: 'String', StringValue: action.req.operation},
         },
         TopicArn: cfg.topic,
