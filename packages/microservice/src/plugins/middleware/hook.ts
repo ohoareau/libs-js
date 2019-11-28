@@ -3,7 +3,7 @@ import {Map, Config, normalizeDefinition} from '../..';
 const hooked = async (ctx, name: string, action: Map, awaitResult = false) => {
     const hks = ctx.config.hooks;
     if (!hks || !hks[name]) return;
-    if (awaitResult) action.res.result = await (await action).res.result;
+    if (awaitResult) action.res.result = await action.res.result;
     await applyHooks(hks[name], ctx, action);
 };
 

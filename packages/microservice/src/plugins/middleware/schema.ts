@@ -19,6 +19,9 @@ export default ({config: c}: {config: Config}) => {
         ['create', createHook(c)],
         ['update', updateHook(c)],
         ['delete', deleteHook(c)],
+        ['after_create', afterCreateHook(c)],
+        ['after_update', afterUpdateHook(c)],
+        ['after_delete', afterDeleteHook(c)],
         ['notify_create', notifyCreateHook(c)],
         ['notify_update', notifyUpdateHook(c)],
         ['notify_delete', notifyDeleteHook(c)],
@@ -219,6 +222,9 @@ const updateHook = c => async (action) => {
     delete action.req.payload.volatileData;
 };
 const deleteHook = c => () => {};
+const afterCreateHook = c => () => {};
+const afterUpdateHook = c => () => {};
+const afterDeleteHook = c => () => {};
 const notifyCreateHook = c => () => {};
 const notifyUpdateHook = c => () => {};
 const notifyDeleteHook = c => () => {};
