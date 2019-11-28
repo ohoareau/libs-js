@@ -22,7 +22,7 @@ const getRemoteExecutorFromDsn = dsn => {
     return execute;
 };
 
-export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : {...a});
+export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : (a.type ? {...a} : {type: Object.keys(a)[0], config: {...a}}));
 export const compose = (...f: Function[]) => {
     const l = f.length;
     return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));
@@ -100,7 +100,15 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
             }
             return (<any>subTypeConfig).execute(operation, payload, options);
         };
+        c.buildOperationArn = (name: string): string => {
+            const pattern = process.env.MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN;
+            if (!pattern) throw new Error('No microservice pattern for lambda operation arn is available (no env var MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN)');
+            return pattern.replace('{name}', name.replace('.', '-'));
+        };
         (<any>c).subTypeRun = async (...args) => (await (<any>c).subTypeExecute(...args)).res.result;
+        (<any>c).operation = async (name: string, payload: any, options: Map = {}): Promise<any> =>
+            c.executeRemote(c.buildOperationArn(name), payload, options)
+        ;
         Object.entries(plugins.config || {}).forEach(([_, p]) => p(ctx, c, plugins));
         return {...handlers, ...loadType(ctx, c, loadTypes, pc)};
     }, {})
