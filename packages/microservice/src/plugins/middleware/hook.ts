@@ -25,6 +25,6 @@ export const applyHooks = async (hooks: any[]|any, ctx: {config: Config}, action
         await acc;
         return ctx.config.createHook(
             ('function' === typeof h) ? {type: 'callback', config: {callback: h}} : normalizeDefinition(h), ctx.config
-        )(action);
+        )(action, ctx);
     }, Promise.resolve())
 ;
