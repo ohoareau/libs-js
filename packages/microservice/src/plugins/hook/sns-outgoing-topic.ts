@@ -10,6 +10,6 @@ export default (cfg, c: Config) => {
             type: c.full_type,
             operation: action.req.operation,
         },
-        topic: cfg.topic,
+        topic: process.env.MICROSERVICE_OUTGOING_TOPIC_ARN,
     });
 }
