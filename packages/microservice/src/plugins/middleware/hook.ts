@@ -4,7 +4,10 @@ const hooked = async (ctx, name: string, action: Map, awaitResult = false) => {
     const hks = ctx.config.hooks;
     if (!hks || !hks[name]) return;
     if (awaitResult) action.res.result = await action.res.result;
+    const hooks = (Array.isArray(hks) ? hks : [hks]);
+    ctx.config.log('hook', name, 'BEFORE', hooks.length, 'hooks', action.req.payload, action.res.result);
     await applyHooks(hks[name], ctx, action);
+    ctx.config.log('hook', name, 'AFTER', hooks.length, 'hooks', action.req.payload, action.res.result);
 };
 
 export default (ctx: {config: Config}) => next => async action => {
@@ -20,8 +23,8 @@ export default (ctx: {config: Config}) => next => async action => {
     return result;
 };
 
-export const applyHooks = async (hooks: any[]|any, ctx: {config: Config}, action: Map): Promise<any> =>
-    await (Array.isArray(hooks) ? hooks : [hooks]).reduce(async (acc, h) => {
+export const applyHooks = async (hooks: any[], ctx: {config: Config}, action: Map): Promise<any> =>
+    await hooks.reduce(async (acc, h) => {
         await acc;
         return ctx.config.createHook(
             ('function' === typeof h) ? {type: 'callback', config: {callback: h}} : normalizeDefinition(h), ctx.config

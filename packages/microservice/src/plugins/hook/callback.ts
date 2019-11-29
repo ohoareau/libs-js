@@ -1,3 +1,3 @@
 import {Map} from "../..";
 
-export default (hc: Map) => (...args) => hc.callback(...args);
+export default (hc: Map) => async (...args) => hc.callback(...args);
