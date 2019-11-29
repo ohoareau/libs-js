@@ -153,11 +153,20 @@ const hookOp = (c) => async (action) => {
     Object.assign(action.res.result, action.req.payload.volatileData);
     delete action.req.payload.volatileData;
 };
-const hookPopOp = c => (action) => {
+const hookCreatePopOp = c => (action) => {
     Object.entries(c.schemaModel.values).forEach(([k, valueGenerator]) => {
         action.req.payload.data[k] = (<Function>valueGenerator)();
     });
     Object.entries(c.schemaModel.defaultValues).forEach(([k, defaultValueGenerator]) => {
+        if (action.req.payload.data[k]) return;
+        action.req.payload.data[k] = (<Function>defaultValueGenerator)();
+    });
+};
+const hookUpdatePopOp = c => (action) => {
+    Object.entries(c.schemaModel.updateValues).forEach(([k, valueGenerator]) => {
+        action.req.payload.data[k] = (<Function>valueGenerator)();
+    });
+    Object.entries(c.schemaModel.updateDefaultValues).forEach(([k, defaultValueGenerator]) => {
         if (action.req.payload.data[k]) return;
         action.req.payload.data[k] = (<Function>defaultValueGenerator)();
     });
@@ -172,8 +181,8 @@ const hookPrepOp = c => (action) => {
         }
     });
 };
-const populateCreateHook = hookPopOp;
-const populateUpdateHook = hookPopOp;
+const populateCreateHook = hookCreatePopOp;
+const populateUpdateHook = hookUpdatePopOp;
 const prepareCreateHook = hookPrepOp;
 const prepareUpdateHook = hookPrepOp;
 const createHook = hookOp;
