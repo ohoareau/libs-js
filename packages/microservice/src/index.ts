@@ -83,12 +83,10 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
         c.executeRemote = async (dsn: string, payload: Map = {}, options: Map = {}): Promise<any> =>
             getRemoteExecutorFromDsn(dsn)(dsn, payload, {...options, config: c, configContext: ctx})
         ;
-        c.execute = async (operation: string, payload: any, options: Map = {}) => {
-            const x = {config: c};
-            return compose(
-                ...(c['middlewares'] || []).map((m: (ctx: {config: Config}) => (next: () => any) => any) => m(x))
-            )(({req, res}) => ({req, res}))({req: {operation, payload, options: {...options, ...x}}, res: {result: undefined}});
-        };
+        const x = {config: c};
+        c.execute = async (operation: string, payload: any, options: Map = {}) => compose(
+            ...(c['middlewares'] || []).map((m: (ctx: {config: Config}) => (next: () => any) => any) => m(x))
+        )(({req, res}) => ({req, res}))({req: {operation, payload, options: {...options, ...x}}, res: {result: undefined}});
         (<any>c).run = async (...args) => (await (<any>c).execute(...args)).res.result;
         (<any>c).subTypeExecute = async (subType: string, operation: string, payload: any, options: Map = {}) => {
             const subTypeConfig = (c.types || []).find(t => t.type === subType);

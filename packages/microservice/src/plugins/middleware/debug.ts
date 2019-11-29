@@ -1,5 +1,5 @@
 export default () => next => async (action) => {
-    if (!process.env.MICROSERVICE_DEBUG) return next(action);
+    if (!action.req.options.config.debug) return next(action);
     let r;
     console.log('MICROSERVICE EXECUTION DEBUG - START', action.req.operation, action.req.payload);
     try {
