@@ -7,6 +7,7 @@ export {default as autoUuid} from './autoUuid';
 export {default as workflow} from './workflow';
 export {default as createdAt} from './createdAt';
 export {default as updatedAt} from './updatedAt';
+export {default as loggedAt} from './loggedAt';
 export {default as tags} from './tags';
 export {default as phone} from './phone';
 export {default as flag} from './flag';
