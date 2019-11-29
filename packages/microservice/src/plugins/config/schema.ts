@@ -2,6 +2,11 @@ import {Context, Config, register, Map} from "../..";
 import * as fieldTypes from '../fieldtype';
 import {ValidationError} from "../../errors/ValidationError";
 
+export const transformers = {
+    upper: v => `${v}`.toUpperCase(),
+    lower: v => `${v}`.toLowerCase(),
+};
+
 export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     if (!c.schema) return;
     Object.entries(fieldTypes).forEach(([k, v]) => register('fieldtype', k, v));
@@ -12,16 +17,28 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
         return plugins.fieldtype[def.type]((def || {}).config || {});
     };
     c.schemaModel = parseSchema(c);
-    c.registerHooks([
+    const hks: [string, any][] = [
         ['validate_create', validateCreateHook(c)],
         ['validate_update', validateUpdateHook(c)],
+    ];
+    (0 < Object.keys(c.schemaModel.transformers).length) && hks.push(
+        ['transform_create', transformCreateHook(c)],
+        ['transform_update', transformUpdateHook(c)]
+    );
+    ((0 < Object.keys(c.schemaModel.values).length) || (0 < Object.keys(c.schemaModel.defaultValues).length)) && hks.push(
         ['populate_create', populateCreateHook(c)],
+    );
+    ((0 < Object.keys(c.schemaModel.updateValues).length) || (0 < Object.keys(c.schemaModel.updateDefaultValues).length)) && hks.push(
         ['populate_update', populateUpdateHook(c)],
+    );
+    (0 < Object.keys(c.schemaModel.volatileFields).length) && hks.push(
         ['prepare_create', prepareCreateHook(c)],
         ['prepare_update', prepareUpdateHook(c)],
         ['create', createHook(c)],
         ['update', updateHook(c)],
-    ], true);
+    );
+
+    c.registerHooks(hks, true);
 }
 
 const parseSchema = (c: Config) => {
@@ -38,12 +55,14 @@ const parseSchema = (c: Config) => {
         const {
             type = 'string', list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
             value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
+            upper = false, lower = false, transform = undefined,
         } = def;
         acc.fields[k] = {
             type, primaryKey, volatile,
             ...((index && index.length > 0) ? {index} : {}),
             ...(list ? {list} : {}),
         };
+        acc.transformers[k] = transform ? (Array.isArray(transform) ? [...transform] : [transform]) : [];
         required && (acc.requiredFields[k] = true);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
         value && (acc.values[k] = value);
@@ -56,6 +75,9 @@ const parseSchema = (c: Config) => {
         index && (index.length > 0) && (acc.indexes[k] = index);
         volatile && (acc.volatileFields[k] = true);
         primaryKey && (acc.primaryKey = k);
+        upper && (acc.transformers[k].push(transformers.upper));
+        lower && (acc.transformers[k].push(transformers.lower));
+        if (0 === acc.transformers[k]) delete acc.transformers[k];
         return acc;
     }, {
         primaryKey: <any>undefined,
@@ -69,6 +91,7 @@ const parseSchema = (c: Config) => {
         updateDefaultValues: {},
         indexes: {},
         volatileFields: {},
+        transformers: {},
     });
 };
 
@@ -181,8 +204,18 @@ const hookPrepOp = c => (action) => {
         }
     });
 };
+const hookTransOp = c => (action) => {
+    const transformers = c.schemaModel.transformers;
+    Object.entries(action.req.payload.data).forEach(([k, v]) => {
+        if (transformers[k]) {
+            action.req.payload.data[k] = transformers[k].reduce((acc, t) => t(acc), v);
+        }
+    });
+};
 const populateCreateHook = hookCreatePopOp;
 const populateUpdateHook = hookUpdatePopOp;
+const transformCreateHook = hookTransOp;
+const transformUpdateHook = hookTransOp;
 const prepareCreateHook = hookPrepOp;
 const prepareUpdateHook = hookPrepOp;
 const createHook = hookOp;

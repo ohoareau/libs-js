@@ -117,7 +117,8 @@ describe('microservice', () => {
                             createdAt: ':createdAt',
                             updatedAt: ':updatedAt',
                             tags: 'tags',
-                            xyz: '#string!'
+                            xyz: '#string!',
+                            ape: 'apeCode'
                         }
                     },
                     types: [{
@@ -137,6 +138,7 @@ describe('microservice', () => {
                     firstName: 'Olivier',
                     lastName: 'Hoareau',
                     xyz: 'volatile value',
+                    ape: '6202a',
                 },
             },
         }, {});
@@ -150,6 +152,7 @@ describe('microservice', () => {
             tags: [],
             xyz: 'volatile value',
             x: 46, // dynamically generated from sub type invokable
+            ape: '6202A', // auto-uppercase
         });
         expect(mockData).toEqual({
             [r.id]: {
@@ -161,6 +164,7 @@ describe('microservice', () => {
                 updatedAt: expect.any(Number),
                 tags: [],
                 // xyz should not be preset (volatile value)
+                ape: '6202A',
             }
         });
     })

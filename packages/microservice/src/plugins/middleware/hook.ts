@@ -13,6 +13,7 @@ const hooked = async (ctx, name: string, action: Map, awaitResult = false) => {
 export default (ctx: {config: Config}) => next => async action => {
     await hooked(ctx, `validate_${action.req.operation}`, action);
     await hooked(ctx, `populate_${action.req.operation}`, action);
+    await hooked(ctx, `transform_${action.req.operation}`, action);
     await hooked(ctx, `before_${action.req.operation}`, action);
     await hooked(ctx, `prepare_${action.req.operation}`, action);
     const result = await next(action);
