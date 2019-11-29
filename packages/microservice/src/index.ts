@@ -12,6 +12,12 @@ export type Executor = (operation: string, payload: any, options?: Map) => Promi
 export type SubTypeExecutor = (subType: string, operation: string, payload: any, options?: Map) => Promise<any>|any
 export type RootConfig = Context & {types: Config[]}
 export type Config = TypedMap & {parentType?: Config, types?: Config[], execute?: Executor, run?: Executor, subTypeExecute?: SubTypeExecutor, subTypeRun?: SubTypeExecutor}
+export type ErrorSerialization = {
+    errorType: string;
+    errorInfo: Map;
+    message: string;
+    data: Map;
+}
 
 const plugins: Map<Map> = {config};
 

@@ -1,4 +1,5 @@
 export { default as debug } from './debug';
+export { default as error } from './error';
 export { default as logger } from './logger';
 export { default as hook } from './hook';
 export { default as backend } from './backend';

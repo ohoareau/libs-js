@@ -167,5 +167,44 @@ describe('microservice', () => {
                 ape: '6202A',
             }
         });
-    })
+    });
+    it('no error - serialization', async () => {
+        const mockData = {};
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'user',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    schema: {
+                        attributes: {
+                            email: 'email!',
+                            requiredString: 'string!',
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['createUser']({
+            params: {
+                input: {
+                    email: 'me-bademail',
+                },
+            },
+        }, {});
+        expect(r).toEqual({
+            errorType: 'validation',
+            message: 'Validation error',
+            data: {},
+            errorInfo: {
+                email: [
+                    'Not a valid email',
+                ],
+                requiredString: [
+                    'Field is required',
+                ],
+            }
+        });
+        expect(mockData).toEqual({});
+    });
 });

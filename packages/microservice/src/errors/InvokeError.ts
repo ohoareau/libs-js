@@ -1,6 +1,7 @@
-import {Map} from '..';
+import {ErrorSerialization, Map} from '..';
+import SerializableErrorInterface from "./SerializableErrorInterface";
 
-export default class InvokeError extends Error {
+export default class InvokeError extends Error implements SerializableErrorInterface {
     protected type: string;
     protected operation: string;
     protected dsn: string;
@@ -28,5 +29,17 @@ export default class InvokeError extends Error {
     }
     getResponsePayload(): {errorType: string, errorMessage: string} {
         return this.responsePayload;
+    }
+    serialize(): ErrorSerialization {
+        return {
+            errorType: 'invoke',
+            message: this.message,
+            data: {},
+            errorInfo: {
+                type: this.type,
+                operation: this.operation,
+                dsn: this.dsn,
+            }
+        }
     }
 }
