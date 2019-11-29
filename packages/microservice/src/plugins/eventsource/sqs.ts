@@ -16,8 +16,10 @@ export default (ec: TypedMap, c: Config) => async (event: any, context: any): Pr
                 acc[k] = (<Map>m).Value;
                 return acc;
             }, {});
+            const message = JSON.parse(body.Message);
+            c.log('external event', 'PROCESSING', eventType, message, attributes, receiptHandle);
             await (<Handler>c.eventListeners[eventType])(
-                JSON.parse(body.Message),
+                message,
                 {
                     attributes,
                     execute: c.execute,
@@ -27,6 +29,9 @@ export default (ec: TypedMap, c: Config) => async (event: any, context: any): Pr
                     receiptHandle,
                 }
             );
+            c.log('external event', 'PROCESSED', eventType, receiptHandle);
+        } else {
+            c.log('external event', 'IGNORED', eventType, receiptHandle);
         }
         sqs.deleteMessage({QueueUrl: queueUrl, ReceiptHandle: receiptHandle});
     }));
