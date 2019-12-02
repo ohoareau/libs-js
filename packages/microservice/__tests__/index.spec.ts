@@ -106,7 +106,10 @@ describe('microservice', () => {
                     hooks: {
                         create: [async ({req: {options: {config}}, res}) => {
                             res.result.x = await config.subTypeRun('test', 'someOp', {x: 12});
-                        }],
+                        },
+                            {type: 'callback', trackData: ['notModifiedData'], config: {callback: ({res}) => {
+                                res.result.z = 'if set, there was an error :(';
+                            }}}],
                     },
                     schema: {
                         attributes: {

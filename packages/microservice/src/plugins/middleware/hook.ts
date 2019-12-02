@@ -27,8 +27,13 @@ export default (ctx: {config: Config}) => next => async action => {
 export const applyHooks = async (hooks: any[], ctx: {config: Config}, action: Map): Promise<any> =>
     await hooks.reduce(async (acc, h) => {
         await acc;
-        return ctx.config.createHook(
-            ('function' === typeof h) ? {type: 'callback', config: {callback: h}} : normalizeDefinition(h), ctx.config
-        )(action, ctx);
+        const def = ('function' === typeof h) ? {type: 'callback', config: {callback: h}} : normalizeDefinition(h);
+        if (def.trackData && Array.isArray(def.trackData) && (0 < def.trackData.length)) {
+            const data = ((await action).req.payload || {}).data || {};
+            if (0 === def.trackData.filter(f => data.hasOwnProperty(f)).length) {
+               return Promise.resolve();
+            }
+        }
+        return ctx.config.createHook(def, ctx.config)(action, ctx);
     }, Promise.resolve())
 ;
