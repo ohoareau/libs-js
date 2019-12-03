@@ -6,3 +6,4 @@ export const match = ({pattern, flags = undefined, message = undefined}: {patter
 export const email = () => match({pattern: '[^@]+@.+\.[^.]+$', message: 'Not a valid email'});
 export const uuid = () => match({pattern: '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', flags: 'i', message: `Not a valid uuid (actual: {{v}}, expected: v4 format)`});
 export const url = () => match({pattern: '^http[s]?://.$', flags: 'i', message: `Not a valid URL`});
+export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', message: `Not a valid AWS ARN`});

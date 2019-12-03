@@ -1,5 +1,6 @@
 export {default as address} from './address';
 export {default as apeCode} from './apeCode';
+export {default as arn} from './arn';
 export {default as autoUuid} from './autoUuid';
 export {default as city} from './city';
 export {default as country} from './country';
