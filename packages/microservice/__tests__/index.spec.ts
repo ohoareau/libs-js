@@ -213,8 +213,8 @@ describe('microservice', () => {
         });
         expect(mockData).toEqual({});
     });
-    it('intercepted operation', async () => {
-        const mockData = {};
+    it('intercepted execute operation', async () => {
+        const mockData = {xyz: {id: 'xyz', value: 25}};
         const handlers = microservice({
             root: '.',
             types: [
@@ -222,7 +222,7 @@ describe('microservice', () => {
                     type: 'function',
                     backend: {type: 'memory', config: {data: mockData}},
                     operations: {
-                        execute: () => async ({data: {value}}) => value * 52,
+                        execute: () => async ({item: { value }, data: { multiplyBy }}) => value * multiplyBy,
                     },
                     schema: {
                         attributes: {
@@ -234,12 +234,13 @@ describe('microservice', () => {
         });
         const r = await handlers['executeFunction']({
             params: {
+                id: 'xyz',
                 input: {
-                    value: 12,
+                    multiplyBy: 12,
                 },
             },
         }, {});
-        expect(r).toEqual(624);
-        expect(mockData).toEqual({});
+        expect(r).toEqual(300);
+        expect(mockData).toEqual({xyz: {id: 'xyz', value: 25}});
     });
 });
