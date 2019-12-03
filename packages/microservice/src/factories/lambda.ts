@@ -21,6 +21,6 @@ export default () => ({
             JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'))
         );
         logger.log(`Lambda '${arn}' responded with: `, result);
-        return result;
+        return JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'));
     },
 });
