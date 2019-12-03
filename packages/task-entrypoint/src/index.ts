@@ -32,11 +32,11 @@ export default (action, steps, config: {[key: string]: any} = {}) => {
     config.result = config.result || (() => ({}));
     const write = (path, content) => writeFileSync(path, content || '');
     const write_merged_json = (path, json) => write(path, JSON.stringify({...require(path), ...((('string' === typeof json) ? JSON.parse(json || '{}') : json) || {})}));
-    const exec = (command, cwd = undefined, envs = undefined) => execSync(command, {cwd: cwd || config.cwd(), env: envs || config.env, encoding: 'utf8'});
+    const exec = (command, cwd = undefined, envs = undefined) => execSync(command, {cwd: cwd || config.cwd(), env: envs || env, encoding: 'utf8'});
     const rm = (path) => exec(`rm -rf ${path}`);
     const copy = (source, target) => {rm(target); exec(`cp -R ${source} ${target}`);};
-    const tf = (action) => exec(`terraform ${action}`, undefined, <any>{...config.env, AWS_SDK_LOAD_CONFIG: 1});
-    const aws = (action) => exec(`aws ${action}`, undefined, <any>{...config.env, AWS_SDK_LOAD_CONFIG: 1});
+    const tf = (action) => exec(`terraform ${action}`, undefined, <any>{...env, AWS_SDK_LOAD_CONFIG: 1});
+    const aws = (action) => exec(`aws ${action}`, undefined, <any>{...env, AWS_SDK_LOAD_CONFIG: 1});
     const run = async (action, steps) => buildSequence(steps, action.split(/\s*,\s*/)).reduce(async (acc, s) => {await acc; return s();}, Promise.resolve());
     const success = result => aws(`stepfunctions send-task-success --task-token ${config.env('TASK_TOKEN')} --task-output '${JSON.stringify(result)}'`);
     const failure = (error, cause) => aws(`stepfunctions send-task-failure --task-token ${config.env('TASK_TOKEN')} --error "${error}" --cause "${cause}"`);
