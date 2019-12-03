@@ -50,7 +50,7 @@ export default (action, steps, config: {[key: string]: any} = {}) => {
     };
     terraform.destroy = () => [terraform.init, terraform.plan_destroy, terraform.apply].forEach(f => f());
 
-    const vars = {fs, aws, exec, terraform};
+    const vars = {...config, fs, aws, exec, terraform};
     steps = ('function' === typeof steps) ? steps(vars) : steps;
     const defaultSteps = {
         help: () => config.log(`Available commands: ${Object.keys(steps).join(', ')}`),
