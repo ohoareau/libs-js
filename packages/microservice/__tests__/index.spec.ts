@@ -42,16 +42,19 @@ describe('microservice', () => {
             deleteOrganization: expect.any(Function),
             createOrganization: expect.any(Function),
             updateOrganization: expect.any(Function),
+            executeOrganization: expect.any(Function),
             getOrganizationUser: expect.any(Function),
             getOrganizationUsers: expect.any(Function),
             deleteOrganizationUser: expect.any(Function),
             createOrganizationUser: expect.any(Function),
             updateOrganizationUser: expect.any(Function),
+            executeOrganizationUser: expect.any(Function),
             getOrganizationProject: expect.any(Function),
             getOrganizationProjects: expect.any(Function),
             deleteOrganizationProject: expect.any(Function),
             createOrganizationProject: expect.any(Function),
             updateOrganizationProject: expect.any(Function),
+            executeOrganizationProject: expect.any(Function),
             migrate: expect.any(Function),
             receiveExternalEvents: expect.any(Function),
             abcde: expect.any(Function),
@@ -107,9 +110,9 @@ describe('microservice', () => {
                         create: [async ({req: {options: {config}}, res}) => {
                             res.result.x = await config.subTypeRun('test', 'someOp', {x: 12});
                         },
-                            {type: 'callback', trackData: ['notModifiedData'], config: {callback: ({res}) => {
-                                res.result.z = 'if set, there was an error :(';
-                            }}}],
+                        {type: 'callback', trackData: ['notModifiedData'], config: {callback: ({res}) => {
+                            res.result.z = 'if set, there was an error :(';
+                        }}}],
                     },
                     schema: {
                         attributes: {
@@ -208,6 +211,35 @@ describe('microservice', () => {
                 ],
             }
         });
+        expect(mockData).toEqual({});
+    });
+    it('intercepted operation', async () => {
+        const mockData = {};
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'function',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    operations: {
+                        execute: () => async ({data: {value}}) => value * 52,
+                    },
+                    schema: {
+                        attributes: {
+                            id: ':autoUuid',
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['executeFunction']({
+            params: {
+                input: {
+                    value: 12,
+                },
+            },
+        }, {});
+        expect(r).toEqual(624);
         expect(mockData).toEqual({});
     });
 });
