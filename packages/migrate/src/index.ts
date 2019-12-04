@@ -1,4 +1,4 @@
-import { readdirSync } from "fs";
+import {existsSync, readdirSync} from "fs";
 
 export class MigrateError extends Error {
     protected result: {planned: string[], failed: string[], failures: {[key: string]: string}, deployed: string[]};
@@ -11,6 +11,7 @@ export class MigrateError extends Error {
     }
 }
 export const plan = async (repo: string, deployed: string[], action: string): Promise<string[]> => {
+    if (!existsSync(repo)) return [];
     let all: string[] = readdirSync(repo, {withFileTypes: true}).filter(e => !e.isDirectory() && /.js$/.test(e.name)).map(e => e.name);
     switch (action) {
         case 'up':

@@ -2,6 +2,7 @@ import migrate, {applyMigration, MigrateError, plan} from '../src';
 
 describe('plan up', () => {
     [
+        ['repo not existing', `${__dirname}/../__fixtures__/unknown`, [], []],
         ['no previous deployed', `${__dirname}/../__fixtures__/test1`, [], ['01.js', '02.js', '10.js']],
         ['one existing deployed to ignore', `${__dirname}/../__fixtures__/test1`, ['01.js'], ['02.js', '10.js']],
         ['multiple existing deployed to ignore', `${__dirname}/../__fixtures__/test1`, ['01.js', '10.js'], ['02.js']],
