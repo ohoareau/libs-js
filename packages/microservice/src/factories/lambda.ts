@@ -13,14 +13,15 @@ export default () => ({
             LogType: 'None',
             Payload: JSON.stringify(payload),
         }).promise();
+        const responsePayload = JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'));
         if (result.FunctionError) throw new InvokeError(
             '?',
             '?',
             arn,
             payload,
-            JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'))
+            responsePayload
         );
-        logger.log(`Lambda '${arn}' responded with: `, result);
-        return JSON.parse(<string>(result.Payload ? (result.Payload.toString ? result.Payload.toString() : result.Payload) : '{}'));
+        logger.log(`Lambda '${arn}' responded with: `, responsePayload || result);
+        return responsePayload;
     },
 });

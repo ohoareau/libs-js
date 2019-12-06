@@ -1,27 +1,17 @@
-import AWS from "aws-sdk";
 import {Map} from "../..";
+import cognitoFactory from '../../factories/cognito';
 
-const cognito = new AWS.CognitoIdentityServiceProvider();
+const cognito = cognitoFactory();
 
 export default cfg => async ({req: {payload: {data}}}: {req: {payload: {data: Map}}}) => {
-    const userAttributes = [{Name: 'email', Value: data.email}, {Name: 'email_verified', Value: 'True'}];
+    const attributes: Map = {email: data.email, email_verified: true};
     if (data.phone) {
-        userAttributes.push({Name: 'phone_number', Value: data.phone});
-        userAttributes.push({Name: 'phone_number_verified', Value: 'True'});
+        attributes.phone_number = data.phone;
+        attributes.phone_number_verified = true;
     }
-    const cognitoResponse = await cognito.adminCreateUser({
-        UserPoolId: cfg.userPool,
-        Username: data.email,
-        DesiredDeliveryMediums: ['EMAIL'],
-        ForceAliasCreation: false,
-        UserAttributes: userAttributes,
-    }).promise();
-    data.id = (<any>cognitoResponse).User.Attributes.find(a => a.Name === 'sub').Value;
+    const user = await cognito.createUser({userPool: cfg.userPool, username: data.email, attributes});
+    data.id = user.id;
     const groups = cfg.group ? [cfg.group] : [];
     data.admin && cfg.adminGroup && groups.push(cfg.adminGroup);
-    await Promise.all(groups.map(g => cognito.adminAddUserToGroup({
-        GroupName: g,
-        UserPoolId: cfg.userPool,
-        Username: (<any>cognitoResponse).User.Username,
-    }).promise()));
+    await cognito.addUserToGroupsByUsername({userPool: cfg.userPool, username: user.username, groups});
 };

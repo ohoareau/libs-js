@@ -10,5 +10,5 @@ export default () => ({
             return acc;
         }, {}),
         TopicArn: topic,
-    }),
+    }).promise(),
 });

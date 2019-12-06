@@ -1,7 +1,7 @@
-import AWS from 'aws-sdk';
 import {Map, TypedMap, Handler, Config} from "../..";
+import sqsFactory from '../../factories/sqs';
 
-const sqs = new AWS.SQS();
+const sqs = sqsFactory();
 
 const consumeMessage = async (c, {receiptHandle, attributes, rawMessage, eventType, queueUrl}, context) => {
     const listeners = c.getListenersFor(eventType);
@@ -13,7 +13,7 @@ const consumeMessage = async (c, {receiptHandle, attributes, rawMessage, eventTy
             case 'ignored': ignored[receiptHandle]++; break;
         }
         if (ids[receiptHandle]) return;
-        await sqs.deleteMessage({QueueUrl: queueUrl, ReceiptHandle: receiptHandle}).promise();
+        await sqs.deleteMessage({queueUrl, receiptHandle});
         ids[receiptHandle] = true;
     }};
     if (!listeners.length) return result;
@@ -28,9 +28,8 @@ const consumeMessage = async (c, {receiptHandle, attributes, rawMessage, eventTy
     return result;
 };
 
-const processDirectMessage = async (ec: TypedMap, c: Config, context: any, r: Map) => {
-    const splits = r.eventSourceARN.split(':');
-    return consumeMessage(c, {
+const processDirectMessage = async (ec: TypedMap, c: Config, context: any, r: Map) =>
+    consumeMessage(c, {
         receiptHandle: r.receiptHandle,
         rawMessage: r.body,
         attributes: Object.entries(r.messageAttributes).reduce((acc, [k, m]) => {
@@ -38,13 +37,12 @@ const processDirectMessage = async (ec: TypedMap, c: Config, context: any, r: Ma
             return acc;
         }, {}),
         eventType: r.messageAttributes.fullType.stringValue.toLowerCase().replace(/\./g, '_'),
-        queueUrl: sqs.endpoint.href + splits[4] + '/' + splits[5],
-    }, context);
-};
+        queueUrl: sqs.getQueueUrlFromEventSourceArn(r.eventSourceARN),
+    }, context)
+;
 
 const processEncapsulatedMessage = async (ec: TypedMap, c: Config, context: any, r: Map) => {
     const body = JSON.parse(r.body);
-    const splits = r.eventSourceARN.split(':');
     return consumeMessage(c, {
         receiptHandle: r.receiptHandle,
         rawMessage: body.Message,
@@ -53,7 +51,7 @@ const processEncapsulatedMessage = async (ec: TypedMap, c: Config, context: any,
             return acc;
         }, {}),
         eventType: body.MessageAttributes.fullType.Value.toLowerCase().replace(/\./g, '_'),
-        queueUrl: sqs.endpoint.href + splits[4] + '/' + splits[5],
+        queueUrl: sqs.getQueueUrlFromEventSourceArn(r.eventSourceARN),
     }, context);
 };
 
