@@ -1,7 +1,7 @@
 import {Executor, Config, RootConfig, Map, Handler} from "..";
 
 export const factory = (c, configs: Config[]) => async (event: any, context: any) => {
-    const types = await Promise.all((await Promise.all(configs.map(c => (<Executor>c.execute)('events', {
+    const types = await Promise.all((await Promise.all(configs.map(async c => (<Executor>c.execute)('events', {
         event: {...event},
         context
     })))).map(a => a.res.result));
