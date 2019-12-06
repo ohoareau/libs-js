@@ -16,6 +16,11 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
         }
         return plugins.fieldtype[def.type]((def || {}).config || {});
     };
+    c.fetchReference = async (def, {config, data: contextData}) => {
+        const k = def.type.replace('.', '_');
+        if (!config.references || !config.references[k]) throw new Error(`No reference fetch for type '${def.type}' (key is references.${k})`);
+        return await config.references[k](config)({...def, contextData});
+    };
     c.schemaModel = parseSchema(c);
     const hks: [string, any][] = [
         ['validate_create', validateCreateHook(c)],
@@ -39,23 +44,69 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     );
 
     c.registerHooks(hks, true);
+    const referenceFieldsEntries = Object.entries(c.schemaModel.referenceFields);
+    if (referenceFieldsEntries.length) {
+        c.events = c.events || {};
+        const registerEventListener = (c: Config, v: Map, operation: string, listener: Function) => {
+            const eventKey = `${(<any>v).reference.replace('.', '_')}_${operation}`;
+            if (!c.events[eventKey]) c.events[eventKey] = [];
+            if (!Array.isArray(c.events[eventKey])) c.events[eventKey] = [c.events[eventKey]];
+            c.events[eventKey].push(listener);
+        };
+        referenceFieldsEntries.forEach(([k, v]) => {
+            registerEventListener(c, <Map>v, 'update', async (data, { config: { type, operation } }) =>
+                operation(`${type}.update`, {params: {id: {[k]: data[(<any>v).idField]}, input: {[k]: data[(<any>v).idField]}, contextData: data}})
+            );
+            registerEventListener(c, <Map>v, 'delete', async (data, { config: { type, operation } }) =>
+                operation(`${type}.delete`, {params: {id: {[k]: data[(<any>v).idField]}, contextData: data}})
+            );
+        });
+    }
 }
+
+const buildReferenceValidator = (c: Config, type, localField, idField = 'id', fetchedFields: string[] = []) => {
+    return ({
+        test: async (value, localCtx) => {
+            try {
+                const k = `${type}.${value}`;
+                const existingData = (localCtx.data || {})[k] || {};
+                if (!!fetchedFields.find(f => !existingData.hasOwnProperty(f) || (undefined === existingData[f]))) {
+                    localCtx.data[k] = await c.fetchReference({
+                        type,
+                        value,
+                        idField,
+                        fetchedFields
+                    }, localCtx) || {};
+                }
+                return true;
+            } catch (e) {
+                console.log(`Reference validator Error: type=${type}, localField=${localField} value=${value} => ${e.message}`);
+                return false;
+            }
+        },
+        message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
+    });
+};
 
 const parseSchema = (c: Config) => {
     const def = c.schema;
-    return Object.entries(def.attributes).reduce((acc, [k, d]) => {
+    const schema = Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = {
-            ...('string' === typeof d) ? parseFieldString(d, k) : d,
+            ...('string' === typeof d) ? parseFieldString(c, d, k) : d,
         };
         const forcedDef = {...(<Map>d || {})};
         delete forcedDef.config;
         delete forcedDef.type;
         let officialDef = c.createField(d);
-        const def = {...officialDef, ...forcedDef};
+        const def = {
+            ...officialDef,
+            ...forcedDef,
+            validators: [].concat(officialDef.validators || [], forcedDef.validators || []),
+        };
         const {
             type = 'string', list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
             value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
-            upper = false, lower = false, transform = undefined,
+            upper = false, lower = false, transform = undefined, reference = undefined, refAttribute = undefined,
         } = def;
         acc.fields[k] = {
             type, primaryKey, volatile,
@@ -64,6 +115,11 @@ const parseSchema = (c: Config) => {
         };
         acc.transformers[k] = transform ? (Array.isArray(transform) ? [...transform] : [transform]) : [];
         required && (acc.requiredFields[k] = true);
+        if (refAttribute) {
+            if (!acc.refAttributeFields[refAttribute.parentField]) acc.refAttributeFields[refAttribute.parentField] = [];
+            acc.refAttributeFields[refAttribute.parentField].push({sourceField: refAttribute.sourceField, targetField: k, field: refAttribute.field});
+        }
+        reference && (acc.referenceFields[k] = reference);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
         value && (acc.values[k] = value);
         updateValue && (acc.updateValues[k] = updateValue);
@@ -92,15 +148,58 @@ const parseSchema = (c: Config) => {
         indexes: {},
         volatileFields: {},
         transformers: {},
+        referenceFields: {},
+        refAttributeFields: {},
     });
+    Object.entries(schema.refAttributeFields).forEach(([k, vList]) => {
+        const x = (<any[]>vList).reduce((acc, v) => {
+            acc.sourceFields[v.sourceField] = true;
+            acc.targetFields[v.targetField] = true;
+            acc.values[v.targetField] = ({req: {payload: {data, contextData}}}) => {
+                if (!data || !data[k]) return undefined;
+                return (contextData[`${schema.referenceFields[k].reference}.${data[k]}`] || {})[v.sourceField] || undefined;
+            };
+            acc.updateValues[v.targetField] = ({req: {payload: {data, contextData}}}) => {
+                if (!data || !data[k]) return undefined;
+                return (contextData[`${schema.referenceFields[k].reference}.${data[k]}`] || {})[v.sourceField] || undefined;
+            };
+            return acc;
+        }, {targetFields: [], sourceFields: [], values: [], updateValues: []});
+        if (!schema.referenceFields[k]) throw new Error(`${k} is not a reference field (but is a ref attribute requirement for ${Object.keys(x.targetFields).join(', ')})`);
+        if (!schema.validators[k]) schema.validators[k] = [];
+        schema.referenceFields[k].fetchedFields = ['id'].concat(schema.referenceFields[k].fetchedFields, Object.keys(x.sourceFields));
+        schema.validators[k].push(
+            buildReferenceValidator(
+                c,
+                schema.referenceFields[k].reference,
+                k,
+                schema.referenceFields[k].idField,
+                schema.referenceFields[k].fetchedFields
+            )
+        );
+        Object.entries(schema.referenceFields).forEach(([k, v]) => {
+            const referenceKey = ((<any>v).reference).replace('.', '_');
+            if (!c.references) c.references = {};
+            if (c.references[referenceKey]) return;
+            c.references[referenceKey] = (config) => async ({type, value, idField, fetchedFields, contextData}) =>
+                config.operation(`${type}.get`, {params: {[idField]: value, fields: fetchedFields, contextData}})
+            ;
+        });
+        Object.assign(schema.values, x.values);
+        Object.assign(schema.updateValues, x.updateValues);
+    });
+    return schema;
 };
 
-const parseFieldString = (s, name) => {
+const parseFieldString = (c: Config, s, name) => {
     let required = false;
     let internal = false;
     let primaryKey = false;
     let volatile = false;
+    let reference: Map|undefined = undefined;
     let index = <any[]>[];
+    let refAttribute: Map|undefined = undefined;
+    const validators = <any[]>[];
     if (/!$/.test(s)) {
         required = true;
         s = s.substr(0, s.length - 1);
@@ -121,32 +220,43 @@ const parseFieldString = (s, name) => {
         s = s.substr(1);
         index = [{name}];
     }
-    return {type: s, index, internal, required, primaryKey, volatile, config: {}};
+    if (/^ref:/.test(s)) {
+        reference = {reference: s.substr(4), idField: 'id', fetchedFields: []};
+        s = 'string';
+    }
+    if (/^refattr:/.test(s)) {
+        const [parentField, sourceField] = s.substr(8).split(/:/);
+        refAttribute = {parentField, sourceField, field: name};
+        s = 'string';
+    }
+    return {type: s, index, internal, required, primaryKey, volatile, reference, refAttribute, validators, config: {}};
 };
 
-const validateCreateHook = c => ({req: {payload: {data}}}) => {
+const validateCreateHook = c => async ({req}) => {
+    const localCtx = {config: c, data: req.payload.contextData || {}};
     const errors = {};
     const fields = c.schemaModel.fields;
     const privateFields = c.schemaModel.privateFields;
-    Object.keys(data).forEach(k => {
-        if (!fields[k] || privateFields[k]) delete data[k];
+    Object.keys(req.payload.data).forEach(k => {
+        if (!fields[k] || privateFields[k]) delete req.payload.data[k];
     });
     Object.keys(c.schemaModel.requiredFields).forEach(k => {
-        if (!data.hasOwnProperty(k)) {
+        if (!req.payload.data.hasOwnProperty(k)) {
             if (!errors[k]) errors[k] = [];
             errors[k].push(new Error('Field is required'));
         }
     });
-    Object.entries(data).forEach(([k, v]) => {
+    await Promise.all(Object.entries(req.payload.data).map(async ([k, v]) => {
         if (!c.schemaModel.validators[k]) return;
-        c.schemaModel.validators[k].forEach(validator => {
-            if (!validator.test(v)) {
+        await Promise.all(c.schemaModel.validators[k].map(async validator => {
+            if (!(await validator.test(v, localCtx))) {
                 if (!errors[k]) errors[k] = [];
-                errors[k].push(new Error(validator.message(v)));
+                errors[k].push(new Error(await validator.message(v, localCtx)));
             }
-        })
-    });
+        }));
+    }));
     if (0 < Object.keys(errors).length) throw new ValidationError(errors, c.schemaModel);
+    req.payload.contextData = Object.assign(req.payload.contextData || {}, localCtx.data || {});
 };
 const validateUpdateHook = c => ({req: {payload: {data}}}) => {
     const errors = {};
@@ -178,20 +288,20 @@ const hookOp = (c) => async (action) => {
 };
 const hookCreatePopOp = c => (action) => {
     Object.entries(c.schemaModel.values).forEach(([k, valueGenerator]) => {
-        action.req.payload.data[k] = (<Function>valueGenerator)();
+        action.req.payload.data[k] = (<Function>valueGenerator)(action, c);
     });
     Object.entries(c.schemaModel.defaultValues).forEach(([k, defaultValueGenerator]) => {
         if (action.req.payload.data[k]) return;
-        action.req.payload.data[k] = (<Function>defaultValueGenerator)();
+        action.req.payload.data[k] = (<Function>defaultValueGenerator)(action, c);
     });
 };
 const hookUpdatePopOp = c => (action) => {
     Object.entries(c.schemaModel.updateValues).forEach(([k, valueGenerator]) => {
-        action.req.payload.data[k] = (<Function>valueGenerator)();
+        action.req.payload.data[k] = (<Function>valueGenerator)(action, c);
     });
     Object.entries(c.schemaModel.updateDefaultValues).forEach(([k, defaultValueGenerator]) => {
         if (action.req.payload.data[k]) return;
-        action.req.payload.data[k] = (<Function>defaultValueGenerator)();
+        action.req.payload.data[k] = (<Function>defaultValueGenerator)(action, c);
     });
 };
 const hookPrepOp = c => (action) => {

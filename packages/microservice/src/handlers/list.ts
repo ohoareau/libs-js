@@ -17,12 +17,13 @@ export default {
     pattern: 'get{FullTypes}',
     factory: (_, c: Config) => async (event: any) => {
         const {
-            params: { query, criteria, fields, limit, offset, sort, ...rest } = {
-                query: undefined, criteria: {}, fields: [], limit: undefined, offset: undefined, sort: undefined,
+            params: { query, criteria, fields, limit, offset, sort, contextData, ...rest } = {
+                query: undefined, criteria: {}, fields: [], limit: undefined, offset: undefined, sort: undefined, contextData: {},
             },
         } = event;
         return (await (<Executor>c.execute)('find', {
-            criteria: query ? {...criteria, _: mutateQuery(query, rest)} : criteria, fields, limit, offset, sort
+            criteria: query ? {...criteria, _: mutateQuery(query, rest)} : criteria, fields, limit, offset, sort,
+            contextData,
         })).res.result;
     },
 }

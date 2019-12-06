@@ -105,9 +105,15 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
             return (<any>subTypeConfig).execute(operation, payload, options);
         };
         c.buildOperationArn = (name: string): string => {
-            const pattern = process.env.MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN;
-            if (!pattern) throw new Error('No microservice pattern for lambda operation arn is available (no env var MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN)');
-            return pattern.replace('{name}', name.replace('.', '-'));
+            const upperCasedName = `${name.toUpperCase().replace(/[^A-Z0-9_]+/, '_')}`;
+            const sluggedName = name.replace('.', '-');
+            const tries = [
+                `MICROSERVICE_${upperCasedName}_LAMBDA_ARN`,
+                'MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN',
+            ];
+            const arn = tries.map(t => process.env[t]).filter(v => !!v).find(v => !!v);
+            if (!arn) throw new Error(`Unknown operation '${name}' (none of the following env vars are available: ${tries.join(', ')}`);
+            return arn.replace('{name}', sluggedName);
         };
         (<any>c).subTypeRun = async (...args) => (await (<any>c).subTypeExecute(...args)).res.result;
         (<any>c).operation = async (name: string, payload: any, options: Map = {}): Promise<any> =>

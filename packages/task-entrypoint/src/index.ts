@@ -1,5 +1,6 @@
 const { writeFileSync } = require('fs');
 const { execSync } = require('child_process');
+const { resolve } = require('path');
 
 const buildSequence = (steps, actions) => actions.reduce((acc, action) => {
     const s = steps[action];
@@ -31,7 +32,7 @@ export default (action, steps, config: {[key: string]: any} = {}) => {
     config.cwd = config.cwd || process.cwd;
     config.result = config.result || (() => ({}));
     const write = (path, content) => writeFileSync(path, content || '');
-    const write_merged_json = (path, json) => write(path, JSON.stringify({...require(path), ...((('string' === typeof json) ? JSON.parse(json || '{}') : json) || {})}));
+    const write_merged_json = (path, json) => write(path, JSON.stringify({...require(resolve(path)), ...((('string' === typeof json) ? JSON.parse(json || '{}') : json) || {})}));
     const exec = (command, cwd = undefined, envs = undefined) => execSync(command, {cwd: cwd || config.cwd(), env: envs || env, encoding: 'utf8'});
     const rm = (path) => exec(`rm -rf ${path}`);
     const copy = (source, target) => {rm(target); exec(`cp -R ${source} ${target}`);};

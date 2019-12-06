@@ -9,23 +9,17 @@ const processDirectMessage = async (ec: TypedMap, c: Config, context: any, r: Ma
     const eventType = r.messageAttributes.fullType.stringValue.toLowerCase().replace(/\./g, '_');
     const splits = r.eventSourceARN.split(':');
     const queueUrl = sqs.endpoint.href + splits[4] + '/' + splits[5];
-    if (c.eventListeners && c.eventListeners[eventType]) {
+    const listeners = c.getListenersFor(eventType);
+    if (0 < listeners.length) {
         const attributes = Object.entries(r.messageAttributes).reduce((acc, [k, m]) => {
             acc[k] = (<Map>m).stringValue;
             return acc;
         }, {});
         c.log('external event', 'PROCESSING', eventType, message, attributes, receiptHandle, 'DIRECT');
-        await (<Handler>c.eventListeners[eventType])(
+        await Promise.all(listeners.map(async (listener: Handler) => listener(
             message,
-            {
-                attributes,
-                execute: c.execute,
-                config: c,
-                context,
-                queueUrl,
-                receiptHandle,
-            }
-        );
+            {attributes, execute: c.execute, config: c, context, queueUrl, receiptHandle}
+        )));
         c.log('external event', 'PROCESSED', eventType, receiptHandle, 'DIRECT');
     } else {
         c.log('external event', 'IGNORED', eventType, receiptHandle, 'DIRECT');

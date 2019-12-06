@@ -243,4 +243,30 @@ describe('microservice', () => {
         expect(r).toEqual(300);
         expect(mockData).toEqual({xyz: {id: 'xyz', value: 25}});
     });
+    it('reference', async () => {
+        const mockData = {};
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'item',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    references: {
+                        y_z: () => async ({value}) => ({id: value, field1: 'efgh', field2: 'ijkl'})
+                    },
+                    schema: {
+                        attributes: {
+                            id: 'string!',
+                            x: 'ref:y.z',
+                            yField1: 'refattr:x:field1',
+                            yField2: 'refattr:x:field2',
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['createItem']({params: {input: {id: 'xyz', x: 'abcd'}}}, {});
+        expect(r).toEqual({id: 'xyz', x: 'abcd', yField1: 'efgh', yField2: 'ijkl'});
+        expect(mockData).toEqual({xyz: {id: 'xyz', x: 'abcd', yField1: 'efgh', yField2: 'ijkl'}});
+    });
 });
