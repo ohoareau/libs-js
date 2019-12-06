@@ -124,6 +124,9 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
     }, {})
 ;
 export default (c: RootConfig): Map<Handler> => {
+    c.log = (...args): void => {
+        console.log(`MICROSERVICE`, ...args);
+    };
     const handlers = loadTypes(c, c.types);
     Object.values(commonHandlerTypes).forEach((loader: Function) => loader(c, handlers));
     return handlers;
