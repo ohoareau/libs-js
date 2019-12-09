@@ -69,15 +69,22 @@ const buildReferenceValidator = (c: Config, type, localField, idField = 'id', fe
         test: async (value, localCtx) => {
             try {
                 const k = `${type}.${value}`;
-                const existingData = (localCtx.data || {})[k] || {};
+                const existingData = {...(localCtx.data || {}), ...((localCtx.data || {})[k] || {})};
+                let requiredData;
                 if (!!fetchedFields.find(f => !existingData.hasOwnProperty(f) || (undefined === existingData[f]))) {
-                    localCtx.data[k] = await c.fetchReference({
+                    requiredData = await c.fetchReference({
                         type,
                         value,
                         idField,
                         fetchedFields
                     }, localCtx) || {};
+                } else {
+                    requiredData = fetchedFields.reduce((acc, k) => {
+                        acc[k] = existingData[k];
+                        return acc;
+                    }, {});
                 }
+                localCtx.data[k] = requiredData;
                 return true;
             } catch (e) {
                 console.log(`Reference validator Error: type=${type}, localField=${localField} value=${value} => ${e.message}`);
