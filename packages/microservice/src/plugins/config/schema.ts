@@ -218,12 +218,12 @@ const parseSchema = (c: Config) => {
             operation(`${c.type}.${(<any>operationDef).failure || 'update'}`, {params: {id: payload.id, input: {...(await mode.failureInput(payload))}}})
         );
         if ((<any>operationDef).bypass) {
-            registerOperation(c, operation, async (payload, options, process) => {
+            registerOperation(c, operation, c => async (payload, options, process) => {
                 if (payload && payload.complete) return process();
                 return (<any>operationDef).pending
                     ? c.operation(`${c.type}.update`, {params: {id: payload.id, input: {...(await mode.pendingInput(payload))}}})
                     : undefined
-                    ;
+                ;
             });
         } else if ((<any>operationDef).pending) {
             c.registerHooks([
