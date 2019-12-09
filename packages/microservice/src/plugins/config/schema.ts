@@ -7,6 +7,16 @@ export const transformers = {
     lower: v => `${v}`.toLowerCase(),
 };
 
+export const registerEventListener = (c: Config, eventKey: string, listener: Function) => {
+    if (!c.events[eventKey]) c.events[eventKey] = [];
+    if (!Array.isArray(c.events[eventKey])) c.events[eventKey] = [c.events[eventKey]];
+    c.events[eventKey].push(listener);
+};
+
+export const registerOperation = (c: Config, operation: string, callback: Function) => {
+    c.operations[operation] = callback;
+};
+
 export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     if (!c.schema) return;
     Object.entries(fieldTypes).forEach(([k, v]) => register('fieldtype', k, v));
@@ -47,17 +57,14 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     const referenceFieldsEntries = Object.entries(c.schemaModel.referenceFields);
     if (referenceFieldsEntries.length) {
         c.events = c.events || {};
-        const registerEventListener = (c: Config, v: Map, operation: string, listener: Function) => {
-            const eventKey = `${(<any>v).reference.replace('.', '_')}_${operation}`;
-            if (!c.events[eventKey]) c.events[eventKey] = [];
-            if (!Array.isArray(c.events[eventKey])) c.events[eventKey] = [c.events[eventKey]];
-            c.events[eventKey].push(listener);
+        const registerReferenceEventListener = (c: Config, v: Map, operation: string, listener: Function) => {
+            registerEventListener(c, `${(<any>v).reference.replace('.', '_')}_${operation}`, listener);
         };
         referenceFieldsEntries.forEach(([k, v]) => {
-            registerEventListener(c, <Map>v, 'update', async (data, { config: { type, operation } }) =>
+            registerReferenceEventListener(c, <Map>v, 'update', async (data, { config: { type, operation } }) =>
                 operation(`${type}.update`, {params: {id: {[k]: data[(<any>v).idField]}, input: {[k]: data[(<any>v).idField]}, contextData: data}})
             );
-            registerEventListener(c, <Map>v, 'delete', async (data, { config: { type, operation } }) =>
+            registerReferenceEventListener(c, <Map>v, 'delete', async (data, { config: { type, operation } }) =>
                 operation(`${type}.delete`, {params: {id: {[k]: data[(<any>v).idField]}, contextData: data}})
             );
         });
@@ -97,6 +104,28 @@ const buildReferenceValidator = (c: Config, type, localField, idField = 'id', fe
 
 const parseSchema = (c: Config) => {
     const def = c.schema;
+    const operations = {
+        delete: {complete: 'delete', bypass: true},
+        create: {},
+        update: {},
+    };
+    Object.entries(operations).forEach(([operation, operationDef]) => {
+        const key = `${operation}Job`;
+        if (!def[key]) return;
+        const mode = {completeInput: () => ({}), failureInput: () => ({}), ...def[key]};
+        registerEventListener(c, `${c.type}_${operation}_complete`, async (payload, { config: { operation } }) =>
+            operation(`${c.type}.${(<any>operationDef).complete || 'update'}`, {params: {id: payload.id, complete: true, input: {...(await mode.completeInput(payload))}}})
+        );
+        registerEventListener(c, `${c.type}_${operation}_failure`, async (payload, { config: { operation } }) =>
+            operation(`${c.type}.${(<any>operationDef).failure || 'update'}`, {params: {id: payload.id, input: {...(await mode.failureInput(payload))}}})
+        );
+        if ((<any>operationDef).bypass) {
+            registerOperation(c, operation, async (payload, options, process) => {
+                // job mode do not trigger the underlying backend operation if not in complete mode
+                if (payload && payload.complete) process();
+            });
+        }
+    });
     const schema = Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = {
             ...('string' === typeof d) ? parseFieldString(c, d, k) : d,
@@ -126,14 +155,14 @@ const parseSchema = (c: Config) => {
             if (!acc.refAttributeFields[refAttribute.parentField]) acc.refAttributeFields[refAttribute.parentField] = [];
             acc.refAttributeFields[refAttribute.parentField].push({sourceField: refAttribute.sourceField, targetField: k, field: refAttribute.field});
         }
-        reference && (acc.referenceFields[k] = reference);
+        (undefined !== reference) && (acc.referenceFields[k] = reference);
         (validators && 0 < validators.length) && (acc.validators[k] = validators);
-        value && (acc.values[k] = value);
-        updateValue && (acc.updateValues[k] = updateValue);
-        defaultValue && (acc.defaultValues[k] = defaultValue);
-        rawDefaultValue && (acc.defaultValues[k] = () => rawDefaultValue);
-        updateDefaultValue && (acc.updateDefaultValues[k] = updateDefaultValue);
-        rawUpdateDefaultValue && (acc.updateDefaultValues[k] = () => rawUpdateDefaultValue);
+        (undefined !== value) && (acc.values[k] = value);
+        (undefined !== updateValue) && (acc.updateValues[k] = updateValue);
+        (undefined !== defaultValue) && (acc.defaultValues[k] = defaultValue);
+        (undefined !== rawDefaultValue) && (acc.defaultValues[k] = () => rawDefaultValue);
+        (undefined !== updateDefaultValue) && (acc.updateDefaultValues[k] = updateDefaultValue);
+        (undefined !== rawUpdateDefaultValue) && (acc.updateDefaultValues[k] = () => rawUpdateDefaultValue);
         internal && (acc.privateFields[k] = true);
         index && (index.length > 0) && (acc.indexes[k] = index);
         volatile && (acc.volatileFields[k] = true);
@@ -184,7 +213,7 @@ const parseSchema = (c: Config) => {
                 schema.referenceFields[k].fetchedFields
             )
         );
-        Object.entries(schema.referenceFields).forEach(([k, v]) => {
+        Object.entries(schema.referenceFields).forEach(([_, v]) => {
             const referenceKey = ((<any>v).reference).replace('.', '_');
             if (!c.references) c.references = {};
             if (c.references[referenceKey]) return;
@@ -284,7 +313,7 @@ const validateUpdateHook = c => ({req}) => {
     });
     if (0 < Object.keys(errors).length) throw new ValidationError(errors, c.schemaModel);
 };
-const hookOp = (c) => async (action) => {
+const hookOp = (_) => async (action) => {
     if (!action.req.payload.volatileData || 0 === Object.keys(action.req.payload.volatileData).length) {
         delete action.req.payload.volatileData;
         return;
