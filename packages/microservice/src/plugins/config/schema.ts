@@ -105,9 +105,9 @@ const buildReferenceValidator = (c: Config, type, localField, idField = 'id', fe
 const parseSchema = (c: Config) => {
     const def = c.schema;
     const operations = {
-        delete: {complete: 'delete', pending: true, bypass: true},
-        create: {pending: true},
-        update: {pending: true},
+        delete: {complete: 'delete', virtualComplete: true},
+        create: {},
+        update: {},
     };
     const schema = Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = {
@@ -217,15 +217,14 @@ const parseSchema = (c: Config) => {
         registerEventListener(c, `${c.type}_${operation}_failure`, async (payload, { config: { operation } }) =>
             operation(`${c.type}.${(<any>operationDef).failure || 'update'}`, {params: {id: payload.id, input: {...(await mode.failureInput(payload))}}})
         );
-        if ((<any>operationDef).bypass) {
-            registerOperation(c, operation, c => async (payload, options, process) => {
-                if (payload && payload.complete) return process();
-                return (<any>operationDef).pending
-                    ? c.operation(`${c.type}.update`, {params: {id: payload.id, input: {...(await mode.pendingInput(payload))}}})
-                    : undefined
-                ;
-            });
-        } else if ((<any>operationDef).pending) {
+        if ((<any>operationDef).virtualComplete) {
+            registerOperation(c, operation, c => async (payload) =>
+                c.operation(`${c.type}.update`, {params: {id: payload.id, input: {...(await mode.pendingInput(payload))}}})
+            );
+            registerOperation(c, `complete_${operation}`, () => async (payload, options, process) =>
+                process(operation)
+            );
+        } else {
             c.registerHooks([
                 [`populate_${operation}`, async action => {
                     Object.assign(action.req.payload.data, await mode.pendingInput(action.req.payload));
