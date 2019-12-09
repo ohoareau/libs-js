@@ -105,27 +105,10 @@ const buildReferenceValidator = (c: Config, type, localField, idField = 'id', fe
 const parseSchema = (c: Config) => {
     const def = c.schema;
     const operations = {
-        delete: {complete: 'delete', bypass: true},
-        create: {},
-        update: {},
+        delete: {complete: 'delete', pending: true, bypass: true},
+        create: {pending: true},
+        update: {pending: true},
     };
-    Object.entries(operations).forEach(([operation, operationDef]) => {
-        const key = `${operation}Job`;
-        if (!def[key]) return;
-        const mode = {completeInput: () => ({}), failureInput: () => ({}), ...def[key]};
-        registerEventListener(c, `${c.type}_${operation}_complete`, async (payload, { config: { operation } }) =>
-            operation(`${c.type}.${(<any>operationDef).complete || 'update'}`, {params: {id: payload.id, complete: true, input: {...(await mode.completeInput(payload))}}})
-        );
-        registerEventListener(c, `${c.type}_${operation}_failure`, async (payload, { config: { operation } }) =>
-            operation(`${c.type}.${(<any>operationDef).failure || 'update'}`, {params: {id: payload.id, input: {...(await mode.failureInput(payload))}}})
-        );
-        if ((<any>operationDef).bypass) {
-            registerOperation(c, operation, async (payload, options, process) => {
-                // job mode do not trigger the underlying backend operation if not in complete mode
-                if (payload && payload.complete) process();
-            });
-        }
-    });
     const schema = Object.entries(def.attributes).reduce((acc, [k, d]) => {
         d = {
             ...('string' === typeof d) ? parseFieldString(c, d, k) : d,
@@ -223,6 +206,32 @@ const parseSchema = (c: Config) => {
         });
         Object.assign(schema.values, x.values);
         Object.assign(schema.updateValues, x.updateValues);
+    });
+    Object.entries(operations).forEach(([operation, operationDef]) => {
+        const key = `${operation}Job`;
+        if (!def[key]) return;
+        const mode = {pendingInput: () => ({}), completeInput: () => ({}), failureInput: () => ({}), ...def[key]};
+        registerEventListener(c, `${c.type}_${operation}_complete`, async (payload, { config: { operation } }) =>
+            operation(`${c.type}.${(<any>operationDef).complete || 'update'}`, {params: {id: payload.id, complete: true, input: {...(await mode.completeInput(payload))}}})
+        );
+        registerEventListener(c, `${c.type}_${operation}_failure`, async (payload, { config: { operation } }) =>
+            operation(`${c.type}.${(<any>operationDef).failure || 'update'}`, {params: {id: payload.id, input: {...(await mode.failureInput(payload))}}})
+        );
+        if ((<any>operationDef).bypass) {
+            registerOperation(c, operation, async (payload, options, process) => {
+                if (payload && payload.complete) return process();
+                return (<any>operationDef).pending
+                    ? c.operation(`${c.type}.update`, {params: {id: payload.id, input: {...(await mode.pendingInput(payload))}}})
+                    : undefined
+                    ;
+            });
+        } else if ((<any>operationDef).pending) {
+            c.registerHooks([
+                [`populate_${operation}`, async action => {
+                    Object.assign(action.req.payload.data, await mode.pendingInput(action.req.payload));
+                }],
+            ]);
+        }
     });
     return schema;
 };
