@@ -8,6 +8,7 @@ export const transformers = {
 };
 
 export const registerEventListener = (c: Config, eventKey: string, listener: Function) => {
+    if (!c.events) c.events = {};
     if (!c.events[eventKey]) c.events[eventKey] = [];
     if (!Array.isArray(c.events[eventKey])) c.events[eventKey] = [c.events[eventKey]];
     c.events[eventKey].push(listener);
@@ -56,7 +57,6 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     c.registerHooks(hks, true);
     const referenceFieldsEntries = Object.entries(c.schemaModel.referenceFields);
     if (referenceFieldsEntries.length) {
-        c.events = c.events || {};
         const registerReferenceEventListener = (c: Config, v: Map, operation: string, listener: Function) => {
             registerEventListener(c, `${(<any>v).reference.replace('.', '_')}_${operation}`, listener);
         };
