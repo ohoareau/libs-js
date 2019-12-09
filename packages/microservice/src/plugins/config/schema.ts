@@ -258,19 +258,20 @@ const validateCreateHook = c => async ({req}) => {
     if (0 < Object.keys(errors).length) throw new ValidationError(errors, c.schemaModel);
     req.payload.contextData = Object.assign(req.payload.contextData || {}, localCtx.data || {});
 };
-const validateUpdateHook = c => ({req: {payload: {data}}}) => {
+const validateUpdateHook = c => ({req}) => {
+    const localCtx = {config: c, data: req.payload.contextData || {}};
     const errors = {};
     const fields = c.schemaModel.fields;
     const privateFields = c.schemaModel.privateFields;
-    Object.keys(data).forEach(k => {
-        if (!fields[k] || privateFields[k]) delete data[k];
+    Object.keys(req.payload.data).forEach(k => {
+        if (!fields[k] || privateFields[k]) delete req.payload.data[k];
     });
-    Object.entries(data).forEach(([k, v]) => {
+    Object.entries(req.payload.data).forEach(([k, v]) => {
         if (!c.schemaModel.validators[k]) return;
         c.schemaModel.validators[k].forEach(validator => {
-            if (!validator.test(v)) {
+            if (!validator.test(v, localCtx)) {
                 if (!errors[k]) errors[k] = [];
-                errors[k].push(new Error(validator.message(v)));
+                errors[k].push(new Error(validator.message(v, localCtx)));
             }
         })
     });

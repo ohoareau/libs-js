@@ -161,6 +161,8 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
             let docs: any[]|undefined;
             if ('string' === typeof payload.id) {
                 doc = await model.get(payload.id);
+            } else if (Array.isArray(payload.id)) {
+                docs = await model.batchGet(payload.id.map(id => ({id})));
             } else if ('object' === typeof payload.id) {
                 [doc = undefined] = (await runQuery(model, {
                     criteria: {_: convertToQueryDsl(payload.id)},
@@ -169,8 +171,6 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
                     offset: undefined,
                     sort: undefined,
                 }) || []).map(d => ({...(d || {})}));
-            } else if (Array.isArray(payload.id)) {
-                docs = await model.batchGet(payload.id.map(id => ({id})));
             }
             if (docs) return [...docs];
             if (!doc) throw new DocumentNotFoundError(name, payload.id);
@@ -181,6 +181,9 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
             let docs: any;
             if ('string' === typeof payload.id) {
                 doc = {...(await model.delete({id: payload.id}) || {})};
+            } else if(Array.isArray(payload.id)) {
+                await model.batchDelete((<string[]>payload.id).map(id => ({id})));
+                docs = payload.id.map(id => ({id}));
             } else if ('object' === typeof payload.id) {
                 const toDeleteIds = (await runQuery(model, {
                     criteria: {_: convertToQueryDsl(payload.id)},
@@ -189,11 +192,8 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
                     offset: undefined,
                     sort: undefined,
                 }) || []);
-                await model.batchDelete(toDeleteIds);
+                await model.batchDelete(toDeleteIds.map(doc => ({id: doc.id})));
                 docs = toDeleteIds;
-            } else if(Array.isArray(payload.id)) {
-                await model.batchDelete((<string[]>payload.id).map(id => ({id})));
-                docs = payload.id.map(id => ({id}));
             }
             if (docs) return [...docs];
             if (!doc) throw new DocumentNotFoundError(name, payload.id);
@@ -208,6 +208,8 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
             let ids: any[] = [];
             if ('string' === typeof payload.id) {
                 doc = {...(await model.update({id: payload.id}, payload.data || {}) || {})};
+            } else if (Array.isArray(payload.id)) {
+                docs = await Promise.all(payload.id.map(async id => model.update({id}, payload.data || {}) || {}));
             } else if ('object' === typeof payload.id) {
                 ids = (await runQuery(model, {
                     criteria: {_: convertToQueryDsl(payload.id)},
@@ -216,9 +218,7 @@ export default ({name, schema = {}, schemaOptions = {}, options = {}}) => {
                     offset: undefined,
                     sort: undefined,
                 }) || []);
-                docs = await Promise.all(ids.map(async id => model.update({id}, payload.data || {}) || {}));
-            } else if (Array.isArray(payload.id)) {
-                docs = await Promise.all(payload.id.map(async id => model.update({id}, payload.data || {}) || {}));
+                docs = await Promise.all(ids.map(async doc => model.update({id: doc.id}, payload.data || {}) || {}));
             }
             if (docs) return [...docs];
             if (!doc) throw new DocumentNotFoundError(name, payload.id);
