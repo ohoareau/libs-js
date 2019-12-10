@@ -45,7 +45,7 @@ export default () => {
         cognito.adminDeleteUser({UserPoolId: userPool, Username: username}).promise()
     ;
     const deleteUser = async ({userPool, id}): Promise<any> =>
-        deleteUserByUsername({userPool, username: (await getUser(id)).username})
+        deleteUserByUsername({userPool, username: (await getUser({userPool, id})).username})
     ;
     return {
         createUser,
