@@ -302,7 +302,7 @@ const validateCreateHook = c => async ({req}) => {
     if (0 < Object.keys(errors).length) throw new ValidationError(errors, c.schemaModel);
     req.payload.contextData = Object.assign(req.payload.contextData || {}, localCtx.data || {});
 };
-const validateUpdateHook = c => ({req}) => {
+const validateUpdateHook = c => async ({req}) => {
     const localCtx = {config: c, data: req.payload.contextData || {}};
     const errors = {};
     const fields = c.schemaModel.fields;
@@ -310,16 +310,17 @@ const validateUpdateHook = c => ({req}) => {
     Object.keys(req.payload.data).forEach(k => {
         if (!fields[k] || privateFields[k]) delete req.payload.data[k];
     });
-    Object.entries(req.payload.data).forEach(([k, v]) => {
+    await Promise.all(Object.entries(req.payload.data).map(async ([k, v]) => {
         if (!c.schemaModel.validators[k]) return;
-        c.schemaModel.validators[k].forEach(validator => {
-            if (!validator.test(v, localCtx)) {
+        await Promise.all(c.schemaModel.validators[k].map(async validator => {
+            if (!(await validator.test(v, localCtx))) {
                 if (!errors[k]) errors[k] = [];
-                errors[k].push(new Error(validator.message(v, localCtx)));
+                errors[k].push(new Error(await validator.message(v, localCtx)));
             }
-        })
-    });
+        }));
+    }));
     if (0 < Object.keys(errors).length) throw new ValidationError(errors, c.schemaModel);
+    req.payload.contextData = Object.assign(req.payload.contextData || {}, localCtx.data || {});
 };
 const hookOp = (_) => async (action) => {
     if (!action.req.payload.volatileData || 0 === Object.keys(action.req.payload.volatileData).length) {
