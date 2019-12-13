@@ -105,8 +105,8 @@ export const loadTypes = (ctx: Context, types: Config[]|undefined, pc?: Config):
             return (<any>subTypeConfig).execute(operation, payload, options);
         };
         c.buildOperationArn = (name: string): string => {
-            const upperCasedName = `${name.toUpperCase().replace(/[^A-Z0-9_]+/, '_')}`;
-            const sluggedName = name.replace('.', '-');
+            const upperCasedName = `${name.toUpperCase().replace(/[^A-Z0-9_]+/g, '_')}`;
+            const sluggedName = name.replace(/\./g, '-');
             const tries = [
                 `MICROSERVICE_${upperCasedName}_LAMBDA_ARN`,
                 'MICROSERVICE_PATTERN_LAMBDA_OPERATION_ARN',

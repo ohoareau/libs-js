@@ -28,7 +28,7 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
         return plugins.fieldtype[def.type]((def || {}).config || {});
     };
     c.fetchReference = async (def, {config, data: contextData}) => {
-        const k = def.type.replace('.', '_');
+        const k = def.type.replace(/\./g, '_');
         if (!config.references || !config.references[k]) throw new Error(`No reference fetch for type '${def.type}' (key is references.${k})`);
         return await config.references[k](config)({...def, contextData});
     };
@@ -58,7 +58,7 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     const referenceFieldsEntries = Object.entries(c.schemaModel.referenceFields);
     if (referenceFieldsEntries.length) {
         const registerReferenceEventListener = (c: Config, v: Map, operation: string, listener: Function) => {
-            registerEventListener(c, `${(<any>v).reference.replace('.', '_')}_${operation}`, listener);
+            registerEventListener(c, `${(<any>v).reference.replace(/\./g, '_')}_${operation}`, listener);
         };
         referenceFieldsEntries.forEach(([k, v]) => {
             registerReferenceEventListener(c, <Map>v, 'update', async (data, { config: { type, operation } }) =>
@@ -197,7 +197,7 @@ const parseSchema = (c: Config) => {
             )
         );
         Object.entries(schema.referenceFields).forEach(([_, v]) => {
-            const referenceKey = ((<any>v).reference).replace('.', '_');
+            const referenceKey = ((<any>v).reference).replace(/\./g, '_');
             if (!c.references) c.references = {};
             if (c.references[referenceKey]) return;
             c.references[referenceKey] = (config) => async ({type, value, idField, fetchedFields, contextData}) =>
