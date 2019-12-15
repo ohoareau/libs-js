@@ -6,9 +6,8 @@ export default (bc: TypedMap, c: Config) => {
     return async (operation: string, payload: any) => db[operation] ? db[operation](payload) : undefined;
 }
 
-const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc: any, [k, def]: [string, any]) => {
-    if (def.volatile) return acc;
-    const field: {type: Function, [key: string]: any} = {type: String};
+const mutateField = def => {
+    const field: {type: Function|string, [key: string]: any} = {type: String};
     switch (def.type) {
         case 'string':
             field.type = String;
@@ -18,6 +17,18 @@ const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc: any, [k, d
             break;
         case 'boolean':
             field.type = Boolean;
+            break;
+        default:
+            if (Array.isArray(def.type)) {
+                field.type = 'list';
+                field.list = def.type.map(l => mutateField(l));
+            } else if ('object' === typeof def.type) {
+                field.type = 'map';
+                field.map = Object.entries(def.type).reduce((acc, [k, v]) => {
+                    acc[k] = mutateField(v);
+                    return acc;
+                }, {});
+            }
             break;
     }
     if (def.hasOwnProperty('default')) {
@@ -34,7 +45,12 @@ const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc: any, [k, d
             project: true,
         }));
     }
-    acc.schema[k] = def.list ? [field] : field;
+    return def.list ? [field] : field;
+};
+
+const parseSchemaModel = (s) => Object.entries(s.fields).reduce((acc: any, [k, def]: [string, any]) => {
+    if (def.volatile) return acc;
+    acc.schema[k] = mutateField(def);
     if (s.requiredFields && s.requiredFields[k]) {
         acc.schema[k].required = true;
     }
