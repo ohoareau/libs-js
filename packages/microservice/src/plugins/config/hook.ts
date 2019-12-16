@@ -25,6 +25,19 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     c.createHook = (def: Definition, c: Config) => {
         if (!def || !def.type) throw new Error('No hook type specified');
         if (!plugins.hook[def.type]) throw new Error(`Unknown hook type '${def.type}'`);
-        return plugins.hook[def.type](def.config, c);
+        let h = plugins.hook[def.type](def.config, c);
+        const cfg = <any>def.config;
+        if (cfg && cfg.iteratorKey) {
+            const hh = h;
+            h = async (action, options: Map = {}) => {
+                if (!action.req || !action.req.payload || !action.req.payload.data || !action.req.payload.data[cfg.iteratorKey]) return;
+                return Promise.all(action.req.payload.data[cfg.iteratorKey].map(async d => hh({...action, req: {...action.req, payload: {...action.req.payload, data: Object.entries(action.req.payload.data).reduce((acc, [kk, vv]) => {
+                    acc[`parent${kk.substr(0, 1).toUpperCase()}${kk.substr(1)}`] = vv;
+                    return acc;
+                    }, 'object' === typeof d ? {...d} : {value: d})}}}, options)
+                ));
+            }
+        }
+        return h;
     };
 }

@@ -28,7 +28,7 @@ const getRemoteExecutorFromDsn = dsn => {
     return execute;
 };
 
-export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : (a.type ? {...a} : {type: Object.keys(a)[0], ...(a.trackData ? {trackData: a.trackDAta} : {}), config: {...a}}));
+export const normalizeDefinition = (a): Definition => !a ? {type: 'unknown', config: {}} : (('string' === typeof a) ? {type: a, config: {}} : (a.type ? {...a} : {type: Object.keys(a)[0], ...(a.trackData ? {trackData: a.trackData} : {}), config: {...a}}));
 export const compose = (...f: Function[]) => {
     const l = f.length;
     return l === 0  ? a => a : (l === 1 ? f[0] : f.reduce((a, b) => (...c: any) => a(b(...c))));

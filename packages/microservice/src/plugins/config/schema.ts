@@ -22,10 +22,21 @@ export default (ctx: Context, c: Config, plugins: Map<Map>): void => {
     if (!c.schema) return;
     Object.entries(fieldTypes).forEach(([k, v]) => register('fieldtype', k, v));
     c.createField = def => {
-        if (!plugins.fieldtype || !plugins.fieldtype[def.type]) {
-            throw new Error(`Unknown field type '${def.type}'`);
+        let tt = def.type;
+        const extra = <any>{};
+
+        if (Array.isArray(tt)) {
+            extra.type = tt;
+            tt = tt[0].type;
         }
-        return plugins.fieldtype[def.type]((def || {}).config || {});
+        if ('object' === typeof tt) {
+            extra.type = tt;
+            tt = 'object';
+        }
+        if (!plugins.fieldtype || !plugins.fieldtype[tt]) {
+            throw new Error(`Unknown field type '${tt}'`);
+        }
+        return {...plugins.fieldtype[tt]((def || {}).config || {}), ...extra};
     };
     c.fetchReference = async (def, {config, data: contextData}) => {
         const k = def.type.replace(/\./g, '_');

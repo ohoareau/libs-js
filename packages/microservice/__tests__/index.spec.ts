@@ -269,4 +269,55 @@ describe('microservice', () => {
         expect(r).toEqual({id: 'xyz', x: 'abcd', yField1: 'efgh', yField2: 'ijkl'});
         expect(mockData).toEqual({xyz: {id: 'xyz', x: 'abcd', yField1: 'efgh', yField2: 'ijkl'}});
     });
+    it('map and list', async () => {
+        const mockData = {};
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'item',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    schema: {
+                        attributes: {
+                            id: 'string!',
+                            a: {type: {b: {type: 'string'}}},
+                            c: {type: [{type: 'email'}]},
+                            d: {type: [{type: {e: {type: 'string'}}}]},
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['createItem']({params: {input: {id: 'xyz', a: {b: 'abcd'}, c: ['hello@world.com', 'world@hello.com']}}}, {});
+        expect(r).toEqual({id: 'xyz', a: {b: 'abcd'}, c: ['hello@world.com', 'world@hello.com']});
+        expect(mockData).toEqual({xyz: {id: 'xyz', a: {b: 'abcd'}, c: ['hello@world.com', 'world@hello.com']}});
+    });
+    it('iterator hook', async () => {
+        const mockData = {};
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'item',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    hooks: {
+                        create: [
+                            {callback: ({req: {payload: {data}}, res}) => {
+                                res.result.t = (res.result.t || 0) + data.value;
+                            }, iteratorKey: 'z'},
+                        ],
+                    },
+                    schema: {
+                        attributes: {
+                            id: 'string!',
+                            z: {type: [{type: 'string'}], volatile: true}
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['createItem']({params: {input: {id: 'xyz', z: [12, 34, 56]}}}, {});
+        expect(r).toEqual({id: 'xyz', z: [12, 34, 56], t: 102});
+        expect(mockData).toEqual({xyz: {id: 'xyz'}});
+    });
 });
