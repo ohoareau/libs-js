@@ -24,6 +24,6 @@ export default {
         return (await (<Executor>c.execute)('find', {
             criteria: query ? {...criteria, _: mutateQuery(query, rest)} : criteria, fields, limit, offset, sort,
             contextData,
-        })).res.result;
+        }, {user: event.user, headers: event.headers})).res.result;
     },
 }

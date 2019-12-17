@@ -2,6 +2,7 @@ import microservice from '../src';
 import '../src/registers/backend-memory';
 import '../src/registers/backend-mock';
 import '../src/registers/eventsource-blackhole';
+import '../src/registers/authorizer-callback';
 
 describe('microservice', () => {
     it('handlers method generated', async () => {
@@ -319,5 +320,37 @@ describe('microservice', () => {
         const r = await handlers['createItem']({params: {input: {id: 'xyz', z: [12, 34, 56]}}}, {});
         expect(r).toEqual({id: 'xyz', z: [12, 34, 56], t: 102});
         expect(mockData).toEqual({xyz: {id: 'xyz'}});
+    });
+    it('inline authorizer', async () => {
+        const mockData = {};
+        let transmittedAuthorization = undefined;
+        const handlers = microservice({
+            root: '.',
+            types: [
+                {
+                    type: 'item',
+                    backend: {type: 'memory', config: {data: mockData}},
+                    authorizer: () => async ({req}) => {
+                        transmittedAuthorization = {...req.authorization};
+                        req.payload.data.createdBy = req.options.user.sub;
+                        return {authorized: true, status: 'allowed'};
+                    },
+                    schema: {
+                        attributes: {
+                            id: 'string!',
+                            createdBy: 'string',
+                        }
+                    },
+                },
+            ],
+        });
+        const r = await handlers['createItem']({params: {input: {id: 'xyz'}}, user: {sub: 'mr-the-user'}}, {});
+        expect(r).toEqual({id: 'xyz', createdBy: 'mr-the-user'});
+        expect(mockData).toEqual({xyz: {id: 'xyz', createdBy: 'mr-the-user'}});
+        expect(transmittedAuthorization).toEqual({
+            authorized: false,
+            operation: 'create',
+            user: {sub: 'mr-the-user'},
+        });
     });
 });
