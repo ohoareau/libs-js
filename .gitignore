@@ -5,5 +5,7 @@ npm-debug.log
 /packages/*/lib/
 /packages/*/*/lib/
 coverage/
+/generated/*
+packages/microgen/old/*
 *.log
 *.tsbuildinfo

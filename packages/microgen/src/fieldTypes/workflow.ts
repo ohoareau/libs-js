@@ -1,0 +1,1 @@
+export default ({steps}) => ({type: 'string', validators: [{type: 'values', config: {values: steps}}]})
