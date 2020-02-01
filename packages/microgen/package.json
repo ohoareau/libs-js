@@ -6,10 +6,14 @@
   "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
-    "test": "__tests__"
+    "test": "__tests__",
+    "bin": "bin"
   },
   "files": [
-    "lib"
+    "bin",
+    "lib",
+    "statics",
+    "templates"
   ],
   "publishConfig": {
     "access": "public"
@@ -25,5 +29,8 @@
   },
   "devDependencies": {
     "aws-sdk": "^2.578.0"
+  },
+  "bin": {
+    "microgen": "./bin/microgen"
   }
 }
