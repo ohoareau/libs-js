@@ -1,0 +1,21 @@
+all: install
+
+install:
+	@yarn install --silent
+
+clean:
+	@rm -rf node_modules && rm -rf coverage
+
+test:
+	@yarn test --color
+
+test-cov:
+	@yarn test --coverage --color
+
+test-ci:
+	@CI=true yarn test --all --coverage --color --detectOpenHandles
+
+build:
+	@sh ./bin/build-package
+
+.PHONY: all install test build clean
