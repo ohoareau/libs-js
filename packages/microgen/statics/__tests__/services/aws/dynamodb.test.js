@@ -25,9 +25,33 @@ describe('upsert', () => {
                 ':v2': {d: ['e', 'f']}
             },
             Key: {k1: 'v1'},
-            ReturnValues: 'ALL_NEW',
+            ReturnConsumedCapacity: "NONE",
+            ReturnItemCollectionMetrics: "NONE",
+            ReturnValues: "NONE",
+            ReturnValuesOnConditionCheckFailure: "NONE",
             TableName: 'mytable',
             UpdateExpression: 'SET #K0 = :v0, #K1 = :v1, #K2 = :v2',
+        });
+    });
+    it('prepare the underlying documentdb query (return values)', async () => {
+        const mockUpdate = jest.fn();
+        mockUpdate.mockReturnValue({promise: () => ({})});
+        docdbMock.prototype.update = mockUpdate;
+        expect(await dynamodb.upsert('mytable', {k1: 'v1', k2: 12}, {abcde: true}, {values: 'ALL_NEW'})).toBeDefined();
+        expect(mockUpdate).toHaveBeenCalledWith({
+            ExpressionAttributeNames: {
+                '#K0': 'abcde',
+            },
+            ExpressionAttributeValues: {
+                ':v0': true,
+            },
+            Key: {k1: 'v1', k2: 12},
+            ReturnConsumedCapacity: "NONE",
+            ReturnItemCollectionMetrics: "NONE",
+            ReturnValues: "ALL_NEW",
+            ReturnValuesOnConditionCheckFailure: "NONE",
+            TableName: 'mytable',
+            UpdateExpression: 'SET #K0 = :v0',
         });
     });
 });
@@ -37,6 +61,13 @@ describe('delete', () => {
         mockDelete.mockReturnValue({promise: () => ({})});
         docdbMock.prototype.delete = mockDelete;
         expect(await dynamodb.delete('mytable', {k1: 'v1'})).toBeDefined();
-        expect(mockDelete).toHaveBeenCalledWith({Key: {k1: 'v1'}, TableName: 'mytable'});
+        expect(mockDelete).toHaveBeenCalledWith({
+            Key: {k1: 'v1'},
+            TableName: 'mytable',
+            ReturnConsumedCapacity: "NONE",
+            ReturnItemCollectionMetrics: "NONE",
+            ReturnValues: "NONE",
+            ReturnValuesOnConditionCheckFailure: "NONE",
+        });
     });
 });
