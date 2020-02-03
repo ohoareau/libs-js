@@ -13,9 +13,9 @@ module.exports = {
             name: 'test-project',
             vars: {
                 license: 'MIT',
-            },
-            dependencies: {
-                gvalues: '0.2.0',
+                dependencies: {
+                    '@ohoareau/gvalues': '^0.2.0'
+                },
             },
             sources: ['custom'],
             events: {

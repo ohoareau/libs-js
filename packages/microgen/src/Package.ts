@@ -55,7 +55,7 @@ export default class Package {
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
         vars = {name: this.name, ...this.vars, ...vars};
         const files = (await Promise.all(Object.values(this.handlers).map(async h => h.generate(vars)))).reduce((acc, f) => ({...acc, ...f}), {
-            ['package.json']: ({jsStringify}) => JSON.stringify({
+            ['package.json']: () => JSON.stringify({
                 name: vars.name,
                 license: vars.license,
                 dependencies: {

@@ -4,7 +4,7 @@ const service = {
 <% variables.forEach(v => { %>    <%- v.code ? `${v.name}: ${v.code}` : v.name -%>,
 <% }) %>};
 
-<% methods.forEach(m => { %>service.<%- m.name -%> = <%- m.async ? 'async ' : '' -%><%- m.args.length === 0 ? '()' : (m.args.length === 1 ? m.args[0] : `(${m.args.join(', ')})`) -%> => {
+<% methods.forEach(m => { %>service.<%- m.name -%> = <%- m.async ? 'async ' : '' -%><%- ((m.args.length === 0 && '{' !== m.args[0].substr(0, 1)) ? '()' : (m.args.length === 1 ? m.args[0] : `(${m.args.join(', ')})`)) -%> => {
 <%- m.code %>
 };
 <% }) -%>

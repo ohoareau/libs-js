@@ -7,7 +7,30 @@ export default class SchemaParser {
     }
     parse(def: any): any {
         def = {attributes: {}, hooks: {}, ...def};
-        const schema = Object.entries(def.attributes).reduce((acc, [k, d]) => {
+        const schema = {
+            primaryKey: <any>undefined,
+            fields: {},
+            privateFields: {},
+            requiredFields: {},
+            validators: {},
+            values: {},
+            updateValues: {},
+            defaultValues: {},
+            updateDefaultValues: {},
+            indexes: {},
+            volatileFields: {},
+            transformers: {},
+            referenceFields: {},
+            refAttributeFields: {},
+            hooks: def.hooks,
+        };
+        this.parseAttributes(def, schema);
+        this.parseRefAttributeFields(def, schema);
+        this.parseJob(def, schema);
+        return schema;
+    }
+    parseAttributes(def: any, schema: any) {
+        Object.entries(def.attributes).reduce((acc, [k, d]) => {
             d = {
                 ...('string' === typeof d) ? this.parseFieldString(d, k) : d,
             };
@@ -34,7 +57,11 @@ export default class SchemaParser {
             required && (acc.requiredFields[k] = true);
             if (refAttribute) {
                 if (!acc.refAttributeFields[refAttribute.parentField]) acc.refAttributeFields[refAttribute.parentField] = [];
-                acc.refAttributeFields[refAttribute.parentField].push({sourceField: refAttribute.sourceField, targetField: k, field: refAttribute.field});
+                acc.refAttributeFields[refAttribute.parentField].push({
+                    sourceField: refAttribute.sourceField,
+                    targetField: k,
+                    field: refAttribute.field
+                });
             }
             (undefined !== reference) && (acc.referenceFields[k] = reference);
             (validators && 0 < validators.length) && (acc.validators[k] = validators);
@@ -52,29 +79,21 @@ export default class SchemaParser {
             lower && (acc.transformers[k].push({type: 'lower'}));
             if (0 === acc.transformers[k]) delete acc.transformers[k];
             return acc;
-        }, {
-            primaryKey: <any>undefined,
-            fields: {},
-            privateFields: {},
-            requiredFields: {},
-            validators: {},
-            values: {},
-            updateValues: {},
-            defaultValues: {},
-            updateDefaultValues: {},
-            indexes: {},
-            volatileFields: {},
-            transformers: {},
-            referenceFields: {},
-            refAttributeFields: {},
-            hooks: def.hooks,
-        });
+        }, schema);
+    }
+    parseRefAttributeFields(def: any, schema: any) {
         Object.entries(schema.refAttributeFields).forEach(([k, vList]) => {
             const x = (<any[]>vList).reduce((acc, v) => {
                 acc.sourceFields[v.sourceField] = true;
                 acc.targetFields[v.targetField] = true;
-                acc.values[v.targetField] = {type: 'ref-attribute-field', config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}};
-                acc.updateValues[v.targetField] = {type: 'ref-attribute-field', config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}};
+                acc.values[v.targetField] = {
+                    type: 'ref-attribute-field',
+                    config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
+                };
+                acc.updateValues[v.targetField] = {
+                    type: 'ref-attribute-field',
+                    config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
+                };
                 return acc;
             }, {targetFields: [], sourceFields: [], values: [], updateValues: []});
             if (!schema.referenceFields[k]) throw new Error(`${k} is not a reference field (but is a ref attribute requirement for ${Object.keys(x.targetFields).join(', ')})`);
@@ -88,20 +107,21 @@ export default class SchemaParser {
                     schema.referenceFields[k].fetchedFields
                 )
             );
-            Object.entries(schema.referenceFields).forEach(([_, v]) => {
             /*
-                const referenceKey = ((<any>v).reference).replace(/\./g, '_');
-                if (!c.references) c.references = {};
-                if (c.references[referenceKey]) return;
-                c.references[referenceKey] = (config) => async ({type, value, idField, fetchedFields, contextData}) =>
-                    config.operation(`${type}.get`, {params: {[idField]: value, fields: fetchedFields, contextData}})
-                ;
-             */
+            Object.entries(schema.referenceFields).forEach(([_, v]) => {
+                    const referenceKey = ((<any>v).reference).replace(/\./g, '_');
+                    if (!c.references) c.references = {};
+                    if (c.references[referenceKey]) return;
+                    c.references[referenceKey] = (config) => async ({type, value, idField, fetchedFields, contextData}) =>
+                        config.operation(`${type}.get`, {params: {[idField]: value, fields: fetchedFields, contextData}})
+                    ;
             });
+            */
             Object.assign(schema.values, x.values);
             Object.assign(schema.updateValues, x.updateValues);
         });
-        return schema;
+    }
+    parseJob(def: any, schema: any) {
         /*
         const operations = {
             delete: {complete: 'delete', virtualComplete: true},

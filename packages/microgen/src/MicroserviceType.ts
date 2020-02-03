@@ -12,7 +12,7 @@ export type MicroserviceTypeConfig = {
     handlers?: any,
     operations?: {[key: string]: MicroserviceTypeOperationConfig},
     middlewares?: string[],
-    backends?: string[],
+    backends?: string[] | {type: string, name: string}[],
 };
 
 export default class MicroserviceType {
@@ -29,8 +29,12 @@ export default class MicroserviceType {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
         this.model = {name: this.name, ...(new SchemaParser().parse(schema))};
-        this.backends = backends.reduce((acc, b) => Object.assign(acc, {[b]: {type: 'backend'}}), {caller: {type: 'service', }});
-        this.defaultBackendName = <string>[...backends].shift();
+        this.backends = (<any>backends).reduce((acc, b) => {
+            if ('string' === typeof b) b = {type: 'backend', name: b};
+            return Object.assign(acc, {[b.name]: b});
+        }, {caller: {type: 'service', name: 'caller'}});
+        const defaultBackendName: any = [...backends].shift();
+        this.defaultBackendName = !defaultBackendName ? undefined : (('string' == typeof defaultBackendName) ? defaultBackendName : defaultBackendName.name);
         Object.entries(operations).forEach(
             ([name, c]: [string, any]) =>
                 this.operations[name] = new MicroserviceTypeOperation(
@@ -88,16 +92,17 @@ export default class MicroserviceType {
         }, {});
     }
     buildServiceConfig({schema, operations}) {
+        const methods = Object.entries(operations).reduce((acc, [k, v]) => {
+            acc[k] = this.buildServiceMethodConfig({schema, name: k, ...<any>v});
+            return acc;
+        }, {});
         return {
             variables: {
                 model: {code: undefined},
-                buildHookFor: {code: `require('../../utils/initHook')`},
+                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {buildHookFor: {code: `require('../../utils/initHook')`}} : {}),
                 ...this.buildBackendsVariables(),
             },
-            methods: Object.entries(operations).reduce((acc, [k, v]) => {
-                acc[k] = this.buildServiceMethodConfig({schema, name: k, ...<any>v});
-                return acc;
-            }, {}),
+            methods,
             test: {
                 mocks: Object.entries(this.backends).map(([n, {type}]) => `../../../${type}s/${n}`),
                 groups: {
@@ -124,17 +129,23 @@ export default class MicroserviceType {
         const needHook = befores.reduce((acc, b) => acc || / hook\(/.test(b), false)
             || afters.reduce((acc, b) => acc || / hook\(/.test(b), <boolean>false)
         ;
+        const batchMode = /^batch/.test(name);
+        let nonBatchName = name.replace(/^batch/, '');
+        nonBatchName = `${nonBatchName.substr(0, 1).toLowerCase()}${nonBatchName.substr(1)}`;
         const lines = [
             needHook && `    const hook = service.buildHookFor('${this.name}_${name}', model);`,
             ...befores,
-            (!afters.length) && `    return service.${backendName}.${name}(query);`,
-            (!!afters.length) && `    let result = await service.${backendName}.${name}(query);`,
+            (!batchMode && !afters.length) && `    return service.${backendName}.${name}(query);`,
+            (!batchMode && !!afters.length) && `    let result = await service.${backendName}.${name}(query);`,
+            (batchMode && !afters.length) && `    return Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
+            (batchMode && !!afters.length) && `    let result = Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             ...afters,
             (!!afters.length) && '    return result;',
         ].filter(x => !!x);
         return {
+            needHook,
             async: true,
-            args: ['query'],
+            args: batchMode ? ['{data = [], ...query}'] : ['query'],
             code: lines.join("\n"),
         };
     }
