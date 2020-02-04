@@ -11,10 +11,28 @@ module.exports = {
         },
         p1: {
             name: 'test-project',
+            files: {
+                'schema.graphql': `schema {
+    query: Query
+    mutation: Mutation
+}                
+type Query {
+    getLog: String
+    getUsers: String
+    getOrganization: String
+}
+type Mutation {
+    createLog: String
+    createUser: String
+    createOrganization: String
+}
+`,
+            },
             vars: {
                 license: 'MIT',
                 dependencies: {
-                    '@ohoareau/gvalues': '^0.2.0'
+                    '@ohoareau/gvalues': '^0.2.0',
+                    'apollo-server-lambda': '^2.9.16',
                 },
             },
             sources: ['custom'],
@@ -34,6 +52,22 @@ module.exports = {
                 ]
             },
             handlers: {
+                graphql: {
+                    type: 'graphql',
+                    vars: {
+                        schemaFile: '../schema.graphql',
+                        queries: {
+                            getLog: 'log_log_get',
+                            getUsers: 'user_user_find',
+                            getOrganization: 'user_organization_get',
+                        },
+                        mutations: {
+                            createLog: 'log_log_create',
+                            createUser: 'user_user_create',
+                            createOrganization: 'user_organization_create',
+                        }
+                    }
+                },
                 handler: {
                     type: 'controller',
                     middlewares: ['warmup', 'error', 'debug', 'authorizer'],

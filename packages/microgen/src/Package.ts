@@ -5,6 +5,7 @@ const fs = require('fs');
 
 export type PackageConfig = {
     name: string,
+    files?: {[key: string]: any},
     events?: {[key: string]: any[]},
     handlers?: {[key: string]: HandlerConfig},
     microservices?: {[key: string]: MicroserviceConfig},
@@ -19,11 +20,13 @@ export default class Package {
     public readonly events: {[key: string]: any[]} = {};
     public readonly sources: string[] = [];
     public readonly vars: {[key: string]: any};
-    constructor({name, events = {}, handlers = {}, microservices = {}, sources = [], vars = {}}: PackageConfig) {
+    public readonly files: {[key: string]: any};
+    constructor({name, files = {}, events = {}, handlers = {}, microservices = {}, sources = [], vars = {}}: PackageConfig) {
         this.name = name;
         this.events = events || {};
         this.sources = sources;
         this.vars = vars;
+        this.files = files;
         Object.entries(microservices).forEach(
             ([name, c]: [string, any]) => {
                 this.microservices[name] = new Microservice(this, {name, ...c});
@@ -81,6 +84,10 @@ export default class Package {
             ['README.md']: ({renderFile}) => renderFile('README.md.ejs', vars),
             ['.gitignore']: ({renderFile}) => renderFile('.gitignore.ejs', vars),
             ['Makefile']: ({renderFile}) => renderFile('Makefile.ejs', vars),
+            ...(Object.entries(this.files).reduce((acc, [k, v]) => {
+                acc[k] = 'string' === typeof v ? (() => v) : (({renderFile}) => renderFile(v.template, v));
+                return acc;
+            }, {}))
         });
         const objects: any = (<any[]>[]).concat(
             Object.values(this.microservices),

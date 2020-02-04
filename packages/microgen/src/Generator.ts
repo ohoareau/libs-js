@@ -12,7 +12,7 @@ export type GeneratorConfig = {
 };
 
 const jsStringify = (o, inline = false, indentSize = 4) => stringifyObject(o, {indent: ''.padEnd(indentSize), singleQuotes: true, inlineCharacterLimit: 'number' !== typeof inline ? undefined : inline});
-const indent = (t, offset = 4) => (t || '').split(/\n/g).map(x => `${''.padEnd(offset)}${x}`).join("\n");
+const indent = (t, offset = 4) => (t || '').split(/\n/g).map(x => `${x ? ''.padEnd(offset) : ''}${x}`).join("\n");
 const render = (string, vars = {}, options = {}) => ejs.render(string, {indent, jsStringify, ...vars}, options);
 const renderFile = (path, vars = {}) => {
     const filename = `${__dirname}/../templates/${path}`;

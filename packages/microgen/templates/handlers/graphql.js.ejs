@@ -1,0 +1,45 @@
+const {ApolloServer, gql} = require('apollo-server-lambda');
+const r = h => async (parent, params, {context}, info) => h({params}, {...context, info});
+
+<% if ('undefined' !== typeof schemaFile) { -%>
+const typeDefs = gql(require('fs').readFileSync(`${__dirname}/<%- schemaFile -%>`, 'utf8'));
+<% } else { -%>
+const typeDefs = gql`
+<%- 'undefined' !== typeof schema ? schema : '' -%>
+`;
+<% } -%>
+
+const resolvers = {
+<% if ('undefined' !== typeof queries) { -%>
+    Query: {
+<% Object.entries(queries).forEach(([k, v]) => { -%>
+        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
+<% }) -%>
+    },
+<% } -%>
+<% if ('undefined' !== typeof mutations) { -%>
+    Mutation: {
+<% Object.entries(mutations).forEach(([k, v]) => { -%>
+        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
+<% }) -%>
+    },
+<% } -%>
+<% if ('undefined' !== typeof subscriptions) { -%>
+    Subscription: {
+<% Object.entries(subscriptions).forEach(([k, v]) => { -%>
+        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
+<% }) -%>
+    },
+<% } -%>
+};
+
+const context = ({event, context}) => ({event, context});
+
+module.exports = {
+    handler: new ApolloServer({typeDefs, resolvers, context}).createHandler({
+        cors: {
+            origin: true,
+            credentials: true,
+        },
+    }),
+};
