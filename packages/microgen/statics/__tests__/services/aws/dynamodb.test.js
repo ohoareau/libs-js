@@ -1,6 +1,6 @@
-jest.mock('aws-sdk/clients/docdb');
+jest.mock('aws-sdk/clients/dynamodb', () => ({DocumentClient: jest.fn()}));
 
-const docdbMock = require('aws-sdk/clients/docdb');
+const docClientMock = require('aws-sdk/clients/dynamodb').DocumentClient;
 const dynamodb = require('../../../services/aws/dynamodb');
 
 beforeAll(() => {
@@ -8,10 +8,10 @@ beforeAll(() => {
 });
 
 describe('upsert', () => {
-    it('prepare the underlying documentdb query', async () => {
+    it('prepare the underlying documentClient query', async () => {
         const mockUpdate = jest.fn();
         mockUpdate.mockReturnValue({promise: () => ({})});
-        docdbMock.prototype.update = mockUpdate;
+        docClientMock.prototype.update = mockUpdate;
         expect(await dynamodb.upsert('mytable', {k1: 'v1'}, {a: 1, b: true, c: {d: ['e', 'f']}})).toBeDefined();
         expect(mockUpdate).toHaveBeenCalledWith({
             ExpressionAttributeNames: {
@@ -33,10 +33,10 @@ describe('upsert', () => {
             UpdateExpression: 'SET #K0 = :v0, #K1 = :v1, #K2 = :v2',
         });
     });
-    it('prepare the underlying documentdb query (return values)', async () => {
+    it('prepare the underlying documentClient query (return values)', async () => {
         const mockUpdate = jest.fn();
         mockUpdate.mockReturnValue({promise: () => ({})});
-        docdbMock.prototype.update = mockUpdate;
+        docClientMock.prototype.update = mockUpdate;
         expect(await dynamodb.upsert('mytable', {k1: 'v1', k2: 12}, {abcde: true}, {values: 'ALL_NEW'})).toBeDefined();
         expect(mockUpdate).toHaveBeenCalledWith({
             ExpressionAttributeNames: {
@@ -56,10 +56,10 @@ describe('upsert', () => {
     });
 });
 describe('delete', () => {
-    it('prepare the underlying documentdb query', async () => {
+    it('prepare the underlying documentClient query', async () => {
         const mockDelete = jest.fn();
         mockDelete.mockReturnValue({promise: () => ({})});
-        docdbMock.prototype.delete = mockDelete;
+        docClientMock.prototype.delete = mockDelete;
         expect(await dynamodb.delete('mytable', {k1: 'v1'})).toBeDefined();
         expect(mockDelete).toHaveBeenCalledWith({
             Key: {k1: 'v1'},
@@ -68,6 +68,44 @@ describe('delete', () => {
             ReturnItemCollectionMetrics: "NONE",
             ReturnValues: "NONE",
             ReturnValuesOnConditionCheckFailure: "NONE",
+        });
+    });
+});
+
+describe('queryIndex', () => {
+    it('prepare the underlying documentClient query', async () => {
+        const mockQuery = jest.fn();
+        mockQuery.mockReturnValue({promise: () => ({Items: [], Count: 0, ScannedCount: 2})});
+        docClientMock.prototype.query = mockQuery;
+        expect(await dynamodb.queryIndex('mytable', 'myindex', {k1: 'v1'})).toEqual({
+            items: [],
+            count: 0,
+            scannedCount: 2,
+        });
+        expect(mockQuery).toHaveBeenCalledWith({
+            ExpressionAttributeNames: {
+                '#K0': 'k1',
+            },
+            ExpressionAttributeValues: {
+                ':v0': 'v1',
+            },
+            TableName: 'mytable',
+            IndexName: 'myindex',
+            KeyConditionExpression: '#K0 = :v0',
+        });
+    });
+    it('prepare the underlying documentClient query (no key)', async () => {
+        const mockQuery = jest.fn();
+        mockQuery.mockReturnValue({promise: () => ({Items: [], Count: 0, ScannedCount: 1})});
+        docClientMock.prototype.query = mockQuery;
+        expect(await dynamodb.queryIndex('mytable', 'myindex', {})).toEqual({
+            items: [],
+            count: 0,
+            scannedCount: 1,
+        });
+        expect(mockQuery).toHaveBeenCalledWith({
+            TableName: 'mytable',
+            IndexName: 'myindex',
         });
     });
 });
