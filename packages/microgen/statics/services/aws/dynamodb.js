@@ -62,16 +62,23 @@ const buildScanParams = (table, filter = {}, index = undefined) => ({
     ...(index ? {IndexName: index} : {}),
     ...buildExpressionParams(filter, 'Filter', '', ' and '),
 });
-const mutateResult = r => ({
+const mutateReadResult = r => ({
     items: r.Items,
     count: r.Count,
     scannedCount: r.ScannedCount,
+    consumedCapacity: r.ConsumedCapacity,
+    itemCollectionMetrics: r.ItemCollectionMetrics,
+});
+const mutateWriteResult = r => ({
+    attributes: r.Attributes,
+    consumedCapacity: r.ConsumedCapacity,
+    itemCollectionMetrics: r.ItemCollectionMetrics,
 });
 module.exports = {
-    delete: async (table, key, returns = undefined) => db.delete(buildParams(table, key, returns)).promise(),
-    upsert: async (table, key, data, returns = undefined) => db.update(buildUpdateParams(table, key, data, returns)).promise(),
-    queryIndex: async (table, index, key) => mutateResult(await db.query(buildQueryParams(table, key, index)).promise()),
-    query: async (table, key) => mutateResult(await db.query(buildQueryParams(table, key)).promise()),
-    scanIndex: async (table, index, filter = {}) => mutateResult(await db.scan(buildScanParams(table, filter, index)).promise()),
-    scan: async (table, filter = {}) => mutateResult(await db.scan(buildScanParams(table, filter)).promise()),
+    delete: async (table, key, returns = undefined) => mutateWriteResult(await db.delete(buildParams(table, key, returns)).promise()),
+    upsert: async (table, key, data, returns = undefined) => mutateWriteResult(await db.update(buildUpdateParams(table, key, data, returns)).promise()),
+    queryIndex: async (table, index, key) => mutateReadResult(await db.query(buildQueryParams(table, key, index)).promise()),
+    query: async (table, key) => mutateReadResult(await db.query(buildQueryParams(table, key)).promise()),
+    scanIndex: async (table, index, filter = {}) => mutateReadResult(await db.scan(buildScanParams(table, filter, index)).promise()),
+    scan: async (table, filter = {}) => mutateReadResult(await db.scan(buildScanParams(table, filter)).promise()),
 };

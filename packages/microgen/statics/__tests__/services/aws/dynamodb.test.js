@@ -12,7 +12,11 @@ describe('upsert', () => {
         const mockUpdate = jest.fn();
         mockUpdate.mockReturnValue({promise: () => ({})});
         docClientMock.prototype.update = mockUpdate;
-        expect(await dynamodb.upsert('mytable', {k1: 'v1'}, {a: 1, b: true, c: {d: ['e', 'f']}})).toBeDefined();
+        expect(await dynamodb.upsert('mytable', {k1: 'v1'}, {a: 1, b: true, c: {d: ['e', 'f']}})).toEqual({
+            attributes: undefined,
+            consumedCapacity: undefined,
+            itemCollectionMetrices: undefined,
+        });
         expect(mockUpdate).toHaveBeenCalledWith({
             ExpressionAttributeNames: {
                 '#K0': 'a',
@@ -35,9 +39,15 @@ describe('upsert', () => {
     });
     it('prepare the underlying documentClient query (return values)', async () => {
         const mockUpdate = jest.fn();
-        mockUpdate.mockReturnValue({promise: () => ({})});
+        mockUpdate.mockReturnValue({promise: () => ({
+                Attributes: {abcde: true},
+            })});
         docClientMock.prototype.update = mockUpdate;
-        expect(await dynamodb.upsert('mytable', {k1: 'v1', k2: 12}, {abcde: true}, {values: 'ALL_NEW'})).toBeDefined();
+        expect(await dynamodb.upsert('mytable', {k1: 'v1', k2: 12}, {abcde: true}, {values: 'ALL_NEW'})).toEqual({
+            attributes: {abcde: true},
+            consumedCapacity: undefined,
+            itemCollectionMetrices: undefined,
+        });
         expect(mockUpdate).toHaveBeenCalledWith({
             ExpressionAttributeNames: {
                 '#K0': 'abcde',
@@ -60,13 +70,37 @@ describe('delete', () => {
         const mockDelete = jest.fn();
         mockDelete.mockReturnValue({promise: () => ({})});
         docClientMock.prototype.delete = mockDelete;
-        expect(await dynamodb.delete('mytable', {k1: 'v1'})).toBeDefined();
+        expect(await dynamodb.delete('mytable', {k1: 'v1'})).toEqual({
+            attributes: undefined,
+            consumedCapacity: undefined,
+            itemCollectionMetrices: undefined,
+        });
         expect(mockDelete).toHaveBeenCalledWith({
             Key: {k1: 'v1'},
             TableName: 'mytable',
             ReturnConsumedCapacity: "NONE",
             ReturnItemCollectionMetrics: "NONE",
             ReturnValues: "NONE",
+            ReturnValuesOnConditionCheckFailure: "NONE",
+        });
+    });
+    it('prepare the underlying documentClient query (return values)', async () => {
+        const mockDelete = jest.fn();
+        mockDelete.mockReturnValue({promise: () => ({
+            Attributes: {x: 12, y: 'hello'},
+        })});
+        docClientMock.prototype.delete = mockDelete;
+        expect(await dynamodb.delete('mytable', {k1: 'v1'}, {values: 'ALL_OLD'})).toEqual({
+            attributes: {x: 12, y: 'hello'},
+            consumedCapacity: undefined,
+            itemCollectionMetrices: undefined,
+        });
+        expect(mockDelete).toHaveBeenCalledWith({
+            Key: {k1: 'v1'},
+            TableName: 'mytable',
+            ReturnConsumedCapacity: "NONE",
+            ReturnItemCollectionMetrics: "NONE",
+            ReturnValues: "ALL_OLD",
             ReturnValuesOnConditionCheckFailure: "NONE",
         });
     });
