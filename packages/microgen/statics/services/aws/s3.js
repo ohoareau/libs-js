@@ -1,23 +1,36 @@
 const s3 = new (require('aws-sdk/clients/s3'));
 
-module.exports = {
-    getFileUploadUrl: async ({bucket, key, expires = 60}) => new Promise((resolve, reject) => {
-        s3.createPresignedPost(
-            {Bucket: bucket, Expires: parseInt(expires), Fields: {key}},
-            (err, data) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve({
-                        uploadUrl: data['url'],
-                        fileUrl: `${data['url']}/${key}`,
-                        fields: JSON.stringify(data['fields']),
-                    });
-                }
+const getFile = async ({bucket, key}) => {
+    const f = await s3.getObject({Bucket: bucket, Key: key}).promise();
+    return {body: f.toString()};
+};
+
+const getFileContent = async query => (await getFile(query)).body;
+
+const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((resolve, reject) => {
+    s3.createPresignedPost(
+        {Bucket: bucket, Expires: parseInt(expires), Fields: {key}},
+        (err, data) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve({
+                    uploadUrl: data['url'],
+                    fileUrl: `${data['url']}/${key}`,
+                    fields: JSON.stringify(data['fields']),
+                });
             }
-        );
-    }),
-    getFileDownloadUrl: async ({bucket, key}) =>
-        s3.getSignedUrlPromise('getObject', {Bucket: bucket, Key: key})
-    ,
+        }
+    );
+});
+
+const getFileDownloadUrl = async ({bucket, key}) =>
+    s3.getSignedUrlPromise('getObject', {Bucket: bucket, Key: key})
+;
+
+module.exports = {
+    getFile,
+    getFileContent,
+    getFileUploadUrl,
+    getFileDownloadUrl,
 };
