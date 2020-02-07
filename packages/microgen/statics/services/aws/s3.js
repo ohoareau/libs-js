@@ -35,4 +35,5 @@ module.exports = {
     getFileContent,
     getFileUploadUrl,
     getFileDownloadUrl,
+    fromJsonFile,
 };
