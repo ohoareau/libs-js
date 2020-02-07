@@ -7,6 +7,8 @@ const getFile = async ({bucket, key}) => {
 
 const getFileContent = async query => (await getFile(query)).body;
 
+const fromJsonFile = async (bucket, key) => JSON.parse(await getFileContent({bucket, key}));
+
 const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((resolve, reject) => {
     s3.createPresignedPost(
         {Bucket: bucket, Expires: parseInt(expires), Fields: {key}},
