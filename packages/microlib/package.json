@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -21,12 +21,12 @@
         "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
     },
     "dependencies": {
-        "bcryptjs": "^2.4.3",
-        "dynamoose": "^1.11.1",
-        "uuid": "^3.4.0",
         "@ohoareau/gvalues": "^0.2.0",
         "apollo-server-lambda": "^2.9.16",
-        "graphql": "^14.6.0"
+        "bcryptjs": "^2.4.3",
+        "dynamoose": "^1.11.1",
+        "graphql": "^14.6.0",
+        "uuid": "^3.4.0"
     },
     "devDependencies": {
         "aws-sdk": "^2.578.0"
