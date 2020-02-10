@@ -35,18 +35,18 @@ export default class MicroserviceTypeOperation {
         ;
         switch (name) {
             case 'create':
-                model.hooks.validate_create && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {}});
-                model.hooks.transform_create && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
-                model.hooks.populate_create && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {}});
-                model.hooks.prepare_create && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
-                model.hooks.after_create && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
+                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {}});
+                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
+                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {}});
+                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
+                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
                 break;
             case 'update':
-                model.hooks.validate_update && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {required: false}});
-                model.hooks.transform_update && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
-                model.hooks.populate_update && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {prefix: 'update'}});
-                model.hooks.prepare_update && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
-                model.hooks.after_update && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
+                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {required: false}});
+                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
+                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {prefix: 'update'}});
+                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
+                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
                 Object.entries(model.referenceFields || {}).forEach(([k, v]: [string, any]) =>
                     registerReferenceEventListener(v, 'update', {
                         type: 'operation',
@@ -81,6 +81,29 @@ export default class MicroserviceTypeOperation {
         Object.entries(hooks).forEach(([k, v]) => {
             v.forEach(h => microserviceType.registerHook(this.name, k, h));
         });
+    }
+    hasHooks(type: string, operation: string, microserviceType: MicroserviceType): boolean {
+        switch (type) {
+            case 'validate':
+                return !!Object.keys(microserviceType.model.fields).length;
+            case 'transform':
+                return !!Object.keys(microserviceType.model.transformers).length;
+            case 'populate':
+                switch (operation) {
+                    case 'create':
+                        return !!Object.keys(microserviceType.model.values).length || !!Object.keys(microserviceType.model.defaultValues).length;
+                    case 'update':
+                        return !!Object.keys(microserviceType.model.updateValues).length || !!Object.keys(microserviceType.model.updateDefaultValues).length;
+                    default:
+                        return false;
+                }
+            case 'prepare':
+                return !!Object.keys(microserviceType.model.volatileFields).length;
+            case 'after':
+                return !!Object.keys(microserviceType.model.volatileFields).length;
+            default:
+                return false;
+        }
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
         return this.handler.generate(vars);
