@@ -16,6 +16,7 @@ export {default as instagram} from './instagram';
 export {default as lastName} from './lastName';
 export {default as loggedAt} from './loggedAt';
 export {default as object} from './object';
+export {default as password} from './password';
 export {default as phone} from './phone';
 export {default as rcs} from './rcs';
 export {default as rm} from './rm';
