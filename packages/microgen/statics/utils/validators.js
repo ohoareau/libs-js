@@ -1,4 +1,5 @@
 const boolean = () => ({test: v => 'boolean' === typeof v, message: v => `Not a boolean (actual: ${v})`});
+const minLength = ({min: x}) => ({test: v => v.length >= x, message: v => `Min length not satisfied (${v.length} < ${x})`});
 const maxLength = ({max: x}) => ({test: v => v.length <= x, message: v => `Max length exceeded (${v.length} > ${x})`});
 const values = ({values: x}) => ({test: v => !!x.find(a => a === v), message: v => `Value not allowed (actual: ${v}, allowed: ${x.join(',')})`});
 const match = ({pattern, flags = undefined, message = undefined}) => ({test: v => new RegExp(pattern, flags).test(v), message: v => message ? (message).replace('{{v}}', v) : `Malformed (actual: ${v}, expected: ${pattern})`});
@@ -41,4 +42,4 @@ const reference = ({type, localField, idField, fetchedFields}) => {
     });
 };
 
-module.exports = {boolean, maxLength, values, match, email, uuid, url, arn, unknown, reference};
+module.exports = {boolean, minLength, maxLength, values, match, email, uuid, url, arn, unknown, reference};
