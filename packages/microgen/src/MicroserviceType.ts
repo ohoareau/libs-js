@@ -84,9 +84,9 @@ export default class MicroserviceType {
         backends.sort((a, b) => a[0] < b[0] ? -1 : (a[0] === b[0] ? 0 : -1));
         return backends.reduce((acc, [n, {type, ...c}]) => {
             if ('backend' === type) {
-                acc[n] = {code: `require('../../backends/${n}')(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                acc[n] = {code: `require('@ohoareau/microlib/lib/backends/${n}').default(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
             } else {
-                acc[n] = {code: `require('../../${type}s/${n}')`};
+                acc[n] = {code: `require('@ohoareau/microlib/lib/${type}s/${n}').default`};
             }
             return acc;
         }, {});
@@ -99,7 +99,7 @@ export default class MicroserviceType {
         return {
             variables: {
                 model: {code: undefined},
-                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {buildHookFor: {code: `require('../../utils/initHook')`}} : {}),
+                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {buildHookFor: {code: `require('@ohoareau/microlib/lib/utils/initHook').default`}} : {}),
                 ...this.buildBackendsVariables(),
             },
             methods,

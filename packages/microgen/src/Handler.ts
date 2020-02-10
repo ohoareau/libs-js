@@ -52,15 +52,15 @@ export default class Handler {
         if (this.custom) return {};
         const fnName = vars.fnName || `fn`;
         const realMiddlewares = this.middlewares.map((m, i) => `m${i + 1}`);
-        const offsetDir = this.directory ? this.directory.split('/').map(() => '..').join('/') : '.';
+        //const offsetDir = this.directory ? this.directory.split('/').map(() => '..').join('/') : '.';
         const pre_init = [
             `const cf = ${stringifyObject(this.params, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})};`,
             ...this.middlewares.map((m, i) =>
-                `const m${i + 1} = require('${offsetDir}/middlewares/${m}.js')(cf);`
+                `const m${i + 1} = require('@ohoareau/microlib/lib/middlewares/${m}').default(cf);`
             ),
         ].join("\n");
         const post_init = [
-            `const hn = require('${offsetDir}/utils/fn2hn')(${fnName}, [${realMiddlewares.join(', ')}]${this.vars.paramsKey ? ', {params: true}' : ''});`,
+            `const hn = require('@ohoareau/microlib/lib/utils/fn2hn').default(${fnName}, [${realMiddlewares.join(', ')}]${this.vars.paramsKey ? ', {params: true}' : ''});`,
         ].join("\n");
         vars = {
             ...this.vars,

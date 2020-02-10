@@ -16,6 +16,6 @@ test-ci:
 	@CI=true yarn test --all --coverage --color --detectOpenHandles
 
 build:
-	@sh ./bin/build-package
+	@yarn build-package
 
 .PHONY: all install test build clean

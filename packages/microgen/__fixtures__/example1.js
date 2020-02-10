@@ -31,9 +31,6 @@ type Mutation {
             vars: {
                 license: 'MIT',
                 dependencies: {
-                    '@ohoareau/gvalues': '^0.2.0',
-                    'apollo-server-lambda': '^2.9.16',
-                    'graphql': '^14.6.0',
                 },
             },
             sources: ['custom'],
