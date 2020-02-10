@@ -62,6 +62,7 @@ export default class Package {
                 name: vars.name,
                 license: vars.license,
                 dependencies: {
+                    bcryptjs: '^2.4.3',
                     dynamoose: '^1.11.1',
                     uuid: '^3.4.0',
                     ...(vars.dependencies || {}),
