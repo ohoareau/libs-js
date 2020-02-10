@@ -203,16 +203,16 @@ module.exports = {
                 return {...(doc || {})};
             },
             create: async (payload) => {
-                return {...(await model.create({...(payload.input || {})}) || {})};
+                return {...(await model.create({...(payload.data || {})}) || {})};
             },
             update: async (payload) => {
                 let doc;
                 let docs;
                 let ids = [];
                 if ('string' === typeof payload.id) {
-                    doc = {...(await model.update({id: payload.id}, payload.input || {}) || {})};
+                    doc = {...(await model.update({id: payload.id}, payload.data || {}) || {})};
                 } else if (Array.isArray(payload.id)) {
-                    docs = await Promise.all(payload.id.map(async id => model.update({id}, payload.input || {}) || {}));
+                    docs = await Promise.all(payload.id.map(async id => model.update({id}, payload.data || {}) || {}));
                 } else if ('object' === typeof payload.id) {
                     ids = (await runQuery(model, {
                         criteria: {_: convertToQueryDsl(payload.id)},
@@ -221,7 +221,7 @@ module.exports = {
                         offset: undefined,
                         sort: undefined,
                     }) || []);
-                    docs = await Promise.all(ids.map(async doc => model.update({id: doc.id}, payload.input || {}) || {}));
+                    docs = await Promise.all(ids.map(async doc => model.update({id: doc.id}, payload.data || {}) || {}));
                 }
                 if (docs) return [...docs];
                 if (!doc) throw new DocumentNotFoundError(name, payload.id);
