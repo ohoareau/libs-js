@@ -104,7 +104,7 @@ export default class MicroserviceType {
             },
             methods,
             test: {
-                mocks: Object.entries(this.backends).map(([n, {type}]) => `../../../${type}s/${n}`),
+                mocks: Object.entries(this.backends).map(([n, {type}]) => `@ohoareau/microlib/lib/${type}s/${n}`),
                 groups: {
                     [this.name]: {
                         name: this.name,
