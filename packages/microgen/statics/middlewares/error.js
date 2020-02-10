@@ -1,6 +1,9 @@
 module.exports = () => next => async action => {
     try {
-        return await next(action); // await is important here
+        const r = await next(action) || {};
+        r.response = r.response || {};
+        r.response.result = await r.response.result;
+        return r;
     } catch (e) {
         return (('object' === typeof e) && e.serialize)
             ? e.serialize()
