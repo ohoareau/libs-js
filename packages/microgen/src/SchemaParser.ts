@@ -68,15 +68,15 @@ export default class SchemaParser {
             (undefined !== value) && (acc.values[k] = value);
             (undefined !== updateValue) && (acc.updateValues[k] = updateValue);
             (undefined !== defaultValue) && (acc.defaultValues[k] = defaultValue);
-            (undefined !== rawDefaultValue) && (acc.defaultValues[k] = {type: 'value', config: {value: rawDefaultValue}});
+            (undefined !== rawDefaultValue) && (acc.defaultValues[k] = {type: '@value', config: {value: rawDefaultValue}});
             (undefined !== updateDefaultValue) && (acc.updateDefaultValues[k] = updateDefaultValue);
-            (undefined !== rawUpdateDefaultValue) && (acc.updateDefaultValues[k] = {type: 'value', config: {value: rawUpdateDefaultValue}});
+            (undefined !== rawUpdateDefaultValue) && (acc.updateDefaultValues[k] = {type: '@value', config: {value: rawUpdateDefaultValue}});
             internal && (acc.privateFields[k] = true);
             index && (index.length > 0) && (acc.indexes[k] = index);
             volatile && (acc.volatileFields[k] = true);
             primaryKey && (acc.primaryKey = k);
-            upper && (acc.transformers[k].push({type: 'upper'}));
-            lower && (acc.transformers[k].push({type: 'lower'}));
+            upper && (acc.transformers[k].push({type: '@upper'}));
+            lower && (acc.transformers[k].push({type: '@lower'}));
             if (!acc.transformers[k].length) delete acc.transformers[k];
             return acc;
         }, schema);
@@ -87,11 +87,11 @@ export default class SchemaParser {
                 acc.sourceFields[v.sourceField] = true;
                 acc.targetFields[v.targetField] = true;
                 acc.values[v.targetField] = {
-                    type: 'ref-attribute-field',
+                    type: '@ref-attribute-field',
                     config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
                 };
                 acc.updateValues[v.targetField] = {
-                    type: 'ref-attribute-field',
+                    type: '@ref-attribute-field',
                     config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
                 };
                 return acc;

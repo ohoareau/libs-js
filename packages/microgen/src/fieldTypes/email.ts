@@ -1,1 +1,1 @@
-export default () => ({type: 'string', validators: [{type: 'email'}]})
+export default () => ({type: 'string', validators: [{type: '@email'}]})

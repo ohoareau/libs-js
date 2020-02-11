@@ -1,1 +1,1 @@
-export default () => ({type: 'string', validators: [{type:'maxLength', config: {max: 255}}]})
+export default () => ({type: 'string', validators: [{type: '@maxLength', config: {max: 255}}]})
