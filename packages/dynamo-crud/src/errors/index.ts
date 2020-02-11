@@ -1,1 +1,0 @@
-export { DocumentNotFoundError } from './DocumentNotFoundError';

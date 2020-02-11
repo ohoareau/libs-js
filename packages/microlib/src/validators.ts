@@ -14,7 +14,7 @@ export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', mes
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
 export const reference = ({type, localField, idField, fetchedFields = [], dir}) => {
     // @todo fix problem with c.fetchReference :(
-    const fetchReference = async value => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
+    const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
     return ({
         test: async (value, localCtx) => {
             try {

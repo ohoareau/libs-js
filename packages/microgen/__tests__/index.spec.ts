@@ -22,38 +22,15 @@ describe('microgen', () => {
                                     schema: {
                                         attributes: {},
                                     },
+                                    backends: ['@memory'],
                                     operations: {
                                         create: {
-                                            type: 'create',
                                             middlewares: ['debug', 'error', 'backend'],
-                                            backend: {
-                                                type: 'memory',
-                                            }
                                         },
-                                        get: {
-                                            type: 'get',
-                                            backend: {
-                                                type: 'memory',
-                                            }
-                                        },
-                                        update: {
-                                            type: 'update',
-                                            backend: {
-                                                type: 'memory',
-                                            }
-                                        },
-                                        delete: {
-                                            type: 'delete',
-                                            backend: {
-                                                type: 'memory',
-                                            }
-                                        },
-                                        find: {
-                                            type: 'find',
-                                            backend: {
-                                                type: 'memory',
-                                            }
-                                        },
+                                        get: {},
+                                        update: {},
+                                        delete: {},
+                                        find: {},
                                     },
                                 },
                             },

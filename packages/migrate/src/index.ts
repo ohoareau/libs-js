@@ -76,7 +76,7 @@ export default async (repo: string, deployed: string[], ctx: {[key: string]: any
         } else {
             const localToDeploy = [...toDeploy];
             const firstI = <string>localToDeploy.shift();
-            const rr = await localToDeploy.reduce(async (acc: Promise<[string, Promise<any>]>, i: string): Promise<[string, Promise<any>]> => {
+            const rr = await localToDeploy.reduce(async (acc, i) => {
                 const r = await acc;
                 try {
                     await r[1];

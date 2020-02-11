@@ -133,7 +133,7 @@ export default class MicroserviceType {
     }
     buildServiceMethodConfig({backend, name}) {
         let backendName = backend || this.defaultBackendName;
-        (backendName && '@' === backendName.substr(0, 1)) && (backendName = backendName.substr(1));
+        (backendName && ('@' === backendName.substr(0, 1)) && (backendName = backendName.substr(1)));
         const befores = ['validate', 'populate', 'transform', 'before', 'prepare'].reduce((acc, n) => {
             if (!this.hooks[name]) return acc;
             if (!this.hooks[name][n]) return acc;

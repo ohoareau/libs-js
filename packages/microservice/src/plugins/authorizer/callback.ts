@@ -1,1 +1,0 @@
-export default ({callback}, c) => async action => callback(c)(action);

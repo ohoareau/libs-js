@@ -35,7 +35,7 @@ export default class SchemaParser {
             d = {
                 ...('string' === typeof d) ? this.parseFieldString(d, k) : d,
             };
-            const forcedDef: any = {...(d || {})};
+            const forcedDef: any = {...(<any>d || {})};
             delete forcedDef.config;
             delete forcedDef.type;
             let officialDef = this.createField(d);
@@ -87,13 +87,13 @@ export default class SchemaParser {
             const x = (<any[]>vList).reduce((acc, v) => {
                 acc.sourceFields[v.sourceField] = true;
                 acc.targetFields[v.targetField] = true;
-                acc.values[v.targetField] = {
+                acc.values[v.targetField] = acc.updateValues[v.targetField] = {
                     type: '@ref-attribute-field',
-                    config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
-                };
-                acc.updateValues[v.targetField] = {
-                    type: '@ref-attribute-field',
-                    config: {key: k, prefix: schema.referenceFields[k].reference, sourceField: v.sourceField}
+                    config: {
+                        key: k,
+                        prefix: this.buildTypeName(schema.referenceFields[k].reference, schema.name),
+                        sourceField: v.sourceField,
+                    }
                 };
                 return acc;
             }, {targetFields: [], sourceFields: [], values: [], updateValues: []});
@@ -103,16 +103,6 @@ export default class SchemaParser {
             schema.validators[k].push(
                 this.buildReferenceValidator(schema.referenceFields[k], k, schema.name)
             );
-            /*
-            Object.entries(schema.referenceFields).forEach(([_, v]) => {
-                    const referenceKey = ((<any>v).reference).replace(/\./g, '_');
-                    if (!c.references) c.references = {};
-                    if (c.references[referenceKey]) return;
-                    c.references[referenceKey] = (config) => async ({type, value, idField, fetchedFields, contextData}) =>
-                        config.operation(`${type}.get`, {params: {[idField]: value, fields: fetchedFields, contextData}})
-                    ;
-            });
-            */
             Object.assign(schema.values, x.values);
             Object.assign(schema.updateValues, x.updateValues);
         });
@@ -216,15 +206,25 @@ export default class SchemaParser {
         }
         return this.fieldTypes[name];
     }
-    buildReferenceValidator(def: any, localField: string, modelName: string) {
+    buildTypeName(type, modelName) {
         const tokens = modelName.split(/_/g);
-        const {reference: type, idField = 'id', fetchedFields = []} = def;
-        let fullType = type;
-        if (!/_/.test(type)) {
+        let fullType = type.replace(/\./g, '_');
+        if (!/_/.test(fullType)) {
             tokens.pop();
-            tokens.push(type);
+            tokens.push(fullType);
             fullType = tokens.join('_');
         }
-        return {type: '@reference', config: {type: fullType, localField, idField, fetchedFields}};
+        return fullType;
+    }
+    buildReferenceValidator(def: {[key: string]: any}, localField: string, modelName: string) {
+        return {
+            type: '@reference',
+            config: {
+                type: this.buildTypeName(def.reference, modelName),
+                localField,
+                idField: def['idField'] || 'id',
+                fetchFields: def['fetchedFields'] || [],
+            },
+        };
     }
 }

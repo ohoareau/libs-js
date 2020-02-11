@@ -28,7 +28,7 @@
     "stringify-object": "^3.3.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.578.0"
+    "aws-sdk": "^2.615.0"
   },
   "bin": {
     "microgen": "./bin/microgen"
