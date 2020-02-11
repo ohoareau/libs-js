@@ -181,7 +181,7 @@ export default class MicroserviceType {
         }
         const rawOpts = !!Object.keys(opts).length ? `, ${this.stringifyForHook(opts, options)}` : '';
         if (!rawOpts && '@operation' === type) {
-            return `    await service.caller.execute('${config['operation']}', ${this.stringifyForHook(config['params'], options)});`;
+            return `    await service.caller.execute('${config['operation']}', ${this.stringifyForHook(config['params'], options)}, __dirname);`;
         }
         const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
         switch (options['position']) {

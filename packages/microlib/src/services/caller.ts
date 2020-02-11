@@ -9,14 +9,15 @@ const inferArnIfPossible = dsn => {
     return !!arn ? arn.replace('{name}', sluggedName) : undefined;
 };
 
-const executeLocal = async (operation, params) => {
+const executeLocal = async (operation, params, dir: string|undefined = undefined) => {
     const tokens = operation.split(/_/g);
     const op = tokens.pop();
-    return require(`./crud/${tokens.join('_')}`)[op](params);
+    if (dir) return require(`${dir}/${tokens.join('_')}`)[op](params);
+    return require(`@ohoareau/microlib/lib/services/${tokens.join('_')}`).default[op](params);
 };
 
 const executeRemoteLambda = async (arn, params) =>
-    require('./aws/lambda').execute(arn, {params})
+    require('./aws/lambda').default.execute(arn, {params})
 ;
 
 const executeRemote = async (dsn, params) => {
@@ -25,10 +26,10 @@ const executeRemote = async (dsn, params) => {
     return executeRemoteLambda(arn, params);
 };
 
-const execute = async (dsn, params) => {
+const execute = async (dsn, params, dir: string|undefined = undefined) => {
     const arn = inferArnIfPossible(dsn);
     if (!!arn) return executeRemoteLambda(arn, params);
-    return executeLocal(dsn, params);
+    return executeLocal(dsn, params, dir);
 };
 
 export default {execute, executeLocal, executeRemote, executeRemoteLambda}
