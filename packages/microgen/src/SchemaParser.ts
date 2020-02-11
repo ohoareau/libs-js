@@ -23,6 +23,7 @@ export default class SchemaParser {
             referenceFields: {},
             refAttributeFields: {},
             hooks: def.hooks,
+            name: def.name,
         };
         this.parseAttributes(def, schema);
         this.parseRefAttributeFields(def, schema);
