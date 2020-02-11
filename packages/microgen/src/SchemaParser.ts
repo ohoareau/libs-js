@@ -221,6 +221,6 @@ export default class SchemaParser {
         return this.fieldTypes[name];
     }
     buildReferenceValidator(type, localField, idField = 'id', fetchedFields: string[] = []) {
-        return {type: 'reference', config: {type, localField, idField, fetchedFields}};
+        return {type: '@reference', config: {type, localField, idField, fetchedFields}};
     }
 }
