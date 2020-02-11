@@ -33,7 +33,7 @@ export default class Handler {
     }
     enrichTest(test: TestFileConfig|undefined): TestFile|undefined {
         const addedGroups: {[key: string]: any} = {};
-        if (0 <= this.middlewares.indexOf('warmup')) {
+        if (0 <= this.middlewares.indexOf('@warmup')) {
             addedGroups.warmup = {
                 tests: [{name: 'warmup call', type: 'handler-call', config: {event: {warm: true}, expected: {status: 'success', code: 1000, message: 'warmed'}}}],
             };
@@ -52,15 +52,18 @@ export default class Handler {
         if (this.custom) return {};
         const fnName = vars.fnName || `fn`;
         const realMiddlewares = this.middlewares.map((m, i) => `m${i + 1}`);
-        //const offsetDir = this.directory ? this.directory.split('/').map(() => '..').join('/') : '.';
+        const offsetDir = this.directory ? this.directory.split('/').map(() => '..').join('/') : '.';
         const pre_init = [
             `const cf = ${stringifyObject(this.params, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})};`,
-            ...this.middlewares.map((m, i) =>
-                `const m${i + 1} = require('@ohoareau/microlib/lib/middlewares/${m}').default(cf);`
-            ),
+            ...this.middlewares.map((m, i) => {
+                if ('@' === m.substr(0, 1)) {
+                    return `const m${i + 1} = require('@ohoareau/microlib/lib/middlewares/${m.substr(1)}').default(cf);`
+                }
+                return `const m${i + 1} = require('${offsetDir}/middlewares/${m}')(cf);`
+            }),
         ].join("\n");
         const post_init = [
-            `const hn = require('@ohoareau/microlib/lib/utils/fn2hn').default(${fnName}, [${realMiddlewares.join(', ')}]${this.vars.paramsKey ? ', {params: true}' : ''});`,
+            `const hn = require('@ohoareau/microlib/lib/utils').fn2hn(${fnName}, [${realMiddlewares.join(', ')}]${this.vars.paramsKey ? ', {params: true}' : ''});`,
         ].join("\n");
         vars = {
             ...this.vars,

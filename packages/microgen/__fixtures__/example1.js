@@ -68,12 +68,12 @@ type Mutation {
                 },
                 handler: {
                     type: 'controller',
-                    middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                    middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                 },
                 events: {
                     type: 'service',
-                    vars: {service: 'event', method: 'consume'},
-                    middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                    vars: {service: '@event', method: 'consume'},
+                    middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                     test: {
                         mocks: ['dynamoose'],
                         groups: {
@@ -97,14 +97,14 @@ type Mutation {
                 },
                 migrate: {
                     type: 'service',
-                    vars: {service: 'migration', method: 'migrate'},
-                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                    vars: {service: '@migration', method: 'migrate'},
+                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                 }
             },
             microservices: {
                 log: {
                     handlers: {
-                        handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']},
+                        handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']},
                     },
                     types: {
                         log: {
@@ -123,10 +123,10 @@ type Mutation {
                                     sourceIp: 'string'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
-                                handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']},
+                                handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']},
                             },
                             operations: {
                                 create: {},
@@ -140,7 +140,7 @@ type Mutation {
                 },
                 module: {
                     handlers: {
-                        handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']},
+                        handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']},
                     },
                     types: {
                         module: {
@@ -155,26 +155,26 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
-                                handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']},
+                                handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']},
                             },
                             operations: {
                                 create: {
                                     hooks: {
-                                        notify: [{type: 'dispatch'}],
+                                        notify: [{type: '@dispatch'}],
                                     },
                                 },
                                 get: {},
                                 update: {
                                     hooks: {
-                                        notify: [{type: 'dispatch'}],
+                                        notify: [{type: '@dispatch'}],
                                     },
                                 },
                                 delete: {
                                     hooks: {
-                                        notify: [{type: 'dispatch'}],
+                                        notify: [{type: '@dispatch'}],
                                     },
                                 },
                                 find: {}
@@ -193,19 +193,19 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -254,19 +254,19 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -283,19 +283,19 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -348,12 +348,12 @@ type Mutation {
                                     lambdaArn: 'arn'
                                 }
                             },
-                            backends: ['dynamoose', 'lambda'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose', '@lambda'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
@@ -361,12 +361,12 @@ type Mutation {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'job',
+                                                type: '@job',
                                                 ensureKeys: ['code', 'configCode'],
                                                 config: {stateMachine: '[[process.env.MICROSERVICE_FUNCTION_CREATE_STATE_MACHINE_ARN]]'}
                                             },
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 iteratorKey: 'inputVariables',
                                                 config: {
                                                     operation: 'module_inputvar_create',
@@ -374,7 +374,7 @@ type Mutation {
                                                 }
                                             },
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 iteratorKey: 'outputVariables',
                                                 config: {
                                                     operation: 'module_outputvar_create',
@@ -382,7 +382,7 @@ type Mutation {
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 get: {},
@@ -390,38 +390,38 @@ type Mutation {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'job',
+                                                type: '@job',
                                                 ensureKeys: ['code', 'configCode'],
                                                 trackData: ['name', 'code', 'configCode', 'capacity', 'language'],
                                                 config: {stateMachine: '[[process.env.MICROSERVICE_FUNCTION_UPDATE_STATE_MACHINE_ARN]]'}
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 delete: {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'job',
+                                                type: '@job',
                                                 config: {stateMachine: '[[process.env.MICROSERVICE_FUNCTION_DELETE_STATE_MACHINE_ARN]]'}
                                             },
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'module_inputvar_delete',
                                                     params: {criteria: {function: '{{id}}'}}
                                                 }
                                             },
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'module_outputvar_delete',
                                                     params: {criteria: {function: '{{id}}'}}
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 find: {},
@@ -429,8 +429,8 @@ type Mutation {
                                     backend: 'lambda',
                                     hooks: {
                                         populate: [{type: '@get', config: {fields: ['name', 'lambdaArn']}}],
-                                        transform: [{type: 'mutate', config: {type: 'reverse_gvalues'}}],
-                                        after: [{type: 'mutate', config: {type: 'gvalues'}}]
+                                        transform: [{type: '@mutate', config: {type: 'reverse_gvalues'}}],
+                                        after: [{type: '@mutate', config: {type: 'gvalues'}}]
                                     }
                                 }
                             }
@@ -448,19 +448,19 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -479,19 +479,19 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -508,12 +508,12 @@ type Mutation {
                                     type: ':refattr:variable:type'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {create: {}, get: {}, update: {}, delete: {}, find: {}}
@@ -531,12 +531,12 @@ type Mutation {
                                     type: ':refattr:variable:type'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {create: {}, get: {}, update: {}, delete: {}, find: {}}
@@ -544,7 +544,7 @@ type Mutation {
                     }
                 },
                 notification: {
-                    handlers: {handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']}},
+                    handlers: {handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']}},
                     types: {
                         notification: {
                             schema: {
@@ -573,26 +573,26 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         }
                     }
                 },
                 project: {
-                    handlers: {handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']}},
+                    handlers: {handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']}},
                     types: {
                         project: {
                             schema: {
@@ -607,12 +607,12 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
@@ -620,7 +620,7 @@ type Mutation {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'project_member_create',
                                                     params: {
@@ -634,7 +634,7 @@ type Mutation {
                                                 }
                                             },
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'project_member_create',
                                                     params: {
@@ -650,7 +650,7 @@ type Mutation {
                                         ],
                                         notify: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'log_log_create',
                                                     params: {
@@ -666,24 +666,24 @@ type Mutation {
                                                     }
                                                 }
                                             },
-                                            {type: 'dispatch'}
+                                            {type: '@dispatch'}
                                         ]
                                     }
                                 },
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
                                 delete: {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'project_member_delete',
                                                     params: {criteria: {project: '{{id}}'}}
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 find: {}
@@ -713,19 +713,19 @@ type Mutation {
                                     updatedAt: ':updatedAt'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -742,19 +742,19 @@ type Mutation {
                                     updatedAt: ':updatedAt'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -769,12 +769,12 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {create: {}, get: {}, update: {}, delete: {}, find: {}}
@@ -782,7 +782,7 @@ type Mutation {
                     }
                 },
                 tag: {
-                    handlers: {handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']}},
+                    handlers: {handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']}},
                     types: {
                         tag: {
                             schema: {
@@ -796,26 +796,26 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         }
                     }
                 },
                 user: {
-                    handlers: {handler: {type: 'controller', middlewares: ['warmup', 'error', 'debug', 'authorizer']}},
+                    handlers: {handler: {type: 'controller', middlewares: ['@warmup', '@error', '@debug', '@authorizer']}},
                     types: {
                         user: {
                             schema: {
@@ -833,12 +833,12 @@ type Mutation {
                                     tags: 'tags'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
@@ -846,7 +846,7 @@ type Mutation {
                                     hooks: {
                                         before: [
                                             {
-                                                type: 'cognito-user-create',
+                                                type: '@cognito-user-create',
                                                 config: {
                                                     userPool: '[[process.env.COGNITO_USER_POOL_USERS_ID]]',
                                                     group: '[[process.env.COGNITO_USER_POOL_USERS_GROUP_USERS]]',
@@ -856,7 +856,7 @@ type Mutation {
                                         ],
                                         notify: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'log_log_create',
                                                     params: {
@@ -869,21 +869,21 @@ type Mutation {
                                                     }
                                                 }
                                             },
-                                            {type: 'dispatch'}
+                                            {type: '@dispatch'}
                                         ]
                                     }
                                 },
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
                                 delete: {
                                     hooks: {
                                         before: [{
-                                            type: 'cognito-user-delete',
+                                            type: '@cognito-user-delete',
                                             config: {userPool: '[[process.env.COGNITO_USER_POOL_USERS_ID]]'}
                                         }],
                                         notify: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'log_log_create',
                                                     params: {
@@ -895,7 +895,7 @@ type Mutation {
                                                     }
                                                 }
                                             },
-                                            {type: 'dispatch'}
+                                            {type: '@dispatch'}
                                         ]
                                     }
                                 },
@@ -934,12 +934,12 @@ type Mutation {
                                     rcs: 'rcs'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
@@ -947,7 +947,7 @@ type Mutation {
                                     hooks: {
                                         after: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'user_membership_create',
                                                     params: {
@@ -964,7 +964,7 @@ type Mutation {
                                         ],
                                         notify: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'log_log_create',
                                                     params: {
@@ -980,24 +980,24 @@ type Mutation {
                                                     }
                                                 }
                                             },
-                                            {type: 'dispatch'}
+                                            {type: '@dispatch'}
                                         ]
                                     }
                                 },
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
                                 delete: {
                                     hooks: {
                                         delete: [
                                             {
-                                                type: 'operation',
+                                                type: '@operation',
                                                 config: {
                                                     operation: 'user_membership_delete',
                                                     params: {criteria: {object: '{{id}}'}}
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 find: {}
@@ -1019,12 +1019,12 @@ type Mutation {
                                     updatedAt: ':updatedAt'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
@@ -1032,7 +1032,7 @@ type Mutation {
                                     hooks: {
                                         populate: [
                                             {
-                                                type: 'populate-from-operation',
+                                                type: '@populate-from-operation',
                                                 config: {
                                                     operation: 'user_organization_get',
                                                     targetData: {objectName: 'name'},
@@ -1040,7 +1040,7 @@ type Mutation {
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
                                 get: {},
@@ -1048,7 +1048,7 @@ type Mutation {
                                     hooks: {
                                         populate: [
                                             {
-                                                type: 'populate-from-operation',
+                                                type: '@populate-from-operation',
                                                 config: {
                                                     operation: 'user_organization_get',
                                                     targetData: {objectName: 'name'},
@@ -1056,10 +1056,10 @@ type Mutation {
                                                 }
                                             }
                                         ],
-                                        notify: [{type: 'dispatch'}]
+                                        notify: [{type: '@dispatch'}]
                                     }
                                 },
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         },
@@ -1075,19 +1075,19 @@ type Mutation {
                                     updatedAt: ':updatedAt'
                                 }
                             },
-                            backends: ['dynamoose'],
-                            middlewares: ['warmup', 'error', 'debug', 'authorizer'],
+                            backends: ['@dynamoose'],
+                            middlewares: ['@warmup', '@error', '@debug', '@authorizer'],
                             handlers: {
                                 handler: {
                                     type: 'controller',
-                                    middlewares: ['warmup', 'error', 'debug', 'authorizer']
+                                    middlewares: ['@warmup', '@error', '@debug', '@authorizer']
                                 }
                             },
                             operations: {
-                                create: {hooks: {notify: [{type: 'dispatch'}]}},
+                                create: {hooks: {notify: [{type: '@dispatch'}]}},
                                 get: {},
-                                update: {hooks: {notify: [{type: 'dispatch'}]}},
-                                delete: {hooks: {notify: [{type: 'dispatch'}]}},
+                                update: {hooks: {notify: [{type: '@dispatch'}]}},
+                                delete: {hooks: {notify: [{type: '@dispatch'}]}},
                                 find: {}
                             }
                         }

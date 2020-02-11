@@ -32,9 +32,10 @@ export default class MicroserviceType {
         this.backends = (<any>backends).reduce((acc, b) => {
             if ('string' === typeof b) b = {type: 'backend', name: b};
             return Object.assign(acc, {[b.name]: b});
-        }, {caller: {type: 'service', name: 'caller'}});
+        }, {'@caller': {type: 'service', name: '@caller'}});
         const defaultBackendName: any = [...backends].shift();
         this.defaultBackendName = !defaultBackendName ? undefined : (('string' == typeof defaultBackendName) ? defaultBackendName : defaultBackendName.name);
+        this.defaultBackendName && ('@' === this.defaultBackendName.substr(0, 1)) && (this.defaultBackendName = this.defaultBackendName.substr(1));
         Object.entries(operations).forEach(
             ([name, c]: [string, any]) =>
                 this.operations[name] = new MicroserviceTypeOperation(
@@ -82,11 +83,21 @@ export default class MicroserviceType {
     buildBackendsVariables() {
         const backends = Object.entries(this.backends);
         backends.sort((a, b) => a[0] < b[0] ? -1 : (a[0] === b[0] ? 0 : -1));
-        return backends.reduce((acc, [n, {type, ...c}]) => {
+        return backends.reduce((acc, [n, {type, name, ...c}]) => {
             if ('backend' === type) {
-                acc[n] = {code: `require('@ohoareau/microlib/lib/backends/${n}').default(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                if ('@' === n.substr(0, 1)) {
+                    const nn = n.substr(1);
+                    acc[nn] = {code: `require('@ohoareau/microlib/lib/backends/${nn}').default(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                } else {
+                    acc[n] = {code: `require('../../backends/${n}')(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                }
             } else {
-                acc[n] = {code: `require('@ohoareau/microlib/lib/${type}s/${n}').default`};
+                if ('@' === n.substr(0, 1)) {
+                    const nn = n.substr(1);
+                    acc[nn] = {code: `require('@ohoareau/microlib/lib/${type}s/${nn}').default`};
+                } else {
+                    acc[n] = {code: `require('../../${type}s/${n}')`};
+                }
             }
             return acc;
         }, {});
@@ -99,12 +110,18 @@ export default class MicroserviceType {
         return {
             variables: {
                 model: {code: undefined},
-                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {buildHookFor: {code: `require('@ohoareau/microlib/lib/utils/initHook').default`}} : {}),
+                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {buildHookFor: {code: `require('@ohoareau/microlib/lib/utils').initHook`}} : {}),
                 ...this.buildBackendsVariables(),
             },
             methods,
             test: {
-                mocks: Object.entries(this.backends).map(([n, {type}]) => `@ohoareau/microlib/lib/${type}s/${n}`),
+                mocks: Object.entries(this.backends).map(([n, {type}]) => {
+                    if ('@' === n.substr(0, 1)) {
+                        return `@ohoareau/microlib/lib/${type}s/${n.substr(1)}`;
+                    } else {
+                        return `../../${type}s/${n}`;
+                    }
+                }),
                 groups: {
                     [this.name]: {
                         name: this.name,
@@ -133,7 +150,7 @@ export default class MicroserviceType {
         let nonBatchName = name.replace(/^batch/, '');
         nonBatchName = `${nonBatchName.substr(0, 1).toLowerCase()}${nonBatchName.substr(1)}`;
         const lines = [
-            needHook && `    const hook = service.buildHookFor('${this.name}_${name}', model);`,
+            needHook && `    const hook = service.buildHookFor('${this.name}_${name}', model, __dirname);`,
             ...befores,
             (!batchMode && !afters.length) && `    return service.${backendName}.${name}(query);`,
             (!batchMode && !!afters.length) && `    let result = await service.${backendName}.${name}(query);`,
@@ -155,29 +172,26 @@ export default class MicroserviceType {
         if (ensureKeys && !!ensureKeys.length) opts['ensureKeys'] = ensureKeys;
         if (trackData && !!trackData.length) opts['trackData'] = trackData;
         let call: string|undefined = undefined;
-        if ('@' === type.substr(0, 1)) {
-            switch (type.substr(1)) {
-                case 'get':
-                    return `    Object.assign(query, await service.get(query.id, ${this.stringifyForHook(config['fields'] || [], options)}));`;
-                default:
-                    break;
-            }
-        } else {
-            const rawOpts = !!Object.keys(opts).length ? `, ${this.stringifyForHook(opts, options)}` : '';
-            if (!rawOpts && 'operation' === type) {
-                return `    await service.caller.execute('${config['operation']}', ${this.stringifyForHook(config['params'], options)});`;
-            }
-            const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
-            switch (options['position']) {
-                case 'before':
-                    call = `await hook('${type}', query${cfg}${rawOpts})`;
-                    break;
-                case 'after':
-                    call = `await hook('${type}', [result, query]${cfg}${rawOpts})`;
-                    break;
-                default:
-                    break;
-            }
+        switch (type) {
+            case '@get':
+                return `    Object.assign(query, await service.get(query.id, ${this.stringifyForHook(config['fields'] || [], options)}));`;
+            default:
+                break;
+        }
+        const rawOpts = !!Object.keys(opts).length ? `, ${this.stringifyForHook(opts, options)}` : '';
+        if (!rawOpts && '@operation' === type) {
+            return `    await service.caller.execute('${config['operation']}', ${this.stringifyForHook(config['params'], options)});`;
+        }
+        const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
+        switch (options['position']) {
+            case 'before':
+                call = `await hook('${type}', query${cfg}${rawOpts})`;
+                break;
+            case 'after':
+                call = `await hook('${type}', [result, query]${cfg}${rawOpts})`;
+                break;
+            default:
+                break;
         }
         switch (options['position']) {
             case 'before': return `    query = ${call};`;

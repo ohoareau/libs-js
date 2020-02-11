@@ -35,21 +35,21 @@ export default class MicroserviceTypeOperation {
         ;
         switch (name) {
             case 'create':
-                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {}});
-                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
-                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {}});
-                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
-                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
+                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: '@validate', config: {}});
+                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: '@transform', config: {}});
+                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: '@populate', config: {}});
+                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: '@prepare', config: {}});
+                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: '@after', config: {}});
                 break;
             case 'update':
-                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: 'validate', config: {required: false}});
-                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: 'transform', config: {}});
-                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: 'populate', config: {prefix: 'update'}});
-                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: 'prepare', config: {}});
-                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: 'after', config: {}});
+                this.hasHooks('validate', name, microserviceType) && microserviceType.registerHook(name, 'validate', {type: '@validate', config: {required: false}});
+                this.hasHooks('transform', name, microserviceType) && microserviceType.registerHook(name, 'transform', {type: '@transform', config: {}});
+                this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: '@populate', config: {prefix: 'update'}});
+                this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: '@prepare', config: {}});
+                this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: '@after', config: {}});
                 Object.entries(model.referenceFields || {}).forEach(([k, v]: [string, any]) =>
                     registerReferenceEventListener(v, 'update', {
-                        type: 'operation',
+                        type: '@operation',
                         config: {
                             operation: `${microserviceType.name}_update`,
                             params: {
@@ -64,7 +64,7 @@ export default class MicroserviceTypeOperation {
             case 'delete':
                 Object.entries(model.referenceFields || {}).forEach(([k, v]: [string, any]) =>
                     registerReferenceEventListener(v, 'delete', {
-                        type: 'operation',
+                        type: '@operation',
                         config: {
                             operation: `${microserviceType.name}_delete`,
                             params: {

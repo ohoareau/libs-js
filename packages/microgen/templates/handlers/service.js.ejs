@@ -1,4 +1,4 @@
 <%- pre_init %>
-const <%- fnName -%> = require('@ohoareau/microlib/lib/services/<%- service -%>').default<%- (('undefined' !== typeof configureService) && !!configureService) ? '(cf)' : '' %>.<%- method -%>;
+const <%- fnName -%> = require('../services/<%- service -%>')<%- (('undefined' !== typeof configureService) && !!configureService) ? '(cf)' : '' %>.<%- method -%>;
 <%- post_init %>
 module.exports = {handler: hn};
