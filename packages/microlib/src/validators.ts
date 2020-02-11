@@ -3,6 +3,10 @@ export const minLength = ({min: x}) => ({test: v => v.length >= x, message: v =>
 export const maxLength = ({max: x}) => ({test: v => v.length <= x, message: v => `Max length exceeded (${v.length} > ${x})`});
 export const values = ({values: x}) => ({test: v => !!x.find(a => a === v), message: v => `Value not allowed (actual: ${v}, allowed: ${x.join(',')})`});
 export const match = ({pattern, flags = undefined, message = undefined}: {pattern: string, flags?: any, message: string|undefined}) => ({test: v => new RegExp(pattern, flags).test(v), message: v => message ? (<any>message).replace('{{v}}', v) : `Malformed (actual: ${v}, expected: ${pattern})`});
+export const hasUpperLetter = () => match({pattern: '[A-Z]+', message: 'At least one upper case letter is required'});
+export const hasLowerLetter = () => match({pattern: '[a-z]+', message: 'At least one lower case letter is required'});
+export const hasDigit = () => match({pattern: '[0-9]+', message: 'At least one digit is required'});
+export const hasSpecialChar = () => match({pattern: '[!:$@&%()\\[\\];,/]+', message: 'At least one special character is required'});
 export const email = () => match({pattern: '[^@]+@.+\.[^.]+$', message: 'Not a valid email'});
 export const uuid = () => match({pattern: '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$', flags: 'i', message: `Not a valid uuid (actual: {{v}}, expected: v4 format)`});
 export const url = () => match({pattern: '^http[s]?://.$', flags: 'i', message: `Not a valid URL`});
