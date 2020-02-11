@@ -223,7 +223,7 @@ export default class SchemaParser {
                 type: this.buildTypeName(def.reference, modelName),
                 localField,
                 idField: def['idField'] || 'id',
-                fetchFields: def['fetchedFields'] || [],
+                fetchedFields: def['fetchedFields'] || [],
             },
         };
     }
