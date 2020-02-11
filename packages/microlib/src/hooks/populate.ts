@@ -1,7 +1,7 @@
 const buildValueGenerator = ({type, config = {}}, dir) => {
     let g;
     if ('@' === type.substr(0, 1)) {
-        g = require('../utils/populators');
+        g = require('../populators');
         type = type.substr(1);
     } else {
         g = require(`${dir}/populators`);

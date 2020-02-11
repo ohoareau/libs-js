@@ -1,7 +1,7 @@
 const getTransformer = (type, dir) => {
     let t;
     if ('@' === type.substr(0, 1)) {
-        t = require('../utils/transformers');
+        t = require('../transformers');
         type = type.substr(1);
     } else {
         t = require(`${dir}/transformers`);

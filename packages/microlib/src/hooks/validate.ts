@@ -3,7 +3,7 @@ import ValidationError from '../errors/ValidationError';
 const getValidator = (type, dir) => {
     let v;
     if ('@' === type.substr(0, 1)) {
-        v = require('../utils/validators');
+        v = require('../validators');
         type = type.substr(1);
     } else {
         v = require(`${dir}/validators`);
