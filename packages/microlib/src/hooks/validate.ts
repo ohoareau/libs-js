@@ -27,7 +27,7 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
     await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (!validators[k]) return;
         await Promise.all(validators[k].map(async ({type, config = {}}) => {
-            const validator: {test: Function, message: Function} = getValidator(type, dir)(config);
+            const validator: {test: Function, message: Function} = getValidator(type, dir)({...config, dir});
             if (!(await validator.test(v, localCtx))) {
                 if (!errors[k]) errors[k] = [];
                 errors[k].push(new Error(await validator.message(v, localCtx)));

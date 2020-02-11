@@ -28,7 +28,7 @@ export default class MicroserviceType {
     constructor(microservice: Microservice, {name, schema = {}, operations = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
-        this.model = {name: this.name, ...(new SchemaParser().parse(schema))};
+        this.model = new SchemaParser().parse({name: this.name, ...schema});
         this.backends = (<any>backends).reduce((acc, b) => {
             if ('string' === typeof b) b = {type: 'backend', name: b};
             return Object.assign(acc, {[b.name]: b});

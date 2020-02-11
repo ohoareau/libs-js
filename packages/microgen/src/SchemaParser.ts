@@ -6,7 +6,7 @@ export default class SchemaParser {
         Object.entries(fieldTypes).forEach(([k, v]) => this.fieldTypes[k] = v);
     }
     parse(def: any): any {
-        def = {attributes: {}, hooks: {}, ...def};
+        def = {name: 'unknown', attributes: {}, hooks: {}, ...def};
         const schema = {
             primaryKey: <any>undefined,
             fields: {},
@@ -100,12 +100,7 @@ export default class SchemaParser {
             if (!schema.validators[k]) schema.validators[k] = [];
             schema.referenceFields[k].fetchedFields = ['id'].concat(schema.referenceFields[k].fetchedFields, Object.keys(x.sourceFields));
             schema.validators[k].push(
-                this.buildReferenceValidator(
-                    schema.referenceFields[k].reference,
-                    k,
-                    schema.referenceFields[k].idField,
-                    schema.referenceFields[k].fetchedFields
-                )
+                this.buildReferenceValidator(schema.referenceFields[k], k, schema.name)
             );
             /*
             Object.entries(schema.referenceFields).forEach(([_, v]) => {
@@ -220,7 +215,15 @@ export default class SchemaParser {
         }
         return this.fieldTypes[name];
     }
-    buildReferenceValidator(type, localField, idField = 'id', fetchedFields: string[] = []) {
-        return {type: '@reference', config: {type, localField, idField, fetchedFields}};
+    buildReferenceValidator(def: any, localField: string, modelName: string) {
+        const tokens = modelName.split(/_/g);
+        const {reference: type, idField = 'id', fetchedFields = []} = def;
+        let fullType = type;
+        if (!/_/.test(type)) {
+            tokens.pop();
+            tokens.push(type);
+            fullType = tokens.join('_');
+        }
+        return {type: '@reference', config: {type: fullType, localField, idField, fetchedFields}};
     }
 }

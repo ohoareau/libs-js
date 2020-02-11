@@ -12,9 +12,9 @@ export const uuid = () => match({pattern: '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}
 export const url = () => match({pattern: '^http[s]?://.$', flags: 'i', message: `Not a valid URL`});
 export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', message: `Not a valid AWS ARN`});
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
-export const reference = ({type, localField, idField, fetchedFields}) => {
+export const reference = ({type, localField, idField, fetchedFields = [], dir}) => {
     // @todo fix problem with c.fetchReference :(
-    const c = {};
+    const fetchReference = async value => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, dir);
     return ({
         test: async (value, localCtx) => {
             try {
@@ -22,18 +22,12 @@ export const reference = ({type, localField, idField, fetchedFields}) => {
                 const existingData = {...(localCtx.data || {}), ...((localCtx.data || {})[k] || {})};
                 let requiredData;
                 if (!!fetchedFields.find(f => !existingData.hasOwnProperty(f) || (undefined === existingData[f]))) {
-
-                    requiredData = await (<any>c).fetchReference({ // <<------- HERE
-                        type,
-                        value,
-                        idField,
-                        fetchedFields
-                    }, localCtx) || {};
+                    requiredData = await fetchReference(value) || {};
                 } else {
                     requiredData = fetchedFields.reduce((acc, k) => {
                         acc[k] = existingData[k];
                         return acc;
-                    }, {});
+                    }, <any>{});
                 }
                 localCtx.data[k] = requiredData;
                 return true;
