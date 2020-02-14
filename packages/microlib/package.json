@@ -34,6 +34,7 @@
         "aws-sdk": "^2.615.0"
     },
     "bin": {
-        "build-package": "./bin/build-package"
+        "build-package": "./bin/build-package",
+        "deploy-package": "./bin/deploy-package"
     }
 }

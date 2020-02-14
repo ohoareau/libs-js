@@ -1,13 +1,13 @@
 all: install
 
 install:
-	@yarn install --silent
+	@yarn --silent install
 
 clean:
 	@rm -rf node_modules && rm -rf coverage
 
 test:
-	@yarn test --color
+	@yarn --silent test --color
 
 test-cov:
 	@yarn test --coverage --color
@@ -16,6 +16,9 @@ test-ci:
 	@CI=true yarn test --all --coverage --color --detectOpenHandles
 
 build:
-	@yarn build-package
-
-.PHONY: all install test build clean
+	@yarn --silent build
+<% if (true === deployable) { %>
+deploy:
+	@yarn --silent deploy
+<% } %>
+.PHONY: all install test build clean<%- true === deployable ? ' deploy migrate' : '' -%>

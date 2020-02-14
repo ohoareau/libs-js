@@ -56,18 +56,19 @@ export default class Package {
         return this;
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
-        vars = {name: this.name, ...this.vars, ...vars};
+        vars = {deployable: false, name: this.name, ...this.vars, ...vars};
         const files = (await Promise.all(Object.values(this.handlers).map(async h => h.generate(vars)))).reduce((acc, f) => ({...acc, ...f}), {
             ['package.json']: () => JSON.stringify({
                 name: vars.name,
                 license: vars.license,
                 dependencies: {
-                    '@ohoareau/microlib': '^0.4.5',
+                    '@ohoareau/microlib': '^0.4.6',
                     ...(vars.dependencies || {}),
                 },
                 scripts: {
-                    'build-package': 'build-package',
+                    build: 'build-package',
                     test: 'jest',
+                    ...(vars.deployable ? {deploy: 'deploy-package'} : {}),
                     ...(vars.scripts || {}),
                 },
                 devDependencies: {
