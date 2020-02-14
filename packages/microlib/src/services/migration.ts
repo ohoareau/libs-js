@@ -1,4 +1,5 @@
-/*
+import migrator from '@ohoareau/migrate';
+
 import dbFactory from './dynamoose';
 const db = dbFactory.getDb({
     name: 'migration',
@@ -12,8 +13,6 @@ const db = dbFactory.getDb({
         create: false, update: false, waitForActive: false,
     },
 });
-
-const applyMigrate = async () => ({}); // @todo implement
 
 const createLogger = ({add, remove}) => async (event, data) => {
     switch (event) {
@@ -55,22 +54,15 @@ const createLogger = ({add, remove}) => async (event, data) => {
     }
 };
 
-const migration = '...'; // @todo pick up migration info
+const migrate = async ({rootDir}) => migrator(
+    `${rootDir}/migrations`,
+    (await db.find({})).items.map(i => i.id),
+    {},
+    'up',
+    createLogger({
+        add: async migration => db.create({data: {id: migration.name}}),
+        remove: async migration => db.delete({id: migration.name}),
+    })
+);
 
- */
-const migrate = async () => {
-    /*
-    return applyMigrate(
-        migration,
-        (await db.find({})).items.map(i => i.id),
-        {},
-        'up',
-        createLogger({
-            add: async migration => db.create({data: {id: migration.name}}),
-            remove: async migration => db.delete({id: migration.name}),
-        })
-    );
-     */
-    return {};
-};
 export default {migrate}
