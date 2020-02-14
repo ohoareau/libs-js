@@ -4,6 +4,7 @@ export const fn2hn = (fn, middlewares, options = {}) => {
     const hn = fn2ex(fn, compose(...middlewares));
     return async (event, context) => hn({
         ...((options && options['params']) ? ((event || {}).params) : event || {}),
+        ...((options && options['rootDir']) ? {rootDir: options['rootDir']} : {}),
         user: event.user,
         headers: event.headers,
         requestId: context['awsRequestId'],

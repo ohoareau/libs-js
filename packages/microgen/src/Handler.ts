@@ -62,8 +62,11 @@ export default class Handler {
                 return `const m${i + 1} = require('${offsetDir}/middlewares/${m}')(cf);`
             }),
         ].join("\n");
+        const options = {};
+        !!this.vars.paramsKey && (options['params'] = true);
+        !!this.vars.rootDir && (options['rootDir'] = ('string' === typeof options['rootDir']) ? options['rootDir'] : `\`\${__dirname}${offsetDir !== '.' ? `/${offsetDir}` : ''}\``);
         const post_init = [
-            `const hn = require('@ohoareau/microlib/lib/utils').fn2hn(${fnName}, [${realMiddlewares.join(', ')}]${this.vars.paramsKey ? ', {params: true}' : ''});`,
+            `const hn = require('@ohoareau/microlib/lib/utils').fn2hn(${fnName}, [${realMiddlewares.join(', ')}]${!!Object.keys(options).length ? `, ${this.stringifyForOptions(options)}` : ''});`,
         ].join("\n");
         vars = {
             ...this.vars,
@@ -81,5 +84,13 @@ export default class Handler {
             files[`__tests__/${this.directory ? `${this.directory}/` : ''}${this.name}.test.js`] = ({renderFile}) => renderFile(`tests/handler.test.js.ejs`, {...vars, test: this.test});
         }
         return files;
+    }
+    stringifyForOptions(o) {
+        return stringifyObject(o, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true, transform: (obj, prop, originalResult) => {
+            if (/^'`[^`]+`'$/.test(originalResult)) {
+                return originalResult.substr(1, originalResult.length - 2);
+            }
+            return originalResult;
+        }});
     }
 }

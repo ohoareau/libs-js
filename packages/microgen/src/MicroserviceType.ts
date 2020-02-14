@@ -131,7 +131,7 @@ export default class MicroserviceType {
             }
         };
     }
-    buildServiceMethodConfig({backend, name}) {
+    buildServiceMethodConfig({backend, name, backendArgs = undefined}) {
         let backendName = backend || this.defaultBackendName;
         (backendName && ('@' === backendName.substr(0, 1)) && (backendName = backendName.substr(1)));
         const befores = ['validate', 'populate', 'transform', 'before', 'prepare'].reduce((acc, n) => {
@@ -153,8 +153,8 @@ export default class MicroserviceType {
         const lines = [
             needHook && `    const hook = service.buildHookFor('${this.name}_${name}', model, __dirname);`,
             ...befores,
-            (!batchMode && !afters.length) && `    return service.${backendName}.${name}(query);`,
-            (!batchMode && !!afters.length) && `    let result = await service.${backendName}.${name}(query);`,
+            (!batchMode && !afters.length) && `    return ${this.buildBackendCall({prefix: 'service.', name: backendName, method: name, args: backendArgs ||['query']})};`,
+            (!batchMode && !!afters.length) && `    let result = await ${this.buildBackendCall({prefix: 'service.', name: backendName, method: name, args: backendArgs ||['query']})};`,
             (batchMode && !afters.length) && `    return Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             (batchMode && !!afters.length) && `    let result = Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             ...afters,
@@ -166,6 +166,9 @@ export default class MicroserviceType {
             args: batchMode ? ['{data = [], ...query}'] : ['query'],
             code: lines.join("\n"),
         };
+    }
+    buildBackendCall({prefix, name, method, args}) {
+        return `${prefix}${name}.${method}(${args.join(', ')})`;
     }
     buildHookCode({type, iteratorKey = undefined, ensureKeys = [], trackData = [], config = {}}, options = {}) {
         const opts = {};
