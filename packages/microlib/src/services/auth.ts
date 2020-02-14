@@ -26,6 +26,7 @@ const generateTokensForUser = (data, populate: Function|undefined = undefined) =
 };
 
 const createAuthToken = async ({user, password, populate = undefined}) => {
+    if (!user || !password || !user.password) throw new BadCredentialsError((user && user.username) || undefined);
     if (!await bcrypt.compareSync(password, user.password)) throw new BadCredentialsError(user.username);
     return generateTokensForUser(user, populate);
 };
