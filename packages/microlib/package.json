@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -26,8 +26,8 @@
         "bcryptjs": "^2.4.3",
         "dynamoose": "^1.11.1",
         "graphql": "^14.6.0",
-        "uuid": "^3.4.0",
-        "jsonwebtoken": "^8.5.1"
+        "jsonwebtoken": "^8.5.1",
+        "uuid": "^3.4.0"
     },
     "devDependencies": {
         "aws-sdk": "^2.615.0"
