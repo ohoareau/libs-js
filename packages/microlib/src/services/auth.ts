@@ -26,8 +26,8 @@ const generateTokensForUser = (data, populate: Function|undefined = undefined) =
 };
 
 const createAuthToken = async ({user, password, populate = undefined}) => {
-    if (!user || !password || !user.password) throw new BadCredentialsError((user && user.username) || undefined);
-    if (!await bcrypt.compareSync(password, user.password)) throw new BadCredentialsError(user.username);
+    if (!user || !password || !user.password) throw new BadCredentialsError((user && user.username) || undefined, 'no password');
+    if (!await bcrypt.compareSync(password, user.password)) throw new BadCredentialsError(user.username, 'bad password');
     return generateTokensForUser(user, populate);
 };
 
@@ -37,9 +37,9 @@ const refreshAuthToken = async ({refreshToken, fetch = undefined, populate = und
         data = jwt.verify(refreshToken, jwtRefreshSecret);
         user = fetch ? await (<any>fetch)(data) : data;
     } catch (e) {
-        throw new BadCredentialsError(e.message);
+        throw new BadCredentialsError(undefined, e.message);
     }
-    if (!user) throw new BadCredentialsError((data && data.username) || undefined);
+    if (!user) throw new BadCredentialsError((data && data.username) || undefined, 'unknown user');
     return generateTokensForUser(user, populate);
 };
 
