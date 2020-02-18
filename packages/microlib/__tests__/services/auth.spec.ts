@@ -21,14 +21,14 @@ describe('createAuthToken', () => {
         await expect(auth.createAuthToken({
             user: {username: 'the_username', password: expected},
             password: rawPassword2,
-        })).rejects.toThrow(new BadCredentialsError('the_username'));
+        })).rejects.toThrow(new BadCredentialsError('the_username', 'bad password'));
     });
 });
 describe('refreshAuthToken', () => {
     it('missing refresh token throw error', async () => {
-        await expect(auth.refreshAuthToken(<any>{})).rejects.toThrow(new BadCredentialsError('jwt must be provided'));
+        await expect(auth.refreshAuthToken(<any>{})).rejects.toThrow(new BadCredentialsError(undefined, 'jwt must be provided'));
     });
     it('malformed refresh token throw error', async () => {
-        await expect(auth.refreshAuthToken({refreshToken: 'xxx'})).rejects.toThrow(new BadCredentialsError('jwt malformed'));
+        await expect(auth.refreshAuthToken({refreshToken: 'xxx'})).rejects.toThrow(new BadCredentialsError(undefined, 'jwt malformed'));
     });
 });
