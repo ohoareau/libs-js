@@ -11,15 +11,13 @@ const typeDefs = gql`
 <% } -%>
 
 const resolvers = {
-<% if ('undefined' !== typeof resolvers) { -%>
-<% Object.entries(resolvers).forEach(([typeName, queries]) => { %>
+<% Object.entries((('undefined' !== typeof resolvers) ? resolvers : undefined) || {}).forEach(([typeName, queries]) => { -%>
     <%- typeName -%>: {
 <% Object.entries(queries).forEach(([k, v]) => { -%>
         <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
 <% }) -%>
     },
 <% }) -%>
-<% } -%>
 };
 
 const context = ({event, context, req}) => {
