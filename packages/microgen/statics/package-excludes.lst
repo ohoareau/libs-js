@@ -83,3 +83,12 @@ coverage/*
 *.github/workflows/rebase.yml
 *rollup.config.js
 *.yarn-integrity
+*-browser.js
+*/example/*
+*/browser.js
+*.min.js
+*.js.flow
+*/@types/*
+*.browser.js
+*/postinstall.js
+*CODEOWNERS
