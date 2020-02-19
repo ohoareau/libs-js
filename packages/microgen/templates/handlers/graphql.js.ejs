@@ -1,5 +1,11 @@
 const {ApolloServer, gql} = require('apollo-server-lambda');
-const r = h => async (parent, params, {context}, info) => h({params}, {...context, info});
+const r = h => async (parent, params = {}, {context}, info) => {
+    const handlerEvent = {params};
+    (context && context.event && context.event.user) && (handlerEvent.user = context.event.user);
+    !!parent && (handlerEvent.params.parent = parent);
+    const handlerContext = {...context, info};
+    return h(handlerEvent, handlerContext);
+};
 const jwtSecret = String(process.env.JWT_SECRET || 'the-very-secret-secret');
 
 <% if ('undefined' !== typeof schemaFile) { -%>
