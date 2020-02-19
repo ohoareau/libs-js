@@ -1,7 +1,7 @@
 const {ApolloServer, gql} = require('apollo-server-lambda');
-const r = h => async (parent, params = {}, {context}, info) => {
+const r = h => async (parent, params = {}, {event, context}, info) => {
     const handlerEvent = {params};
-    (context && context.event && context.event.user) && (handlerEvent.user = context.event.user);
+    (!!event && !!event.user) && (handlerEvent.user = event.user);
     !!parent && (handlerEvent.params.parent = parent);
     const handlerContext = {...context, info};
     return h(handlerEvent, handlerContext);
@@ -27,8 +27,8 @@ const resolvers = {
 };
 
 const context = ({event, context, req}) => {
-    if (!!event && !!event.headers && !!event.headers.authorization) {
-        event.user = require('jsonwebtoken').verify((event.headers.authorization || '').split(' ')[1], jwtSecret);
+    if (!!event && !!event.headers && !!event.headers.Authorization) {
+        event.user = require('jsonwebtoken').verify((event.headers.Authorization || '').split(' ')[1], jwtSecret);
     }
     return {event, context};
 };
