@@ -6,17 +6,16 @@ export type MicroserviceTypeOperationConfig = {
     name: string,
     type: string|undefined,
     middlewares: string[],
-    backend: string,
+    backend: string|{name: string, method?: string, args?: string[]},
     vars: {[key: string]: any},
     hooks: {[key: string]: any[]},
-    backendArgs: string[]|undefined,
 };
 
 export default class MicroserviceTypeOperation {
     public readonly name: string;
     public readonly handler: Handler;
     public readonly microserviceType: MicroserviceType;
-    constructor(microserviceType, {name, type = undefined, middlewares = [], backend, vars = {}, hooks = {}, backendArgs = undefined}: MicroserviceTypeOperationConfig) {
+    constructor(microserviceType, {name, type = undefined, middlewares = [], backend, vars = {}, hooks = {}}: MicroserviceTypeOperationConfig) {
         this.microserviceType = microserviceType;
         this.name = name;
         this.handler = new Handler({name: `${microserviceType.name}_${this.name}`, type: 'service', middlewares, directory: 'handlers', params: {

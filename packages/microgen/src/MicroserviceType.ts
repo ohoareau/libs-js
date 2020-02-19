@@ -131,9 +131,15 @@ export default class MicroserviceType {
             }
         };
     }
-    buildServiceMethodConfig({backend, name, backendArgs = undefined}) {
-        let backendName = backend || this.defaultBackendName;
-        (backendName && ('@' === backendName.substr(0, 1)) && (backendName = backendName.substr(1)));
+    buildServiceMethodConfig({backend, name}) {
+        let backendDef = backend || this.defaultBackendName;
+        if (backendDef) {
+            if ('string' === typeof backendDef) {
+                backendDef = {name: backendDef};
+            }
+            backendDef = {method: name, args: ['query'], ...backendDef};
+            (backendDef.name && ('@' === backendDef.name.substr(0, 1)) && (backendDef.name = backendDef.name.substr(1)));
+        }
         const befores = ['validate', 'populate', 'transform', 'before', 'prepare'].reduce((acc, n) => {
             if (!this.hooks[name]) return acc;
             if (!this.hooks[name][n]) return acc;
@@ -153,8 +159,10 @@ export default class MicroserviceType {
         const lines = [
             needHook && `    const hook = service.buildHookFor('${this.name}_${name}', model, __dirname);`,
             ...befores,
-            (!batchMode && !afters.length) && `    return ${this.buildBackendCall({prefix: 'service.', name: backendName, method: name, args: backendArgs ||['query']})};`,
-            (!batchMode && !!afters.length) && `    let result = await ${this.buildBackendCall({prefix: 'service.', name: backendName, method: name, args: backendArgs ||['query']})};`,
+            (!backendDef && !batchMode && !afters.length) && `    return undefined;`,
+            (!!backendDef && !batchMode && !afters.length) && `    return ${this.buildBackendCall({prefix: 'service.', ...backendDef})};`,
+            (!backendDef && !batchMode && !!afters.length) && `    let result = undefined;`,
+            (!!backendDef && !batchMode && !!afters.length) && `    let result = await ${this.buildBackendCall({prefix: 'service.', ...backendDef})};`,
             (batchMode && !afters.length) && `    return Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             (batchMode && !!afters.length) && `    let result = Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             ...afters,
