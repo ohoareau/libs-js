@@ -55,6 +55,12 @@ const GQL_COMPLETE_PASSWORD_RESET = gql`
 const buildFieldError = (t, m) => {
     if (!m.code) return {_: [{message: (m && m.message) ? m.message : t('errors_auth_generic')}]};
     switch (m.code) {
+        case 'auth_password_policy_restriction':
+            return {password: [m]};
+        case 'auth_code_mismatch':
+            return {securityCode: [m]};
+        case 'auth_limit_exceeded':
+            return {securityCode: [m]};
         case 'auth_bad_credentials':
             return {password: [m]};
         case 'auth_missing_groups':
@@ -73,19 +79,20 @@ export const triggerRefreshToken = async (refreshToken, client) =>
     })).data['refreshAuthToken']
 ;
 
-export const useLogin = (dispatch, client) => {
+export const useLogin = (dispatch, client: any = undefined) => {
     const [createAuthToken, {loading, error}] = useMutation(GQL_CREATE_USER_TOKEN, {
         client,
         onCompleted: async ({createAuthToken}) => dispatch(userChangedAction(createAuthToken)),
     });
-    const login = useCallback(async data => {
+    const submit = useCallback(async data => {
         try {
             await createAuthToken({variables: {data}});
         } catch (e) {
         }
     }, [createAuthToken]);
 
-    return {login, loading, errors: error ? [{errorInfo: buildFieldError(i18n.t, error)}] : []};
+    const view = 'login';
+    return {submit, loading, errors: error ? [{errorInfo: buildFieldError(i18n.t, error)}] : [], view};
 };
 
 export const useChangeLocale = (dispatch) => {
