@@ -11,26 +11,14 @@ const typeDefs = gql`
 <% } -%>
 
 const resolvers = {
-<% if ('undefined' !== typeof queries) { -%>
-    Query: {
+<% if ('undefined' !== typeof resolvers) { -%>
+<% Object.entries(resolvers).forEach(([typeName, queries]) => { %>
+    <%- typeName -%>: {
 <% Object.entries(queries).forEach(([k, v]) => { -%>
         <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
 <% }) -%>
     },
-<% } -%>
-<% if ('undefined' !== typeof mutations) { -%>
-    Mutation: {
-<% Object.entries(mutations).forEach(([k, v]) => { -%>
-        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
 <% }) -%>
-    },
-<% } -%>
-<% if ('undefined' !== typeof subscriptions) { -%>
-    Subscription: {
-<% Object.entries(subscriptions).forEach(([k, v]) => { -%>
-        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
-<% }) -%>
-    },
 <% } -%>
 };
 

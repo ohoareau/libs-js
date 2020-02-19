@@ -54,15 +54,17 @@ type Mutation {
                     type: 'graphql',
                     vars: {
                         schemaFile: '../schema.graphql',
-                        queries: {
-                            getLog: 'log_log_get',
-                            getUsers: 'user_user_find',
-                            getOrganization: 'user_organization_get',
-                        },
-                        mutations: {
-                            createLog: 'log_log_create',
-                            createUser: 'user_user_create',
-                            createOrganization: 'user_organization_create',
+                        resolvers: {
+                            Query: {
+                                getLog: 'log_log_get',
+                                getUsers: 'user_user_find',
+                                getOrganization: 'user_organization_get',
+                            },
+                            Mutation: {
+                                createLog: 'log_log_create',
+                                createUser: 'user_user_create',
+                                createOrganization: 'user_organization_create',
+                            }
                         }
                     }
                 },
