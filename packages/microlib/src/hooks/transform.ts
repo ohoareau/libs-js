@@ -11,7 +11,11 @@ const getTransformer = (type, dir) => {
 
 export default ({model: {transformers = {}}, dir}) => async data => {
     Object.entries(data.data).forEach(([k, v]) => {
-        if (transformers[k]) data.data[k] = transformers[k].reduce((acc, {type, config}) => getTransformer(type, dir)(config)(acc), v);
+        if (transformers[k]) {
+            data.originalData = data.originalData || {};
+            data.originalData[k] = v;
+            data.data[k] = transformers[k].reduce((acc, {type, config}) => getTransformer(type, dir)(config)(acc), v);
+        }
     });
     return data;
 }
