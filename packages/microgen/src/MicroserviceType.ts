@@ -176,7 +176,7 @@ export default class MicroserviceType {
         };
     }
     buildBackendCall({prefix, name, method, args}) {
-        return `${prefix}${name}.${method}(${args.join(', ')})`;
+        return `${prefix}${'this' === name ? '' : `${name}.`}${method}(${args.join(', ')})`;
     }
     buildHookCode({type, iteratorKey = undefined, ensureKeys = [], trackData = [], config = {}}, options = {}) {
         const opts = {};
