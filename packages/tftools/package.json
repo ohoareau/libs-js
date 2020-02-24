@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/tftools",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -22,8 +22,6 @@
   },
   "dependencies": {
     "handlebars": "^4.5.3"
-  },
-  "devDependencies": {
   },
   "bin": {
     "tfgen": "./bin/tfgen",
