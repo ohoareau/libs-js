@@ -12,6 +12,22 @@ export const fn2hn = (fn, middlewares, options = {}) => {
         context,
     });
 };
+const computeConfig = (c, item) => {
+    const p = /\[\[[^\]]+]]/;
+    return Object.entries(c).reduce((acc, [k, v]) => {
+        if (('string' === typeof v) && p.test(v)) {
+            if ('[[value]]' === v) {
+                acc[k] = item;
+            } else {
+                acc[k] = item[v.substr(2, v.length - 4)];
+            }
+        } else {
+            acc[k] = v;
+        }
+        return acc;
+    }, {});
+};
+
 export const initHook = (operation, model, dir) => {
     dir = `${dir}/../..`;
     return async (n, d, c = {}, opts = {}) => {
@@ -32,6 +48,8 @@ export const initHook = (operation, model, dir) => {
         } else {
             h = require(`${dir}/hooks/${n}`);
         }
-        return h({...c, o: operation, model, dir})(...(Array.isArray(d) ? d : [d]));
+        const args = Array.isArray(d) ? d : [d];
+        if (!!opts['loop']) return await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)));
+        return h({...c, o: operation, model, dir})(...args);
     };
 };
