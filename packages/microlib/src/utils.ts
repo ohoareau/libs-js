@@ -12,20 +12,15 @@ export const fn2hn = (fn, middlewares, options = {}) => {
         context,
     });
 };
-const computeConfig = (c, item) => {
-    const p = /\[\[[^\]]+]]/;
-    return Object.entries(c).reduce((acc, [k, v]) => {
-        if (('string' === typeof v) && p.test(v)) {
-            if ('[[value]]' === v) {
-                acc[k] = item;
-            } else {
-                acc[k] = item[v.substr(2, v.length - 4)];
-            }
-        } else {
-            acc[k] = v;
-        }
-        return acc;
-    }, {});
+const pattern = /^\[\[[^\]]+]]$/;
+
+const computeConfig = (c, d) => {
+    if ('object' === typeof c) return Object.entries(c).reduce((acc, [k, v]) =>
+        Object.assign(acc, {[k]: computeConfig(v, d)})
+    , {});
+    if (Array.isArray(c)) return c.map(v => computeConfig(v, d));
+    if (('string' === typeof c) && pattern.test(c)) return ('[[value]]' === c) ? d : d[c.substr(2, c.length - 4)];
+    return c;
 };
 
 export const initHook = (operation, model, dir) => {
