@@ -20,7 +20,7 @@ const resolvers = {
 <% Object.entries((('undefined' !== typeof resolvers) ? resolvers : undefined) || {}).forEach(([typeName, queries]) => { -%>
     <%- typeName -%>: {
 <% Object.entries(queries).forEach(([k, v]) => { -%>
-        <%- k -%>: (...a) => r(require('./handlers/<%- v -%>').handler)(...a),
+        <%- k -%>: r(require('./handlers/<%- v -%>').handler),
 <% }) -%>
     },
 <% }) -%>
