@@ -44,7 +44,7 @@ export const initHook = (operation, model, dir) => {
             h = require(`${dir}/hooks/${n}`);
         }
         const args = Array.isArray(d) ? d : [d];
-        if (!!opts['loop']) return await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)));
+        if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)))).pop();
         return h({...c, o: operation, model, dir})(...args);
     };
 };
