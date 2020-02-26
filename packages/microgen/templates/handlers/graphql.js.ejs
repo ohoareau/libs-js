@@ -1,10 +1,12 @@
 const {ApolloServer, gql} = require('apollo-server-lambda');
-const r = h => async (parent, params = {}, {event, context}, info) => {
-    const handlerEvent = {params};
-    (!!event && !!event.user) && (handlerEvent.user = event.user);
-    !!parent && (handlerEvent.params.parent = parent);
-    const handlerContext = {...context, info};
-    return h(handlerEvent, handlerContext);
+const r = n => {
+    const h = require(`./handlers/${n}`).handler;
+    return async (parent, params = {}, {event, context}, info) => {
+        const handlerEvent = {params};
+        (!!event && !!event.user) && (handlerEvent.user = event.user);
+        !!parent && (handlerEvent.params.parent = parent);
+        return h(handlerEvent, {...context, info});
+    };
 };
 const jwtSecret = String(process.env.JWT_SECRET || 'the-very-secret-secret');
 
@@ -20,7 +22,7 @@ const resolvers = {
 <% Object.entries((('undefined' !== typeof resolvers) ? resolvers : undefined) || {}).forEach(([typeName, queries]) => { -%>
     <%- typeName -%>: {
 <% Object.entries(queries).forEach(([k, v]) => { -%>
-        <%- k -%>: r(require('./handlers/<%- v -%>').handler),
+        <%- k -%>: r('<%- v -%>'),
 <% }) -%>
     },
 <% }) -%>
