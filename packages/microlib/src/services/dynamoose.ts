@@ -69,9 +69,9 @@ const buildQueryModifiers = s => {
     );
 };
 
-const buildQueryDefinitionFromCriteria = criteria => {
+const buildQueryDefinitionFromCriteria = (criteria, index) => {
     const localCriteria = {...criteria};
-    let modifiers = [];
+    let modifiers = index ? [{type: 'index', name: index}] : [];
     let query:any = undefined;
     if (localCriteria._) modifiers = buildQueryModifiers(localCriteria._);
     delete localCriteria._; // always delete even if empty
@@ -87,6 +87,8 @@ const buildQueryDefinitionFromCriteria = criteria => {
 
 const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     switch (m.type) {
+        case 'index':
+            return qq.using(m.name);
         case 'filter':
             return qq.filter(m.attribute);
         case 'and':
@@ -120,8 +122,8 @@ const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     }
 }, q);
 
-const runQuery = async (m, {criteria, fields, limit, offset, sort, options = {}}) => {
-    const {query, modifiers} = buildQueryDefinitionFromCriteria(criteria);
+const runQuery = async (m, {index = undefined, criteria, fields, limit, offset, sort, options = {}}) => {
+    const {query, modifiers} = buildQueryDefinitionFromCriteria(criteria, index);
     let q = query ? m.query(query) : m.scan();
     if (!q || !q.exec) throw new Error('Unable to build query/scan from definition');
     q = applyModifiers(q, modifiers);
@@ -212,7 +214,7 @@ export default {
                 if ('string' === typeof payload.id) {
                     doc = {...(await model.update({id: payload.id}, payload.data || {}) || {})};
                 } else if (Array.isArray(payload.id)) {
-                    docs = await Promise.all(payload.id.map(async id => model.update({id}, payload.data || {}) || {}));
+                    docs = await Promise.all(payload.id.map(async id => await model.update({id}, payload.data || {}) || {}));
                 } else if ('object' === typeof payload.id) {
                     ids = (await runQuery(model, {
                         criteria: {_: convertToQueryDsl(payload.id)},
@@ -221,7 +223,7 @@ export default {
                         offset: undefined,
                         sort: undefined,
                     }) || []);
-                    docs = await Promise.all(ids.map(async doc => model.update({id: (<any>doc).id}, payload.data || {}) || {}));
+                    docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, payload.data || {}) || {}));
                 }
                 if (docs) return [...docs];
                 if (!doc) throw new DocumentNotFoundError(name, payload.id);
