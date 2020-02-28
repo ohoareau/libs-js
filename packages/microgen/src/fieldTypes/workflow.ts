@@ -1,1 +1,1 @@
-export default ({steps}) => ({type: 'string', validators: [{type: '@values', config: {values: steps}}]})
+export default ({steps}) => ({type: 'string', validators: [{type: '@values', config: {values: steps}}], prefetch: true})

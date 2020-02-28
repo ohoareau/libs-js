@@ -24,6 +24,7 @@ export default class SchemaParser {
             refAttributeFields: {},
             hooks: def.hooks,
             name: def.name,
+            prefetchs: {},
         };
         this.parseAttributes(def, schema);
         this.parseRefAttributeFields(def, schema);
@@ -45,7 +46,7 @@ export default class SchemaParser {
                 validators: [].concat(officialDef.validators || [], forcedDef.validators || []),
             };
             const {
-                type = 'string', list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
+                type = 'string', prefetch = false, list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
                 value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
                 upper = false, lower = false, transform = undefined, reference = undefined, refAttribute = undefined,
             } = def;
@@ -78,6 +79,7 @@ export default class SchemaParser {
             primaryKey && (acc.primaryKey = k);
             upper && (acc.transformers[k].push({type: '@upper'}));
             lower && (acc.transformers[k].push({type: '@lower'}));
+            prefetch && (acc.prefetchs[k] = true);
             if (!acc.transformers[k].length) delete acc.transformers[k];
             return acc;
         }, schema);
