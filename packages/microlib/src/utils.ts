@@ -23,28 +23,36 @@ const computeConfig = (c, d) => {
     return c;
 };
 
-export const initHook = (operation, model, dir) => {
+export const isTransition = (attribute, from, to, data) =>
+    data && data.data && (to === data.data[attribute]) && data.oldData && (from === data.oldData[attribute])
+;
+
+export const isValue = (attribute, value, data) => data && data.data && (value === data.data[attribute]);
+
+export const createOperationHelpers = (operation, model, dir) => {
     dir = `${dir}/../..`;
-    return async (n, d, c = {}, opts = {}) => {
-        if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
-            opts['ensureKeys'].reduce((acc, k) => {
-                acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
-                return acc;
-            }, Array.isArray(d) ? d[0] : d);
+    return {
+        isTransition,
+        hook: async (n, d, c = {}, opts = {}) => {
+            if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
+                opts['ensureKeys'].reduce((acc, k) => {
+                    acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
+                    return acc;
+                }, Array.isArray(d) ? d[0] : d);
+            }
+            if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
+                const data = Array.isArray(d) ? d[1] : d;
+                if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
+            }
+            let h;
+            if ('@' === n.substr(0, 1)) {
+                h = require(`./hooks/${n.substr(1)}`).default;
+            } else {
+                h = require(`${dir}/hooks/${n}`);
+            }
+            const args = Array.isArray(d) ? d : [d];
+            if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)))).pop();
+            return h({...c, o: operation, model, dir})(...args);
         }
-        if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
-            const data = Array.isArray(d) ? d[1] : d;
-            if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
-        }
-        // @todo consume opts.loop by reducing (async !)
-        let h;
-        if ('@' === n.substr(0, 1)) {
-            h = require(`./hooks/${n.substr(1)}`).default;
-        } else {
-            h = require(`${dir}/hooks/${n}`);
-        }
-        const args = Array.isArray(d) ? d : [d];
-        if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)))).pop();
-        return h({...c, o: operation, model, dir})(...args);
     };
 };
