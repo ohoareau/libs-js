@@ -169,9 +169,10 @@ export default class SchemaParser {
             d.index.push({name});
         }
         if (/^ref:/.test(d.type)) {
+            const tokens = d.type.substr(4).split(':');
             d.reference = {
-                reference: d.type.substr(4),
-                idField: 'id',
+                reference: tokens[0],
+                idField: tokens[1] || 'id',
                 fetchedFields: [],
             };
             d.type = 'string';
