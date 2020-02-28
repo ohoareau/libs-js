@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 
-const v = require(`${__dirname}/../lib/index.js`)(process.argv[2]);
+const v = require(`${__dirname}/../lib/index.js`).default(process.argv[2]);
 v && console.log(v);
