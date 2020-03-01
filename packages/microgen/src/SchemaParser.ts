@@ -25,6 +25,7 @@ export default class SchemaParser {
             hooks: def.hooks,
             name: def.name,
             prefetchs: {},
+            autoTransitionTo: {},
         };
         this.parseAttributes(def, schema);
         this.parseRefAttributeFields(def, schema);
@@ -49,6 +50,7 @@ export default class SchemaParser {
                 type = 'string', prefetch = false, list = false, volatile = false, required = false, index = [], internal = false, validators = undefined, primaryKey = false,
                 value = undefined, default: rawDefaultValue = undefined, defaultValue = undefined, updateValue = undefined, updateDefault: rawUpdateDefaultValue = undefined, updateDefaultValue = undefined,
                 upper = false, lower = false, transform = undefined, reference = undefined, refAttribute = undefined,
+                autoTransitionTo = undefined,
             } = def;
             acc.fields[k] = {
                 type, primaryKey, volatile,
@@ -73,6 +75,7 @@ export default class SchemaParser {
             (undefined !== rawDefaultValue) && (acc.defaultValues[k] = {type: '@value', config: {value: rawDefaultValue}});
             (undefined !== updateDefaultValue) && (acc.updateDefaultValues[k] = updateDefaultValue);
             (undefined !== rawUpdateDefaultValue) && (acc.updateDefaultValues[k] = {type: '@value', config: {value: rawUpdateDefaultValue}});
+            (undefined !== autoTransitionTo) && (acc.autoTransitionTo[k] = {type: '@value', config: {value: autoTransitionTo}});
             internal && (acc.privateFields[k] = true);
             index && (index.length > 0) && (acc.indexes[k] = index);
             volatile && (acc.volatileFields[k] = true);

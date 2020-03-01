@@ -40,6 +40,7 @@ export default class MicroserviceTypeOperation {
                 this.hasHooks('populate', name, microserviceType) && microserviceType.registerHook(name, 'populate', {type: '@populate', config: {}});
                 this.hasHooks('prepare', name, microserviceType) && microserviceType.registerHook(name, 'prepare', {type: '@prepare', config: {}});
                 this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: '@after', config: {}});
+                this.hasHooks('autoTransitionTo', name, microserviceType) && microserviceType.registerHook(name, 'end', {type: '@auto-transitions', config: {}});
                 break;
             case 'update':
                 this.hasHooks('prefetch', name, microserviceType) && microserviceType.registerHook(name, 'init', {type: '@prefetch'});
@@ -105,6 +106,8 @@ export default class MicroserviceTypeOperation {
                 return !!Object.keys(microserviceType.model.volatileFields).length;
             case 'after':
                 return !!Object.keys(microserviceType.model.volatileFields).length;
+            case 'autoTransitionTo':
+                return !!Object.keys(microserviceType.model.autoTransitionTo).length;
             default:
                 return false;
         }
