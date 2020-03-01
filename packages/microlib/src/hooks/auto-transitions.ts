@@ -2,7 +2,7 @@ import caller from '../services/caller';
 
 const buildTransitionValue = def => {
     switch (def.type) {
-        case '@value': return def.value;
+        case '@value': return def.config.value;
         default: throw new Error(`Unknown transition value type '${def.type}'`);
     }
 };
