@@ -19,8 +19,8 @@ export default {
                 }
             },
             ReplyToAddresses: replyTo,
-            ReturnPath: '',
-            ReturnPathArn: '',
+//            ReturnPath: source,
+//            ReturnPathArn: sourceArn,
             Source: source,
             SourceArn: sourceArn,
         }).promise()
