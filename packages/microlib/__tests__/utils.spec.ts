@@ -1,12 +1,12 @@
 const testMock = jest.fn();
 jest.mock('../src/hooks/test', () => ({default: testMock}), {virtual: true});
-import {createOperationHelpers} from '../src/utils';
+import {createOperationHelpers, isTransition} from '../src/utils';
 
 beforeEach(() => {
     jest.resetAllMocks();
 });
 
-describe('initHook', () => {
+describe('createOperationHelpers', () => {
     it('return a function', () => {
         const {hook} = createOperationHelpers('x_y_z', {}, __dirname);
         expect(hook).toEqual(expect.any(Function));
@@ -40,4 +40,21 @@ describe('initHook', () => {
         expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {}, dir: expect.any(String), x: {y: {t: 'def'}}, z: 'hello'});
         expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {}, dir: expect.any(String), x: {y: {t: 'ghi'}}, z: 'hello'});
     });
+});
+describe('isTransition', () => {
+    [
+        ['@x[a => b] when a => b, return true', 'x', 'a', 'b', {x: 'a'}, {x: 'b'}, true],
+        ['@x[a => b] when -, return false', 'x', 'a', 'b', {x: 'a'}, {}, false],
+        ['@x[a => b] when a => c, return false', 'x', 'a', 'b', {x: 'a'}, {x: 'c'}, false],
+        ['@x[a => b] when - => b, return false', 'x', 'a', 'b', undefined, {x: 'b'}, false],
+        ['@x[* => b] when - => b, return true', 'x', '*', 'b', undefined, {x: 'b'}, true],
+        ['@x[* => b] when a => b, return true', 'x', '*', 'b', {x: 'a'}, {x: 'b'}, true],
+        ['@x[* => b] when b => b, return false', 'x', '*', 'b', {x: 'b'}, {x: 'b'}, false],
+    ]
+        .forEach(
+            ([name, attribute, from, to, oldData, newData, expected]) => it(<string>name, () => {
+                expect(isTransition(attribute, from , to, {data: newData, oldData})).toStrictEqual(expected);
+            })
+        )
+    ;
 });

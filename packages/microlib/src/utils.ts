@@ -23,9 +23,12 @@ const computeConfig = (c, d) => {
     return c;
 };
 
-export const isTransition = (attribute, from, to, data) =>
-    data && data.data && (('*' === to) || (to === data.data[attribute])) && data.oldData && (('*' === from) || (from === data.oldData[attribute]))
-;
+export const isTransition = (attribute, from, to, data) => {
+    const old = (data && data.oldData) ? data.oldData[attribute] : undefined;
+    const current = (data && data.data) ? data.data[attribute] : undefined;
+    if (old === current) return false;
+    return (('*' === to) || (current === to)) && (('*' === from) || (old === from));
+};
 
 export const isValue = (attribute, value, data) => data && data.data && (value === data.data[attribute]);
 
