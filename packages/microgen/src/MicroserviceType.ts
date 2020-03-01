@@ -183,7 +183,7 @@ export default class MicroserviceType {
     }
     buildConditionPartCode(condition, requirements) {
         if ('string' === typeof condition) {
-            let matches = condition.match(/^\s*@([a-z0-9_]+)\s*\[\s*([a-z0-9_]+)\s*=>\s*([a-z0-9_]+)\s*\]\s*$/);
+            let matches = condition.match(/^\s*@([a-z0-9_]+)\s*\[\s*([a-z0-9_]+|\*)\s*=>\s*([a-z0-9_]+|\*)\s*\]\s*$/);
             if (!matches) {
                 matches = condition.match(/^\s*@([a-z0-9_]+)\s*=(.*)$/);
                 if (!matches) {

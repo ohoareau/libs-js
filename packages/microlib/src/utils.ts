@@ -24,7 +24,7 @@ const computeConfig = (c, d) => {
 };
 
 export const isTransition = (attribute, from, to, data) =>
-    data && data.data && (to === data.data[attribute]) && data.oldData && (from === data.oldData[attribute])
+    data && data.data && (('*' === to) || (to === data.data[attribute])) && data.oldData && (('*' === from) || (from === data.oldData[attribute]))
 ;
 
 export const isValue = (attribute, value, data) => data && data.data && (value === data.data[attribute]);
