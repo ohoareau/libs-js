@@ -1,4 +1,4 @@
-const ses = new (require('aws-sdk/clients/ses'));
+const ses = new (require('aws-sdk/clients/ses'))({region: process.env.AWS_SES_REGION || process.env.AWS_REGION});
 
 export default {
     sendEmail: async ({source, sourceArn, to = [], cc = [], bcc = [], replyTo = [], body, bodyText, subject}) =>
