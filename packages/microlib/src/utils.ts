@@ -35,28 +35,26 @@ export const isValue = (attribute, value, data) => data && data.data && (value =
 export const createOperationHelpers = (operation, model, dir) => {
     dir = `${dir}/../..`;
     const operationName = operation.substr(model.name.length + 1);
-    return {
-        isTransition,
-        hook: async (n, d, c = {}, opts = {}) => {
-            if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
-                opts['ensureKeys'].reduce((acc, k) => {
-                    acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
-                    return acc;
-                }, Array.isArray(d) ? d[0] : d);
-            }
-            if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
-                const data = Array.isArray(d) ? d[1] : d;
-                if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
-            }
-            let h;
-            if ('@' === n.substr(0, 1)) {
-                h = require(`./hooks/${n.substr(1)}`).default;
-            } else {
-                h = require(`${dir}/hooks/${n}`);
-            }
-            const args = Array.isArray(d) ? d : [d];
-            if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)))).pop();
-            return h({...c, o: operation, operationName, model, dir})(...args);
+    const hook = async (n, d, c = {}, opts = {}) => {
+        if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
+            opts['ensureKeys'].reduce((acc, k) => {
+                acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
+                return acc;
+            }, Array.isArray(d) ? d[0] : d);
         }
+        if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
+            const data = Array.isArray(d) ? d[1] : d;
+            if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
+        }
+        let h;
+        if ('@' === n.substr(0, 1)) {
+            h = require(`./hooks/${n.substr(1)}`).default;
+        } else {
+            h = require(`${dir}/hooks/${n}`);
+        }
+        const args = Array.isArray(d) ? d : [d];
+        if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
+        return h({...c, o: operation, operationName, model, dir, hook})(...args);
     };
+    return {isTransition, hook};
 };

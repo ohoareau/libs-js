@@ -279,6 +279,20 @@ export default class MicroserviceType {
                     x = x.replace(a[0], `${prefix}${a[1]}`);
                 }
             }
+            if (/\{\{[^{}]+}}/.test(x)) {
+                let a;
+                const r = /\{\{([^{}]+)}}/g;
+                let prefix = '';
+                switch (<any>position) {
+                    case 'before': prefix = 'query.'; break;
+                    case 'after': prefix = 'result.'; break;
+                    default: break;
+                }
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `\${${prefix}${a[1]}}`);
+                }
+                x = `\`${x.substr(1, x.length - 2)}\``;
+            }
             if (/'%[a-z0-9_]+'/i.test(x)) {
                 let a;
                 const r = /'%([a-z0-9]+)'/i;
