@@ -8,7 +8,7 @@ import MicroserviceTypeOperation, {MicroserviceTypeOperationConfig} from './Micr
 export type MicroserviceTypeConfig = {
     microservice: Microservice,
     name: string,
-    schema: any,
+    attributes: {[key: string]: any},
     handlers?: any,
     operations?: {[key: string]: MicroserviceTypeOperationConfig},
     middlewares?: string[],
@@ -25,10 +25,10 @@ export default class MicroserviceType {
     public readonly backends: {[key: string]: any};
     public readonly defaultBackendName: string;
     public readonly microservice: Microservice;
-    constructor(microservice: Microservice, {name, schema = {}, operations = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
+    constructor(microservice: Microservice, {name, attributes = {}, operations = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
-        this.model = new SchemaParser().parse({name: this.name, ...schema});
+        this.model = new SchemaParser().parse({name: this.name, attributes, operations});
         this.backends = (<any>backends).reduce((acc, b) => {
             if ('string' === typeof b) b = {type: 'backend', name: b};
             return Object.assign(acc, {[b.name]: b});
@@ -48,7 +48,7 @@ export default class MicroserviceType {
                     }
                 )
         );
-        this.service = new Service({name: `crud/${microservice.name}_${name}`, ...this.buildServiceConfig({schema, operations}, {})});
+        this.service = new Service({name: `crud/${microservice.name}_${name}`, ...this.buildServiceConfig({attributes, operations}, {})});
         const opNames = Object.keys(this.operations);
         opNames.sort();
         Object.entries(handlers).forEach(
@@ -102,9 +102,9 @@ export default class MicroserviceType {
             return acc;
         }, {});
     }
-    buildServiceConfig({schema, operations}, requirements) {
+    buildServiceConfig({attributes, operations}, requirements) {
         const methods = Object.entries(operations).reduce((acc, [k, v]) => {
-            acc[k] = this.buildServiceMethodConfig({schema, name: k, ...<any>v}, requirements);
+            acc[k] = this.buildServiceMethodConfig({attributes, name: k, ...<any>v}, requirements);
             return acc;
         }, {});
         return {
@@ -272,6 +272,35 @@ export default class MicroserviceType {
                 let prefix = '';
                 switch (<any>position) {
                     case 'before': prefix = 'query.'; break;
+                    case 'after': prefix = 'result.'; break;
+                    default: break;
+                }
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `${prefix}${a[1]}`);
+                }
+            }
+            if (/'%[a-z0-9_]+'/i.test(x)) {
+                let a;
+                const r = /'%([a-z0-9]+)'/i;
+                let prefix = 'query.oldData.';
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `${prefix}${a[1]}`);
+                }
+            }
+            if (/'#[a-z0-9_]+'/i.test(x)) {
+                let a;
+                const r = /'#([a-z0-9]+)'/i;
+                let prefix = 'query.user.';
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `${prefix}${a[1]}`);
+                }
+            }
+            if (/'\$[a-z0-9_]+'/i.test(x)) {
+                let a;
+                const r = /'\$([a-z0-9]+)'/i;
+                let prefix = '';
+                switch (<any>position) {
+                    case 'before': prefix = 'query.data.'; break;
                     case 'after': prefix = 'result.'; break;
                     default: break;
                 }

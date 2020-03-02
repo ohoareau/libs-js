@@ -6,7 +6,7 @@ export default class SchemaParser {
         Object.entries(fieldTypes).forEach(([k, v]) => this.fieldTypes[k] = v);
     }
     parse(def: any): any {
-        def = {name: 'unknown', attributes: {}, hooks: {}, ...def};
+        def = {name: 'unknown', attributes: {}, operations: {}, hooks: {}, ...def};
         const schema = {
             primaryKey: <any>undefined,
             fields: {},
@@ -30,7 +30,15 @@ export default class SchemaParser {
         this.parseAttributes(def, schema);
         this.parseRefAttributeFields(def, schema);
         this.parseJob(def, schema);
+        this.parseOperations(def, schema);
         return schema;
+    }
+    parseOperations(def: any, schema: any) {
+        Object.entries(def.operations).reduce((acc, [k, d]) => {
+            if (!d || !(<any>d)['prefetch']) return acc;
+            Object.assign(acc.prefetchs[k] = acc.prefetchs[k] || {}, (<any>d).prefetch.reduce((acc2, k) => Object.assign(acc2, {[k]: true}), {}));
+            return acc;
+        }, schema);
     }
     parseAttributes(def: any, schema: any) {
         Object.entries(def.attributes).reduce((acc, [k, d]) => {
@@ -82,7 +90,7 @@ export default class SchemaParser {
             primaryKey && (acc.primaryKey = k);
             upper && (acc.transformers[k].push({type: '@upper'}));
             lower && (acc.transformers[k].push({type: '@lower'}));
-            prefetch && (acc.prefetchs[k] = true);
+            prefetch && ((acc.prefetchs['update'] = acc.prefetchs['update'] || {})[k] = true);
             if (!acc.transformers[k].length) delete acc.transformers[k];
             return acc;
         }, schema);

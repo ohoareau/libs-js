@@ -34,6 +34,7 @@ export const isValue = (attribute, value, data) => data && data.data && (value =
 
 export const createOperationHelpers = (operation, model, dir) => {
     dir = `${dir}/../..`;
+    const operationName = operation.substr(model.name.length + 1);
     return {
         isTransition,
         hook: async (n, d, c = {}, opts = {}) => {
@@ -55,7 +56,7 @@ export const createOperationHelpers = (operation, model, dir) => {
             }
             const args = Array.isArray(d) ? d : [d];
             if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir})(...args)))).pop();
-            return h({...c, o: operation, model, dir})(...args);
+            return h({...c, o: operation, operationName, model, dir})(...args);
         }
     };
 };
