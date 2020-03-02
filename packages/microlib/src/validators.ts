@@ -21,10 +21,11 @@ export const reference = ({type, localField, idField, fetchedFields = [], dir}) 
                 const k = `${type}.${value}`;
                 const existingData = {...(localCtx.data || {}), ...((localCtx.data || {})[k] || {})};
                 let requiredData;
-                if (!!fetchedFields.find(f => !existingData.hasOwnProperty(f) || (undefined === existingData[f]))) {
+                const trackedFields = (fetchedFields && !!fetchedFields.length) ? fetchedFields : ['id'];
+                if (!!trackedFields.find(f => !existingData.hasOwnProperty(f) || (undefined === existingData[f]))) {
                     requiredData = await fetchReference(value) || {};
                 } else {
-                    requiredData = fetchedFields.reduce((acc, k) => {
+                    requiredData = trackedFields.reduce((acc, k) => {
                         acc[k] = existingData[k];
                         return acc;
                     }, <any>{});
