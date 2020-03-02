@@ -164,21 +164,36 @@ export default {
             get: async (payload) => {
                 let doc;
                 let docs;
+                let idValue;
                 if ('string' === typeof payload.id) {
-                    doc = await model.get(payload.id);
+                    idValue = payload.id;
+                    doc = await model.get(idValue);
                 } else if (Array.isArray(payload.id)) {
-                    docs = await model.batchGet(payload.id.map(id => ({id})));
+                    idValue = payload.id.map(id => ({id}));
+                    docs = await model.batchGet(idValue);
                 } else if ('object' === typeof payload.id) {
+                    idValue = payload.id;
                     [doc = undefined] = (await runQuery(model, {
-                        criteria: {_: convertToQueryDsl(payload.id)},
+                        criteria: {_: convertToQueryDsl(idValue)},
                         fields: payload.fields || {},
+                        limit: 1,
+                        offset: undefined,
+                        sort: undefined,
+                    }) || []).map(d => ({...(d || {})}));
+                } else if (('object' === typeof payload) && 0 < Object.keys(payload).length) {
+                    const {index = undefined, fields = [], ...criteria} = payload;
+                    idValue = criteria;
+                    [doc = undefined] = (await runQuery(model, {
+                        index,
+                        criteria,
+                        fields,
                         limit: 1,
                         offset: undefined,
                         sort: undefined,
                     }) || []).map(d => ({...(d || {})}));
                 }
                 if (docs) return [...docs];
-                if (!doc) throw new DocumentNotFoundError(name, payload.id);
+                if (!doc) throw new DocumentNotFoundError(name, idValue);
                 return {...(doc || {})};
             },
             delete: async (payload) => {
