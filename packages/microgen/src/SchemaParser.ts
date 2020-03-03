@@ -96,12 +96,6 @@ export default class SchemaParser {
         }, schema);
     }
     parseRefAttributeFields(def: any, schema: any) {
-        Object.keys(schema.referenceFields).forEach(k => {
-            if (!schema.validators[k]) schema.validators[k] = [];
-            schema.validators[k].push(
-                this.buildReferenceValidator(schema.referenceFields[k], k, schema.name)
-            );
-        });
         Object.entries(schema.refAttributeFields).forEach(([k, vList]) => {
             const x = (<any[]>vList).reduce((acc, v) => {
                 acc.sourceFields[v.sourceField] = true;
@@ -121,6 +115,12 @@ export default class SchemaParser {
             schema.referenceFields[k].fetchedFields = ['id'].concat(schema.referenceFields[k].fetchedFields, Object.keys(x.sourceFields));
             Object.assign(schema.values, x.values);
             Object.assign(schema.updateValues, x.updateValues);
+        });
+        Object.keys(schema.referenceFields).forEach(k => {
+            if (!schema.validators[k]) schema.validators[k] = [];
+            schema.validators[k].push(
+                this.buildReferenceValidator(schema.referenceFields[k], k, schema.name)
+            );
         });
     }
     parseJob(def: any, schema: any) {
