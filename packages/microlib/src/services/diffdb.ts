@@ -30,10 +30,13 @@ const marshallValueAndCheckChanged = (v, p) => {
 };
 
 const getDb = ({name}) => {
-    const fetchPaths = async (pr, pa:string|undefined = undefined, throwErrorIfNone = true) => {
+    const fetchPaths = async (pr, pa:string|undefined = undefined, throwErrorIfNone = false) => {
         if (!pr) throw new Error('Missing project id');
         const r = await dynamodb.query(name, {pr, ...(!!pa ? {pa: {type: 'beginsWith', value: pa}} : {})});
-        if (throwErrorIfNone && (!r || !r.count || !r.items)) throw new Error(`Unknown project '${pr}'`);
+        if (!r || !r.count || !r.items) {
+            if (throwErrorIfNone) throw new Error(`Unknown project '${pr}'`);
+            return {count: 0, items: []};
+        }
         return r;
     };
     const applyAddChange = async (change, ctx) => applyUpsertChange(change, ctx);
@@ -181,11 +184,11 @@ const getDb = ({name}) => {
         return {pr: query.pr, c, o: o.join('') || 'S'};
     };
 
-    const getPath = async query => {
+    const getPath = async (query, opts: {[key: string]: any} = {}) => {
         const pa = query.pa === '@' ? undefined : query.pa;
-        return merge((await fetchPaths(query.pr, pa)).items, pa);
+        return merge((await fetchPaths(query.pr, pa, !!opts.throwErrorIfNone)).items, pa);
     };
-    const get = async query => ({pr: query.pr, ...((query.pa && '@' !== query.pa) ? {pa: query.pa} : {}), s: JSON.stringify(await getPath(query))});
+    const get = async (query, opts: {[key: string]: any} = {}) => ({pr: query.pr, ...((query.pa && '@' !== query.pa) ? {pa: query.pa} : {}), s: JSON.stringify(await getPath(query, opts))});
     return {applyChangeSet, get, merge, getPath};
 };
 

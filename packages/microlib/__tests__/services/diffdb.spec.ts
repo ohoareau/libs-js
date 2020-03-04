@@ -264,9 +264,9 @@ describe('get', () => {
     it('no project specified throw error', async () => {
         await expect(get({})).rejects.toThrow('Missing project id');
     });
-    it('unknown project throw error', async () => {
+    it('unknown project throw error if throwErrorIfNone enabled', async () => {
         (<any>dynamodbMock.queryIndex).mockResolvedValue({items: [], count: 0, scannedCount: 0});
-        await expect(get({pr: 'unknown'})).rejects.toThrow("Unknown project 'unknown'");
+        await expect(get({pr: 'unknown'}, {throwErrorIfNone: true})).rejects.toThrow("Unknown project 'unknown'");
     });
     it('existing project return json-stringified specifications', async () => {
         (<any>dynamodbMock.query).mockResolvedValue({items: [
@@ -322,9 +322,13 @@ describe('getPath', () => {
     it('no project throw error', async () => {
         await expect(getPath({})).rejects.toThrow('Missing project id');
     });
-    it('unknown project throw error', async () => {
+    it('unknown project throw error if throwErrorIfNone enabled', async () => {
         (<any>dynamodbMock.queryIndex).mockResolvedValue({items: [], count: 0, scannedCount: 0});
-        await expect(getPath({pr: 'unknown'})).rejects.toThrow("Unknown project 'unknown'");
+        await expect(getPath({pr: 'unknown'}, {throwErrorIfNone: true})).rejects.toThrow("Unknown project 'unknown'");
+    });
+    it('unknown project return empty', async () => {
+        (<any>dynamodbMock.query).mockResolvedValueOnce({items: [], count: 0, scannedCount: 0});
+        expect(await getPath({pr: 'unknown'})).toEqual({});
     });
     it('existing project and items for sub list path return specifications', async () => {
         (<any>dynamodbMock.query).mockResolvedValueOnce({items: [
