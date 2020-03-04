@@ -279,6 +279,20 @@ export default class MicroserviceType {
                     x = x.replace(a[0], `${prefix}${a[1]}`);
                 }
             }
+            if (/'\{q\{[^{}]+}}'/.test(x)) {
+                let a;
+                const r = /'\{q\{([^{}]+)}}'/;
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `query.${a[1]}`);
+                }
+            }
+            if (/'\{r\{[^{}]+}}'/.test(x)) {
+                let a;
+                const r = /'\{r\{([^{}]+)}}'/;
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], `result.${a[1]}`);
+                }
+            }
             if (/\{\{[^{}]+}}/.test(x)) {
                 let a;
                 const r = /\{\{([^{}]+)}}/g;
@@ -327,6 +341,13 @@ export default class MicroserviceType {
                 const r = /'\[\[(process.env.[^{}]+)]]'/;
                 while ((a = r.exec(x)) !== null) {
                     x = x.replace(a[0], a[1]);
+                }
+            }
+            if (/'\[\[now]]'/.test(x)) {
+                let a;
+                const r = /'\[\[now]]'/;
+                while ((a = r.exec(x)) !== null) {
+                    x = x.replace(a[0], 'new Date().valueOf()');
                 }
             }
             return x;
