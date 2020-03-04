@@ -1,7 +1,8 @@
-import event from '../../src/services/event';
+import eventFactory from '../../src/services/event';
 
 describe('event', () => {
     it('consume exists', async () => {
-        expect('function' === typeof event.consume).toBeTruthy();
+        const service = eventFactory({});
+        expect('function' === typeof service.consume).toBeTruthy();
     });
 });
