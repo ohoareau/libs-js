@@ -83,20 +83,22 @@ export default class MicroserviceType {
     buildBackendsVariables() {
         const backends = Object.entries(this.backends);
         backends.sort((a, b) => a[0] < b[0] ? -1 : (a[0] === b[0] ? 0 : -1));
-        return backends.reduce((acc, [n, {type, name, ...c}]) => {
+        return backends.reduce((acc, [n, {type, name, realName, ...c}]) => {
+            realName = realName || n;
+            n = '@' === n.substr(0, 1) ? n.substr(1) : n;
             if ('backend' === type) {
-                if ('@' === n.substr(0, 1)) {
-                    const nn = n.substr(1);
-                    acc[nn] = {code: `require('@ohoareau/microlib/lib/backends/${nn}').default(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                if ('@' === realName.substr(0, 1)) {
+                    const nn = realName.substr(1);
+                    acc[n] = {code: `require('@ohoareau/microlib/lib/backends/${nn}').default(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
                 } else {
-                    acc[n] = {code: `require('../../backends/${n}')(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
+                    acc[n] = {code: `require('../../backends/${realName}')(model${(c && !!Object.keys(c).length) ? `, ${stringifyObject(c, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true})}` : ''})`};
                 }
             } else {
-                if ('@' === n.substr(0, 1)) {
-                    const nn = n.substr(1);
-                    acc[nn] = {code: `require('@ohoareau/microlib/lib/${type}s/${nn}').default`};
+                if ('@' === realName.substr(0, 1)) {
+                    const nn = realName.substr(1);
+                    acc[n] = {code: `require('@ohoareau/microlib/lib/${type}s/${nn}').default`};
                 } else {
-                    acc[n] = {code: `require('../../${type}s/${n}')`};
+                    acc[n] = {code: `require('../../${type}s/${realName}')`};
                 }
             }
             return acc;
