@@ -77,6 +77,20 @@ describe('applyChangeSet', () => {
                 [['table_name', {pr: 'p1', pa: 'xs.y'}, {x: 'hello'}, {values: 'UPDATED_OLD'}], {attributes: {}}],
             ]}
         ],
+        ['change and add operation stores and return success even with value is a object',
+            {pr: 'p1', c: [{pa: 'xs.y', o: 'A', d: [{k: 'x', o: [{k: 'z', s: 'hello'}]}]}]},
+            {pr: 'p1', c: [{pa: 'xs.y', o: 'A', d: [{k: 'x', o: [{k: 'z', s: 'hello'}]}], x: [{k: 'x', n: true}], s: 'S001'}], o: 'A'},
+            {upsert: [
+                [['table_name', {pr: 'p1', pa: 'xs.y'}, {x: {z: 'hello'}}, {values: 'UPDATED_OLD'}], {attributes: {}}],
+            ]}
+        ],
+        ['change and add operation stores and return success even with value is a deep object',
+            {pr: 'p1', c: [{pa: 'xs.y', o: 'A', d: [{k: 'x', o: [{k: 'z', o: [{k: 't', s: 'hello'}]}]}]}]},
+            {pr: 'p1', c: [{pa: 'xs.y', o: 'A', d: [{k: 'x', o: [{k: 'z', o: [{k: 't', s: 'hello'}]}]}], x: [{k: 'x', n: true}], s: 'S001'}], o: 'A'},
+            {upsert: [
+                [['table_name', {pr: 'p1', pa: 'xs.y'}, {x: {z: {t: 'hello'}}}, {values: 'UPDATED_OLD'}], {attributes: {}}],
+            ]}
+        ],
         ['change and skip operation do nothing and return success',
             {pr: 'p1', c: [{pa: 'xs.y', o: 'S', d: [{k: 'x', s: 'hello'}]}]},
             {pr: 'p1', c: [{pa: 'xs.y', o: 'S', d: [{k: 'x', s: 'hello'}], s: 'S010'}], o: 'S'},
@@ -274,7 +288,8 @@ describe('get', () => {
             {pr: 'p1', pa: 'd.xxx1', _idx: 0, e: 'f'},
             {pr: 'p1', pa: 'd.xxx3', _idx: 2, e: 'g', kk: ['one', 'two', 'three']},
             {pr: 'p1', pa: 'd.xxx2', _idx: 1, e: 'h'},
-        ], count: 4, scannedCount: 20});
+            {pr: 'p1', pa: 'd.xxx4', _idx: 3, kkk: {a0: 1, b0: 'two', c0: true}},
+        ], count: 5, scannedCount: 20});
         expect(await get({pr: 'p1'})).toEqual({
             pr: 'p1',
             s: JSON.stringify({
@@ -285,6 +300,7 @@ describe('get', () => {
                     {id: 'xxx1', e: 'f'},
                     {id: 'xxx2', e: 'h'},
                     {id: 'xxx3', e: 'g', kk: ['one', 'two', 'three']},
+                    {id: 'xxx4', kkk: {a0: 1, b0: 'two', c0: true}},
                 ]
             })
         })

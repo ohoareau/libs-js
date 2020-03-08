@@ -1,14 +1,16 @@
 import dynamodb from './aws/dynamodb';
 
-const selectValue = ({s, i, f, b, n}) =>
+const selectValue = ({s, i, f, b, n, o}) =>
     undefined !== s
         ? String(s)
         : (undefined !== i
             ? parseInt(i) : (undefined !== f
                     ? parseFloat(f) : (undefined !== b
                             ? Boolean(b) : (undefined !== n
-                                    ? (Boolean(n) ? null : undefined)
-                                    : undefined
+                                    ? (Boolean(n) ? null : undefined) : (undefined !== o
+                                        ? o.reduce((acc, oo) => Object.assign(acc, {[oo.k]: selectValue(oo)}), {})
+                                        : undefined
+                                    )
                             )
                     )
             )
@@ -25,6 +27,13 @@ const marshallValueAndCheckChanged = (v, p) => {
         case 'boolean' === t: return [{b: v}, p.b !== v];
         case 'undefined' === t: return [{n: true}, !p.n];
         case 'number' === t: return Number.isInteger(v) ? [{i: v}, p.i !== v] : [{f: v}, p.f !== v];
+        case 'object' === t: return Object.entries(v).reduce((acc, [kk, vv]) => {
+            const pp = p && p.o && p.o.find(tt => tt.k === kk);
+            const zz = marshallValueAndCheckChanged(vv, pp || {});
+            acc[0].push(zz[0]);
+            acc[1] = acc[1] || zz[1];
+            return acc;
+        }, <any[]>[{o: []}, false]);
         default: return [{s: `${v}`}, true];
     }
 };
