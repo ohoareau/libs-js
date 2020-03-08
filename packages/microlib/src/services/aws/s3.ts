@@ -35,10 +35,20 @@ const getFileDownloadUrl = async ({bucket, key}) => {
     }
 };
 
+const getFileViewUrl = async ({bucket, key}) => {
+    const url = await s3.getSignedUrlPromise('getObject', {Bucket: bucket, Key: key});
+    return {
+        viewUrl: url,
+        fileUrl: url,
+        fields: JSON.stringify({}),
+    }
+};
+
 export default {
     getFile,
     getFileContent,
     getFileUploadUrl,
     getFileDownloadUrl,
+    getFileViewUrl,
     fromJsonFile,
 }
