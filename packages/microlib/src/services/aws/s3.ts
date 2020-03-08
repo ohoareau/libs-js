@@ -1,3 +1,4 @@
+const path = require('path');
 const s3 = new (require('aws-sdk/clients/s3'));
 
 const getFile = async ({bucket, key}) => {
@@ -26,21 +27,33 @@ const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((res
     );
 });
 
-const getFileDownloadUrl = async ({bucket, key}) => {
-    const url = await s3.getSignedUrlPromise('getObject', {Bucket: bucket, Key: key});
+const getFileDownloadUrl = async ({bucket, key, name}) => {
+    const fileName = name || path.basename(key);
+    const url = await s3.getSignedUrlPromise('getObject', {
+        Bucket: bucket,
+        Key: key,
+        ResponseContentDisposition: `attachment; filename="${fileName}"`,
+    });
     return {
         downloadUrl: url,
         fileUrl: url,
         fields: JSON.stringify({}),
+        fileName,
     }
 };
 
-const getFileViewUrl = async ({bucket, key}) => {
-    const url = await s3.getSignedUrlPromise('getObject', {Bucket: bucket, Key: key});
+const getFileViewUrl = async ({bucket, key, contentType}) => {
+    const url = await s3.getSignedUrlPromise('getObject', {
+        Bucket: bucket,
+        Key: key,
+        ...(contentType ? {ResponseContentType: contentType} : {}),
+        ResponseContentDisposition: 'inline',
+    });
     return {
         viewUrl: url,
         fileUrl: url,
         fields: JSON.stringify({}),
+        contentType,
     }
 };
 
