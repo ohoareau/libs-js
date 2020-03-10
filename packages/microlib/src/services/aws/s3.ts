@@ -6,9 +6,15 @@ const getFile = async ({bucket, key}) => {
     return {body: (f && f.Body) ? f.Body.toString() : undefined};
 };
 
+const setFile = async ({bucket, key}, content) =>
+    s3.putObject({Bucket: bucket, Key: key, Body: content}).promise()
+;
+
 const getFileContent = async query => (await getFile(query)).body;
+const setFileContent = setFile;
 
 const fromJsonFile = async (bucket, key) => JSON.parse(await getFileContent({bucket, key}));
+const toJsonFile = async (bucket, key, data) => setFileContent({bucket, key}, JSON.stringify(data));
 
 const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((resolve, reject) => {
     s3.createPresignedPost(
@@ -64,4 +70,5 @@ export default {
     getFileDownloadUrl,
     getFileViewUrl,
     fromJsonFile,
+    toJsonFile,
 }
