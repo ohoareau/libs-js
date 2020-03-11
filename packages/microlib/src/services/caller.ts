@@ -12,8 +12,8 @@ const inferArnIfPossible = dsn => {
 const executeLocal = async (operation, params, dir: string|undefined = undefined) => {
     const tokens = operation.split(/_/g);
     const op = tokens.pop();
-    if (dir) return require(`${dir}/${tokens.join('_')}`)[op](params);
-    return require(`@ohoareau/microlib/lib/services/${tokens.join('_')}`).default[op](params);
+    if (dir) return require(`${dir}/${tokens.join('_')}`)[op](...(Array.isArray(params) ? params : [params]));
+    return require(`@ohoareau/microlib/lib/services/${tokens.join('_')}`).default[op](...(Array.isArray(params) ? params : [params]));
 };
 
 const executeRemoteLambda = async (arn, params) =>
