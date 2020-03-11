@@ -59,18 +59,27 @@ export const createOperationHelpers = (operation, model, dir) => {
         if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
         return h({...c, o: operation, operationName, model, dir, hook})(...args);
     };
+    const call = async (name, ...args) => caller.execute(name, args, origDir);
     const updateReferences = async (name, key, value) => {
         // @todo handle multiple page
-        const page = await caller.execute(`${name}_find`, [{criteria: {[key]: value}, fields: ['id']}], origDir);
-        await Promise.all(((page || {}).items || []).map(async i => caller.execute(`${name}_update`, [{id: i.id, data: {[key]: value}}])));
+        try {
+            const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
+            await Promise.all(((page || {}).items || []).map(async i => call(`${name}_update`, {
+                id: i.id,
+                data: {[key]: value}
+            })));
+        } catch (e) {
+            console.error('Update references FAILED', {name, key, value}, e);
+        }
     };
     const deleteReferences = async (name, key, value) => {
         // @todo handle multiple page
-        const page = await caller.execute(`${name}_find`, [{criteria: {[key]: value}, fields: ['id']}], origDir);
-        await Promise.all(((page || {}).items || []).map(async i => caller.execute(`${name}_delete`, [{id: i.id}])));
-    };
-    const call = async (name, ...args) => {
-        return hook('@operation', args, {operation: name});
+        try {
+            const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
+            await Promise.all(((page || {}).items || []).map(async i => call(`${name}_delete`, {id: i.id})));
+        } catch (e) {
+            console.error('Delete references FAILED', {name, key, value}, e);
+        }
     };
     return {isTransition, hook, updateReferences, deleteReferences, call};
 };
