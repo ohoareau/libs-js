@@ -232,7 +232,22 @@ export default class MicroserviceType {
             return acc;
         }, <any>undefined);
     }
-    buildHookCode(requirements, {if: condition, ifNot: conditionNot, type, iteratorKey = undefined, ensureKeys = [], trackData = [], config = {}}, options = {}) {
+    buildHookCallArgs(args, defaultValue) {
+        if (!args) return defaultValue;
+        if (Array.isArray(args)) {
+            switch (args.length) {
+                case 0: return '[]';
+                case 1: return args[0];
+                default: return `[${args.join(', ')}]`;
+            }
+        }
+        return `${args}`;
+    }
+    buildHookStatement(call, varName, returnValue) {
+        if (returnValue) return `${varName} = ${call}`;
+        return call;
+    }
+    buildHookCode(requirements, {if: condition, ifNot: conditionNot, type, iteratorKey = undefined, ensureKeys = [], trackData = [], config = {}, args = undefined, return: returnValue = true}, options = {}) {
         const opts = {};
         if (iteratorKey) opts['loop'] = iteratorKey;
         if (ensureKeys && !!ensureKeys.length) opts['ensureKeys'] = ensureKeys;
@@ -252,17 +267,17 @@ export default class MicroserviceType {
         const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
         switch (options['position']) {
             case 'before':
-                call = `await hook('${type}', query${cfg}${rawOpts})`;
+                call = `await hook('${type}', ${this.buildHookCallArgs(args, 'query')}${cfg}${rawOpts})`;
                 break;
             case 'after':
-                call = `await hook('${type}', [result, query]${cfg}${rawOpts})`;
+                call = `await hook('${type}', ${this.buildHookCallArgs(args, '[result, query]')}${cfg}${rawOpts})`;
                 break;
             default:
                 break;
         }
         switch (options['position']) {
-            case 'before': return `    ${conditionCode ? `${conditionCode || ''}(query = ${call});` : `query = ${call};`}`;
-            case 'after':  return `    ${conditionCode ? `${conditionCode || ''}(result = ${call});` : `result = ${call};`}`;
+            case 'before': return `    ${conditionCode ? `${conditionCode || ''}(${this.buildHookStatement(call, 'query', returnValue)});` : `${this.buildHookStatement(call, 'query', returnValue)};`}`;
+            case 'after':  return `    ${conditionCode ? `${conditionCode || ''}(${this.buildHookStatement(call, 'result', returnValue)});` : `${this.buildHookStatement(call, 'result', returnValue)};`}`;
             default: return undefined;
         }
     }
