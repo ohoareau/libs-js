@@ -117,7 +117,8 @@ export default class MicroserviceType {
             },
             methods,
             test: {
-                mocks: Object.entries(this.backends).map(([n, {type}]) => {
+                mocks: Object.entries(this.backends).map(([n, {realName, type}]) => {
+                    n = realName || n;
                     if ('@' === n.substr(0, 1)) {
                         return `@ohoareau/microlib/lib/${type}s/${n.substr(1)}`;
                     } else {
