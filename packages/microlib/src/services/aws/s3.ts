@@ -9,6 +9,9 @@ const getFile = async ({bucket, key}) => {
 const setFile = async ({bucket, key}, content) =>
     s3.putObject({Bucket: bucket, Key: key, Body: content}).promise()
 ;
+const deleteFile = async ({bucket, key}) =>
+    s3.deleteObject({Bucket: bucket, Key: key}).promise()
+;
 
 const getFileContent = async query => (await getFile(query)).body;
 const setFileContent = setFile;
@@ -64,6 +67,7 @@ const getFileViewUrl = async ({bucket, key, contentType}) => {
 };
 
 export default {
+    deleteFile,
     getFile,
     getFileContent,
     getFileUploadUrl,
