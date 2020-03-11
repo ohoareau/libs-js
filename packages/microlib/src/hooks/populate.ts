@@ -12,12 +12,15 @@ const buildValueGenerator = ({type, config = {}}, dir) => {
 export default ({model, dir, prefix = undefined}) => async data => {
     const valuesKey = prefix ? `${prefix}Values` : 'values';
     const defaultValuesKey = prefix ? `${prefix}DefaultValues` : 'defaultValues';
+    let v;
     Object.entries(model[valuesKey]).forEach(([k, def]) => {
-        data.data[k] = buildValueGenerator(<any>def, dir)(data);
+        v = buildValueGenerator(<any>def, dir)(data);
+        if ('**unchanged**' !== v) data.data[k] = v;
     });
     Object.entries(model[defaultValuesKey]).forEach(([k, def]) => {
         if (data.data[k]) return;
-        data.data[k] = buildValueGenerator(<any>def, dir)(data);
+        v = buildValueGenerator(<any>def, dir)(data);
+        if ('**unchanged**' !== v) data.data[k] = v;
     });
     return data;
 }
