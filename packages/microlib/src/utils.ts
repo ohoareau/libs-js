@@ -56,5 +56,14 @@ export const createOperationHelpers = (operation, model, dir) => {
         if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
         return h({...c, o: operation, operationName, model, dir, hook})(...args);
     };
-    return {isTransition, hook};
+    const updateReferences = async (name, key, idField) => {
+        // @todo implement updateReferences in service:  return hook(`${name}_updateReferences`, [key, idField]);
+    };
+    const deleteReferences = async (name, key, idField) => {
+        // @todo implement deleteReferences in service:  return hook(`${name}_deleteReferences`, [key, idField]);
+    };
+    const call = async (name, ...args) => {
+        return hook('@operation', args, {operation: name});
+    };
+    return {isTransition, hook, updateReferences, deleteReferences, call};
 };

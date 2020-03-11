@@ -20,19 +20,22 @@ export default class MicroserviceTypeOperation {
         this.microserviceType = microserviceType;
         this.name = name;
         this.handler = new Handler({name: `${microserviceType.name}_${this.name}`, type: 'service', middlewares, directory: 'handlers', params: {
-            on: this.name,
-            m: microserviceType.name,
-            b: backend,
-        }, vars: {
-            ...vars,
-            service: `crud/${microserviceType.name}`,
-            method: type || name,
-            paramsKey: true,
-            configureService: false,
-        }});
+                on: this.name,
+                m: microserviceType.name,
+                b: backend,
+            }, vars: {
+                ...vars,
+                service: `crud/${microserviceType.name}`,
+                method: type || name,
+                paramsKey: true,
+                configureService: false,
+            }});
         const model = microserviceType.model;
         const registerReferenceEventListener = (v, operation, listener) =>
-            microserviceType.microservice.package.registerEventListener(`${(<any>v).reference.replace(/\./g, '_')}_${operation}`, listener)
+            microserviceType.microservice.package.registerEventListener(
+                `${(<any>v).reference.replace(/\./g, '_')}${/\./.test((<any>v).reference) ? '' : `_${microserviceType.microservice.name}`}_${operation}`,
+                listener
+            )
         ;
         switch (name) {
             case 'create':
@@ -52,14 +55,11 @@ export default class MicroserviceTypeOperation {
                 this.hasHooks('after', name, microserviceType) && microserviceType.registerHook(name, 'after', {type: '@after', config: {}});
                 Object.entries(model.referenceFields || {}).forEach(([k, v]: [string, any]) =>
                     registerReferenceEventListener(v, 'update', {
-                        type: '@operation',
+                        type: '@update-references',
                         config: {
-                            operation: `${microserviceType.name}_update`,
-                            params: {
-                                id: {[k]: `{{data.${v.idField}}}`},
-                                input: {[k]: `{{data.${v.idField}}}`},
-                                contextData: '{{data}}',
-                            },
+                            name: microserviceType.name,
+                            key: k,
+                            idField: v.idField
                         },
                     })
                 );
@@ -68,13 +68,11 @@ export default class MicroserviceTypeOperation {
                 this.hasHooks('prefetch', name, microserviceType) && microserviceType.registerHook(name, 'init', {type: '@prefetch'});
                 Object.entries(model.referenceFields || {}).forEach(([k, v]: [string, any]) =>
                     registerReferenceEventListener(v, 'delete', {
-                        type: '@operation',
+                        type: '@delete-references',
                         config: {
-                            operation: `${microserviceType.name}_delete`,
-                            params: {
-                                id: {[k]: `{{data.${v.idField}}}`},
-                                contextData: '{{data}}',
-                            },
+                            name: microserviceType.name,
+                            key: k,
+                            idField: v.idField
                         },
                     })
                 );

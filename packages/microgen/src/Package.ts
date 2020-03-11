@@ -55,6 +55,9 @@ export default class Package {
         this.events[event].push(listener);
         return this;
     }
+    getEventListeners(event) {
+        return this.events[event] || [];
+    }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
         vars = {deployable: false, name: this.name, ...this.vars, ...vars};
         const files = (await Promise.all(Object.values(this.handlers).map(async h => h.generate(vars)))).reduce((acc, f) => ({...acc, ...f}), {
@@ -62,7 +65,7 @@ export default class Package {
                 name: vars.name,
                 license: vars.license,
                 dependencies: {
-                    '@ohoareau/microlib': '^0.6.12',
+                    '@ohoareau/microlib': '^0.6.13',
                     ...(vars.dependencies || {}),
                 },
                 scripts: {

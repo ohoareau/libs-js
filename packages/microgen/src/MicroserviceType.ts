@@ -21,18 +21,21 @@ export default class MicroserviceType {
     public readonly model: any;
     public readonly hooks: {[key: string]: any[]} = {};
     public readonly handlers: {[key: string]: Handler} = {};
-    public readonly service: Service;
     public readonly backends: {[key: string]: any};
     public readonly defaultBackendName: string;
     public readonly microservice: Microservice;
+    private readonly rawAttributes;
+    private readonly rawOperations;
     constructor(microservice: Microservice, {name, attributes = {}, operations = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
+        this.rawAttributes = attributes;
+        this.rawOperations = operations;
         this.model = new SchemaParser().parse({name: this.name, attributes, operations});
         this.backends = (<any>backends).reduce((acc, b) => {
             if ('string' === typeof b) b = {type: 'backend', name: b};
             return Object.assign(acc, {[b.name]: b});
-        }, {'@caller': {type: 'service', name: '@caller'}});
+        }, {});
         const defaultBackendName: any = [...backends].shift();
         this.defaultBackendName = !defaultBackendName ? undefined : (('string' == typeof defaultBackendName) ? defaultBackendName : defaultBackendName.name);
         this.defaultBackendName && ('@' === this.defaultBackendName.substr(0, 1)) && (this.defaultBackendName = this.defaultBackendName.substr(1));
@@ -48,7 +51,6 @@ export default class MicroserviceType {
                     }
                 )
         );
-        this.service = new Service({name: `crud/${microservice.name}_${name}`, ...this.buildServiceConfig({attributes, operations}, {})});
         const opNames = Object.keys(this.operations);
         opNames.sort();
         Object.entries(handlers).forEach(
@@ -63,13 +65,14 @@ export default class MicroserviceType {
         return this;
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
+        const service = new Service({name: `crud/${this.name}`, ...this.buildServiceConfig({attributes: this.rawAttributes, operations: this.rawOperations})});
         vars = {...vars, model: this.model};
         return (await Promise.all(Object.values(this.operations).map(
             async o => o.generate(vars)))).reduce((acc, r) =>
             Object.assign(acc, r),
             {
                 ...(await Promise.all(Object.values(this.handlers).map(async h => h.generate(vars)))).reduce((acc, ff) => Object.assign(acc, ff), {}),
-                ...(await this.service.generate({
+                ...(await service.generate({
                     ...vars,
                     params: {m: this.name},
                     initializations: [
@@ -104,9 +107,9 @@ export default class MicroserviceType {
             return acc;
         }, {});
     }
-    buildServiceConfig({attributes, operations}, requirements) {
+    buildServiceConfig({attributes, operations}) {
         const methods = Object.entries(operations).reduce((acc, [k, v]) => {
-            acc[k] = this.buildServiceMethodConfig({attributes, name: k, ...<any>v}, requirements);
+            acc[k] = this.buildServiceMethodConfig({attributes, name: k, ...<any>v});
             return acc;
         }, {});
         return {
@@ -134,7 +137,8 @@ export default class MicroserviceType {
             }
         };
     }
-    buildServiceMethodConfig({backend, name}, requirements) {
+    buildServiceMethodConfig({backend, name}) {
+        const listeners = this.microservice.package.getEventListeners(`${this.name}_${name}`);
         let backendDef = backend || this.defaultBackendName;
         if (backendDef) {
             if ('string' === typeof backendDef) {
@@ -154,6 +158,13 @@ export default class MicroserviceType {
             if (!this.hooks[name][n]) return acc;
             return acc.concat(this.hooks[name][n].map(h => this.buildHookCode(localRequirements, h, {position: 'after'})));
         }, []);
+        if (listeners.length) {
+            listeners.reduce((acc, l) => {
+                const hh = this.buildHookCode(localRequirements, l, {position: 'after'});
+                if (hh) acc.push(hh);
+                return acc;
+            }, afters);
+        }
         const needHook = befores.reduce((acc, b) => acc || / hook\(/.test(b), false)
             || afters.reduce((acc, b) => acc || / hook\(/.test(b), <boolean>false)
         ;
@@ -186,7 +197,7 @@ export default class MicroserviceType {
     }
     buildConditionPartCode(condition, requirements) {
         if ('string' === typeof condition) {
-            let matches = condition.match(/^\s*@([a-z0-9_]+)\s*\[\s*([a-z0-9_]+|\*)\s*=>\s*([a-z0-9_]+|\*)\s*\]\s*$/i);
+            let matches = condition.match(/^\s*@([a-z0-9_]+)\s*\[\s*([a-z0-9_]+|\*)\s*=>\s*([a-z0-9_]+|\*)\s*]\s*$/i);
             if (!matches) {
                 matches = condition.match(/^\s*@([a-z0-9_]+)\s*=(.*)$/i);
                 if (!matches) {
@@ -254,15 +265,19 @@ export default class MicroserviceType {
         if (trackData && !!trackData.length) opts['trackData'] = trackData;
         const conditionCode = this.buildConditionCode(condition, conditionNot, requirements);
         let call: string|undefined = undefined;
-        switch (type) {
-            case '@get':
-                return `    ${conditionCode || ''}Object.assign(query, await service.get(query.id, ${this.stringifyForHook(config['fields'] || [], options)}));`;
-            default:
-                break;
-        }
+        if ('@get' === type) return `    ${conditionCode || ''}Object.assign(query, await service.get(query.id, ${this.stringifyForHook(config['fields'] || [], options)}));`;
         const rawOpts = !!Object.keys(opts).length ? `, ${this.stringifyForHook(opts, options)}` : '';
+        if ('@delete-references' === type) {
+            requirements['deleteReferences'] = true;
+            return `    ${conditionCode || ''}await deleteReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`
+        }
+        if ('@update-references' === type) {
+            requirements['updateReferences'] = true;
+            return `    ${conditionCode || ''}await updateReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`
+        }
         if (!rawOpts && '@operation' === type) {
-            return `    ${conditionCode || ''}await service.caller.execute('${config['operation']}', ${this.stringifyForHook(config['params'], options)}, __dirname);`;
+            requirements['call'] = true;
+            return `    ${conditionCode || ''}await call('${config['operation']}', ${this.stringifyForHook(config['params'], options)});`;
         }
         const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
         switch (options['position']) {
