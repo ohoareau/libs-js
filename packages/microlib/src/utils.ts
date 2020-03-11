@@ -1,3 +1,5 @@
+import caller from './services/caller';
+
 export const compose = (...f) => f.length === 0  ? a => a : (f.length === 1 ? f[0] : f.reduce((a, b) => (...c) => a(b(...c))));
 export const fn2ex = (fn, xn) => async request => (await (await xn(a => Object.assign(a, {...a, response: {...a.response, result: fn(a.request)}}))({request, response: {}})).response).result;
 export const fn2hn = (fn, middlewares, options = {}) => {
@@ -33,6 +35,7 @@ export const isTransition = (attribute, from, to, data) => {
 export const isValue = (attribute, value, data) => data && data.data && (value === data.data[attribute]);
 
 export const createOperationHelpers = (operation, model, dir) => {
+    const origDir = dir;
     dir = `${dir}/../..`;
     const operationName = operation.substr(model.name.length + 1);
     const hook = async (n, d, c = {}, opts = {}) => {
@@ -56,11 +59,15 @@ export const createOperationHelpers = (operation, model, dir) => {
         if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
         return h({...c, o: operation, operationName, model, dir, hook})(...args);
     };
-    const updateReferences = async (name, key, idField) => {
-        // @todo implement updateReferences in service:  return hook(`${name}_updateReferences`, [key, idField]);
+    const updateReferences = async (name, key, value) => {
+        // @todo handle multiple page
+        const page = await caller.execute(`${name}_find`, [{criteria: {[key]: value}, fields: ['id']}], origDir);
+        await Promise.all(((page || {}).items || []).map(async i => caller.execute(`${name}_update`, [{id: i.id, data: {[key]: value}}])));
     };
-    const deleteReferences = async (name, key, idField) => {
-        // @todo implement deleteReferences in service:  return hook(`${name}_deleteReferences`, [key, idField]);
+    const deleteReferences = async (name, key, value) => {
+        // @todo handle multiple page
+        const page = await caller.execute(`${name}_find`, [{criteria: {[key]: value}, fields: ['id']}], origDir);
+        await Promise.all(((page || {}).items || []).map(async i => caller.execute(`${name}_delete`, [{id: i.id}])));
     };
     const call = async (name, ...args) => {
         return hook('@operation', args, {operation: name});
