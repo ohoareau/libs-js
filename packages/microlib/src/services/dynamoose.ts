@@ -69,10 +69,29 @@ const buildQueryModifiers = s => {
     );
 };
 
-const buildQueryDefinitionFromCriteria = (criteria, index) => {
+const buildQueryDefinitionFromCriteria = (index, hashKey, rangeKey, criteria) => {
     const localCriteria = {...criteria};
-    let modifiers = index ? [{type: 'index', name: index}] : [];
-    let query:any = undefined;
+    hashKey = hashKey ? (Array.isArray(hashKey) ? hashKey : [index, hashKey]) : undefined;
+    let modifiers = <any[]>[];
+    let query:any = {};
+    if (index) {
+        modifiers.push({type: 'index', name: index});
+        if (hashKey) {
+            modifiers.push({type: 'eq', value: hashKey[1]});
+        }
+        if (rangeKey) {
+            modifiers.push({type: 'where', name: rangeKey[0]});
+            modifiers.push({type: rangeKey[1], ...(('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]})});
+        }
+    } else {
+        if (hashKey) {
+            query[hashKey[0]] = {eq: hashKey[1]};
+        }
+        if (rangeKey) {
+            modifiers.push({type: 'where', name: rangeKey[0]});
+            modifiers.push({type: rangeKey[1], ...(('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]})});
+        }
+    }
     if (localCriteria._) modifiers = buildQueryModifiers(localCriteria._);
     delete localCriteria._; // always delete even if empty
     const keys = Object.keys(localCriteria);
@@ -80,13 +99,16 @@ const buildQueryDefinitionFromCriteria = (criteria, index) => {
         query = keys.reduce((acc, k) => {
             acc[k] = {eq: localCriteria[k]};
             return acc;
-        }, {});
+        }, query);
     }
-    return {query, modifiers};
+
+    return {query: !!Object.keys(query).length ? query : undefined, modifiers};
 };
 
 const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     switch (m.type) {
+        case 'where':
+            return qq.where(m.name);
         case 'index':
             return qq.using(m.name);
         case 'filter':
@@ -122,8 +144,8 @@ const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     }
 }, q);
 
-const runQuery = async (m, {index = undefined, criteria, fields, limit, offset, sort, options = {}}) => {
-    const {query, modifiers} = buildQueryDefinitionFromCriteria(criteria, index);
+const runQuery = async (m, {index = undefined, hashKey = undefined, rangeKey = undefined, criteria, fields, limit, offset, sort, options = {}}) => {
+    const {query, modifiers} = buildQueryDefinitionFromCriteria(index, hashKey, rangeKey, criteria);
     let q = query ? m.query(query) : m.scan();
     if (!q || !q.exec) throw new Error('Unable to build query/scan from definition');
     q = applyModifiers(q, modifiers);
