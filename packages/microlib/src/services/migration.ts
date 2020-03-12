@@ -54,9 +54,12 @@ const createLogger = ({add, remove}) => async (event, data) => {
     }
 };
 
+const getMigrations = async () => db.find({});
+const getMigration = async query => db.get(query);
+
 const migrate = async ({rootDir}) => migrator(
     `${rootDir}/migrations`,
-    (await db.find({})).items.map(i => i.id),
+    (await getMigrations()).items.map(i => i.id),
     {},
     'up',
     createLogger({
@@ -65,4 +68,4 @@ const migrate = async ({rootDir}) => migrator(
     })
 );
 
-export default {migrate}
+export default {migrate, getMigrations, getMigration}
