@@ -75,9 +75,16 @@ const buildQueryDefinitionFromCriteria = (index, hashKey, rangeKey, criteria) =>
     let modifiers = <any[]>[];
     let query:any = {};
     if (index) {
-        modifiers.push({type: 'index', name: index});
         if (hashKey) {
-            modifiers.push({type: 'eq', value: hashKey[1]});
+            if (index === hashKey[0]) {
+                query[hashKey[0]] = {eq: hashKey[1]};
+            } else {
+                modifiers.push({type: 'index', name: index});
+                modifiers.push({type: 'where', name: hashKey[0]});
+                modifiers.push({type: 'eq', value: hashKey[1]});
+            }
+        } else {
+            modifiers.push({type: 'index', name: index});
         }
         if (rangeKey) {
             modifiers.push({type: 'where', name: rangeKey[0]});
