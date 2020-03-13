@@ -75,7 +75,7 @@ const getDb = ({name}) => {
             const [vv] = marshallValueAndCheckChanged(v, {});
             acc.push({k, ...<any>vv});
             return acc;
-        }, change.x);
+        }, x);
         !!x.length && (change.x = x);
         return changeResult(change, opts['successCode'] || 'S001');
     };
