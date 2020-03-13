@@ -30,7 +30,7 @@ const marshallValueAndCheckChanged = (v, p) => {
         case 'object' === t: return Object.entries(v).reduce((acc, [kk, vv]) => {
             const pp = p && p.o && p.o.find(tt => tt.k === kk);
             const zz = marshallValueAndCheckChanged(vv, pp || {});
-            acc[0].push(zz[0]);
+            acc[0].o.push(zz[0]);
             acc[1] = acc[1] || zz[1];
             return acc;
         }, <any[]>[{o: []}, false]);
@@ -119,6 +119,7 @@ const getDb = ({name}) => {
                 default: return changeResult({...change, o: 'S'}, 'E008');
             }
         } catch (e) {
+            !!process.env.DIFFDB_DEBUG && console.log('diffdb applyChange error E009', e, 'for change:', change);
             return changeResult({...change, o: 'S'}, 'E009', e.message);
         }
     };
