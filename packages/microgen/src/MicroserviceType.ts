@@ -192,8 +192,17 @@ export default class MicroserviceType {
             code: lines.join("\n"),
         };
     }
-    buildBackendCall({prefix, name, method, args}) {
-        return `${prefix}${'this' === name ? '' : `${name}.`}${method}(${args.join(', ')})`;
+    buildBackendCall({prefix, name, method, args, value}) {
+        switch (name) {
+            case 'this':
+                return `${prefix}${method}(${args.join(', ')})`;
+            case 'mock':
+                return value || '{}';
+            case 'none':
+                return value || '{}';
+            default:
+                return `${prefix}${name}.${method}(${args.join(', ')})`;
+        }
     }
     buildConditionPartCode(condition, requirements) {
         if ('string' === typeof condition) {
