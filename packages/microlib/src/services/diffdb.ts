@@ -25,6 +25,7 @@ const marshallValueAndCheckChanged = (v, p) => {
     switch (true) {
         case 'string' === t: return [{s: v}, p.s !== v];
         case 'boolean' === t: return [{b: v}, p.b !== v];
+        case null === v: return [{n: true}, !p.n]; // => /!\ typeof null === 'object', known behaviour in JS
         case 'undefined' === t: return [{n: true}, !p.n];
         case 'number' === t: return Number.isInteger(v) ? [{i: v}, p.i !== v] : [{f: v}, p.f !== v];
         case 'object' === t: return Object.entries(v).reduce((acc, [kk, vv]) => {
@@ -149,7 +150,7 @@ const getDb = ({name}) => {
     const recursiveSort = o => {
         Object.values(o).forEach(v => {
             if (!Array.isArray(v)) {
-                if ('object' === typeof v) recursiveSort(v);
+                if ((null !== v) && ('object' === typeof v)) recursiveSort(v);
                 return;
             }
             v.sort((a, b) => {
