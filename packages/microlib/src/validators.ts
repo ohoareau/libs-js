@@ -17,6 +17,7 @@ export const reference = ({type, localField, idField, fetchedFields = [], dir}) 
     const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
     return ({
         test: async (value, localCtx) => {
+            if (undefined === value) return true;
             try {
                 const k = `${type}.${value}`;
                 const existingData = {...(localCtx.data || {}), ...((localCtx.data || {})[k] || {})};
