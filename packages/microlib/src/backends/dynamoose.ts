@@ -28,7 +28,7 @@ function mutateField(def) {
     if (def.hasOwnProperty('default')) field.default = def.default;
     if (def.primaryKey) field.hashKey = true;
     if (def.index && (def.index.length > 0)) {
-        field.index = def.index.map(i => ({global: true, name: i.name, throughput: {read: 1, write: 1}, project: true}));
+        field.index = def.index.map(i => ({global: true, name: i.name, ...(i.rangeKey ? {rangeKey: i.rangeKey} : {}), throughput: {read: 1, write: 1}, project: true}));
     }
     return def.list ? [field] : field;
 }
