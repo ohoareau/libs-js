@@ -4,7 +4,7 @@ import {loadPlugin} from '../utils';
 export default (allListeners = {}, {dir = undefined, typeKey = 'type'} = {}) => {
     const consumeMessage = async ({receiptHandle, attributes, rawMessage, eventType, queueUrl}) => {
         let listeners = allListeners[eventType] || [];
-        !Array.isArray(listeners) && (listeners = !!listeners ? [] : [listeners]);
+        !Array.isArray(listeners) && (listeners = !listeners ? [] : [listeners]);
         const result = {status: 'ignored', message: undefined, listeners: listeners.length};
         if (!listeners.length) {
             await sqs.deleteMessage({queueUrl, receiptHandle});
