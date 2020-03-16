@@ -280,6 +280,10 @@ export default class MicroserviceType {
             requirements['lambdaEvent'] = true;
             return `    ${conditionCode || ''}await lambdaEvent(${this.stringifyForHook(config['arn'], options)}, ${args ? (Array.isArray(args) ? (<any>args).join(', ') : args) : '{}'});`
         }
+        if ('@sns/publish' === type) {
+            requirements['snsPublish'] = true;
+            return `    ${conditionCode || ''}await snsPublish(${this.stringifyForHook(config['topic'], options)}, ${args ? (Array.isArray(args) ? (<any>args).join(', ') : args) : '{}'});`
+        }
         if ('@delete-references' === type) {
             requirements['deleteReferences'] = true;
             return `    ${conditionCode || ''}await deleteReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`
