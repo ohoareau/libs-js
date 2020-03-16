@@ -4,7 +4,7 @@ const buildListener = ({type, config = {}}) => require(`../listeners/${type}`).d
 
 export default (allListeners = {}, {typeKey = 'fullType'} = {}) => {
     const consumeMessage = async ({receiptHandle, attributes, rawMessage, eventType, queueUrl}) => {
-        const listeners = allListeners[eventType] = [];
+        const listeners = allListeners[eventType] || [];
         const result = {status: 'ignored', message: undefined, listeners: listeners.length};
 
         if (!listeners.length) {
