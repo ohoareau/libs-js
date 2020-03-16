@@ -309,94 +309,97 @@ export default class MicroserviceType {
             default: return undefined;
         }
     }
-    stringifyForHook(o, {position = undefined}) {
+    stringifyValueForHook(x, {position = undefined}) {
+        if (/'\{\{[^{}]+}}'/.test(x)) {
+            let a;
+            const r = /'\{\{([^{}]+)}}'/;
+            let prefix = '';
+            switch (<any>position) {
+                case 'before': prefix = 'query.'; break;
+                case 'after': prefix = 'result.'; break;
+                default: break;
+            }
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `${prefix}${a[1]}`);
+            }
+        }
+        if (/'\{q\{[^{}]+}}'/.test(x)) {
+            let a;
+            const r = /'\{q\{([^{}]+)}}'/;
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `query.${a[1]}`);
+            }
+        }
+        if (/'\{r\{[^{}]+}}'/.test(x)) {
+            let a;
+            const r = /'\{r\{([^{}]+)}}'/;
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `result.${a[1]}`);
+            }
+        }
+        if (/\{\{[^{}]+}}/.test(x)) {
+            let a;
+            const r = /\{\{([^{}]+)}}/g;
+            let prefix = '';
+            switch (<any>position) {
+                case 'before': prefix = 'query.'; break;
+                case 'after': prefix = 'result.'; break;
+                default: break;
+            }
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `\${${prefix}${a[1]}}`);
+            }
+            x = `\`${x.substr(1, x.length - 2)}\``;
+        }
+        if (/'%[a-z0-9_]+'/i.test(x)) {
+            let a;
+            const r = /'%([a-z0-9]+)'/i;
+            let prefix = 'query.oldData.';
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `${prefix}${a[1]}`);
+            }
+        }
+        if (/'#[a-z0-9_]+'/i.test(x)) {
+            let a;
+            const r = /'#([a-z0-9]+)'/i;
+            let prefix = 'query.user.';
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `${prefix}${a[1]}`);
+            }
+        }
+        if (/'\$[a-z0-9_]+'/i.test(x)) {
+            let a;
+            const r = /'\$([a-z0-9]+)'/i;
+            let prefix = '';
+            switch (<any>position) {
+                case 'before': prefix = 'query.data.'; break;
+                case 'after': prefix = 'result.'; break;
+                default: break;
+            }
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], `${prefix}${a[1]}`);
+            }
+        }
+        if (/'\[\[process.env.[^{}]+]]'/.test(x)) {
+            let a;
+            const r = /'\[\[(process.env.[^{}]+)]]'/;
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], a[1]);
+            }
+        }
+        if (/'\[\[now]]'/.test(x)) {
+            let a;
+            const r = /'\[\[now]]'/;
+            while ((a = r.exec(x)) !== null) {
+                x = x.replace(a[0], 'new Date().valueOf()');
+            }
+        }
+        return x;
+    }
+    stringifyForHook(o, options) {
+        if ('string' === typeof o) return this.stringifyValueForHook(`'${o}'`, options);
         return stringifyObject(o, {indent: '', inlineCharacterLimit: 1024, singleQuotes: true, transform: (obj, prop, originalResult) => {
-            let x = originalResult;
-            if (/'\{\{[^{}]+}}'/.test(x)) {
-                let a;
-                const r = /'\{\{([^{}]+)}}'/;
-                let prefix = '';
-                switch (<any>position) {
-                    case 'before': prefix = 'query.'; break;
-                    case 'after': prefix = 'result.'; break;
-                    default: break;
-                }
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `${prefix}${a[1]}`);
-                }
-            }
-            if (/'\{q\{[^{}]+}}'/.test(x)) {
-                let a;
-                const r = /'\{q\{([^{}]+)}}'/;
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `query.${a[1]}`);
-                }
-            }
-            if (/'\{r\{[^{}]+}}'/.test(x)) {
-                let a;
-                const r = /'\{r\{([^{}]+)}}'/;
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `result.${a[1]}`);
-                }
-            }
-            if (/\{\{[^{}]+}}/.test(x)) {
-                let a;
-                const r = /\{\{([^{}]+)}}/g;
-                let prefix = '';
-                switch (<any>position) {
-                    case 'before': prefix = 'query.'; break;
-                    case 'after': prefix = 'result.'; break;
-                    default: break;
-                }
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `\${${prefix}${a[1]}}`);
-                }
-                x = `\`${x.substr(1, x.length - 2)}\``;
-            }
-            if (/'%[a-z0-9_]+'/i.test(x)) {
-                let a;
-                const r = /'%([a-z0-9]+)'/i;
-                let prefix = 'query.oldData.';
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `${prefix}${a[1]}`);
-                }
-            }
-            if (/'#[a-z0-9_]+'/i.test(x)) {
-                let a;
-                const r = /'#([a-z0-9]+)'/i;
-                let prefix = 'query.user.';
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `${prefix}${a[1]}`);
-                }
-            }
-            if (/'\$[a-z0-9_]+'/i.test(x)) {
-                let a;
-                const r = /'\$([a-z0-9]+)'/i;
-                let prefix = '';
-                switch (<any>position) {
-                    case 'before': prefix = 'query.data.'; break;
-                    case 'after': prefix = 'result.'; break;
-                    default: break;
-                }
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], `${prefix}${a[1]}`);
-                }
-            }
-            if (/'\[\[process.env.[^{}]+]]'/.test(x)) {
-                let a;
-                const r = /'\[\[(process.env.[^{}]+)]]'/;
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], a[1]);
-                }
-            }
-            if (/'\[\[now]]'/.test(x)) {
-                let a;
-                const r = /'\[\[now]]'/;
-                while ((a = r.exec(x)) !== null) {
-                    x = x.replace(a[0], 'new Date().valueOf()');
-                }
-            }
-            return x;
+            return this.stringifyValueForHook(originalResult, options);
         }});
     }
 }
