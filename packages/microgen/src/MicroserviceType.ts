@@ -276,6 +276,10 @@ export default class MicroserviceType {
         let call: string|undefined = undefined;
         if ('@get' === type) return `    ${conditionCode || ''}Object.assign(query, await service.get(query.id, ${this.stringifyForHook(config['fields'] || [], options)}));`;
         const rawOpts = !!Object.keys(opts).length ? `, ${this.stringifyForHook(opts, options)}` : '';
+        if ('@lambda/event' === type) {
+            requirements['lambdaEvent'] = true;
+            return `    ${conditionCode || ''}await lambdaEvent(${this.stringifyForHook(config['arn'], options)}, ${args ? (Array.isArray(args) ? (<any>args).join(', ') : args) : '{}'});`
+        }
         if ('@delete-references' === type) {
             requirements['deleteReferences'] = true;
             return `    ${conditionCode || ''}await deleteReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`

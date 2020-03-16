@@ -72,6 +72,9 @@ export const createOperationHelpers = (operation, model, dir) => {
             console.error('Update references FAILED', {name, key, value}, e);
         }
     };
+    const lambdaEvent = async (arn, payload) =>
+        require('./services/aws/lambda').default.execute(arn, payload, {async: true})
+    ;
     const deleteReferences = async (name, key, value) => {
         // @todo handle multiple page
         try {
@@ -81,5 +84,5 @@ export const createOperationHelpers = (operation, model, dir) => {
             console.error('Delete references FAILED', {name, key, value}, e);
         }
     };
-    return {isTransition, hook, updateReferences, deleteReferences, call};
+    return {isTransition, hook, updateReferences, deleteReferences, call, lambdaEvent};
 };
