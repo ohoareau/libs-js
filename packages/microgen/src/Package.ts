@@ -7,6 +7,7 @@ export type PackageConfig = {
     name: string,
     files?: {[key: string]: any},
     events?: {[key: string]: any[]},
+    externalEvents?: {[key: string]: any[]},
     handlers?: {[key: string]: HandlerConfig},
     microservices?: {[key: string]: MicroserviceConfig},
     sources?: string[],
@@ -18,12 +19,14 @@ export default class Package {
     public readonly microservices: {[key: string]: Microservice} = {};
     public readonly handlers: {[key: string]: Handler} = {};
     public readonly events: {[key: string]: any[]} = {};
+    public readonly externalEvents: {[key: string]: any[]} = {};
     public readonly sources: string[] = [];
     public readonly vars: {[key: string]: any};
     public readonly files: {[key: string]: any};
-    constructor({name, files = {}, events = {}, handlers = {}, microservices = {}, sources = [], vars = {}}: PackageConfig) {
+    constructor({name, files = {}, events = {}, externalEvents = {}, handlers = {}, microservices = {}, sources = [], vars = {}}: PackageConfig) {
         this.name = name;
         this.events = events || {};
+        this.externalEvents = externalEvents || {};
         this.sources = sources;
         this.vars = vars;
         this.files = files;
@@ -55,8 +58,16 @@ export default class Package {
         this.events[event].push(listener);
         return this;
     }
+    registerExternalEventListener(event, listener) {
+        this.externalEvents[event] = this.externalEvents[event] || [];
+        this.externalEvents[event].push(listener);
+        return this;
+    }
     getEventListeners(event) {
         return this.events[event] || [];
+    }
+    getExternalEventListeners(event) {
+        return this.externalEvents[event] || [];
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
         vars = {deployable: false, name: this.name, ...this.vars, ...vars};
@@ -65,7 +76,7 @@ export default class Package {
                 name: vars.name,
                 license: vars.license,
                 dependencies: {
-                    '@ohoareau/microlib': '^0.6.28',
+                    '@ohoareau/microlib': '^0.6.29',
                     ...(vars.dependencies || {}),
                 },
                 scripts: {
@@ -103,6 +114,9 @@ export default class Package {
         );
         if (this.events && !!Object.keys(this.events).length) {
             files['models/events.js'] = ({jsStringify}) => `module.exports = ${jsStringify(this.events, 100)};`
+        }
+        if (this.externalEvents && !!Object.keys(this.externalEvents).length) {
+            files['models/externalEvents.js'] = ({jsStringify}) => `module.exports = ${jsStringify(this.externalEvents, 100)};`
         }
         if (vars.write) {
             if (!vars.targetDir) throw new Error('No target directory specified');
