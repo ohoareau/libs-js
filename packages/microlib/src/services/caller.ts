@@ -16,19 +16,19 @@ const executeLocal = async (operation, params, dir: string|undefined = undefined
     return require(`@ohoareau/microlib/lib/services/${tokens.join('_')}`).default[op](...(Array.isArray(params) ? params : [params]));
 };
 
-const executeRemoteLambda = async (arn, params) =>
-    require('./aws/lambda').default.execute(arn, {params})
+const executeRemoteLambda = async (arn, params, options = {}) =>
+    require('./aws/lambda').default.execute(arn, {params}, options)
 ;
 
-const executeRemote = async (dsn, params) => {
+const executeRemote = async (dsn, params, options = {}) => {
     const arn = inferArnIfPossible(dsn);
     if (!arn) throw new Error(`Unknown remote operation '${dsn}'`);
-    return executeRemoteLambda(arn, params);
+    return executeRemoteLambda(arn, params, options);
 };
 
-const execute = async (dsn, params, dir: string|undefined = undefined) => {
+const execute = async (dsn, params, dir: string|undefined = undefined, options = {}) => {
     const arn = inferArnIfPossible(dsn);
-    if (!!arn) return executeRemoteLambda(arn, params);
+    if (!!arn) return executeRemoteLambda(arn, params, options);
     return executeLocal(dsn, params, dir);
 };
 

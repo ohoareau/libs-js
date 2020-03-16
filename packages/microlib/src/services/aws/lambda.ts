@@ -3,11 +3,12 @@ const lambda = new (require('aws-sdk/clients/lambda'));
 
 export default {
     execute: async (arn, payload, options = {}) => {
+        options = {async: false, ...options};
         const logger = ((options ? options['logger'] : undefined) || console);
         logger.log(`Invoking lambda '${arn}' with`, payload);
         const result = await lambda.invoke({
             FunctionName: arn,
-            InvocationType: 'RequestResponse',
+            InvocationType: !!options['async'] ? 'Event' : 'RequestResponse',
             LogType: 'None',
             Payload: JSON.stringify(payload),
         }).promise();
@@ -19,7 +20,7 @@ export default {
             payload,
             responsePayload
         );
-        logger.log(`Lambda '${arn}' responded with: `, responsePayload || result);
+        logger.log(`Lambda '${arn}' ${!!options['async'] ? 'called asynchronously ' : ''}responded '${result.StatusCode}' with: `, responsePayload || result);
         return responsePayload;
     },
 }
