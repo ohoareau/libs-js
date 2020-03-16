@@ -2,27 +2,27 @@ import sqs from './aws/sqs';
 
 const buildListener = ({type, config = {}}) => require(`../listeners/${type}`).default(config);
 
-export default (allListeners = {}) => {
+export default (allListeners = {}, {typeKey = 'fullType'} = {}) => {
     const consumeMessage = async ({receiptHandle, attributes, rawMessage, eventType, queueUrl}) => {
         const listeners = allListeners[eventType] = [];
-        const result = {status: 'ignored', listeners: listeners.length, clean: async (result, {ids, processed, ignored}) => {
-                if (!ignored[receiptHandle]) ignored[receiptHandle] = 0;
-                if (!processed[receiptHandle]) processed[receiptHandle] = 0;
-                switch (result.status) {
-                    case 'processed': processed[receiptHandle]++; break;
-                    case 'ignored': ignored[receiptHandle]++; break;
-                }
-                if (ids[receiptHandle]) return;
-                await sqs.deleteMessage({queueUrl, receiptHandle});
-                ids[receiptHandle] = true;
-            }};
-        if (!listeners.length) return result;
+        const result = {status: 'ignored', message: undefined, listeners: listeners.length};
+
+        if (!listeners.length) {
+            await sqs.deleteMessage({queueUrl, receiptHandle});
+            return result;
+        }
         const message = JSON.parse(rawMessage);
-        await Promise.all(listeners.map(async listener => buildListener(listener)(
-            message,
-            {attributes, queueUrl, receiptHandle}
-        )));
-        result.status = 'processed';
+        try {
+            await Promise.all(listeners.map(async listener => (('function' === typeof listener) ? listener : buildListener(listener))(
+                message,
+                {attributes, queueUrl, receiptHandle}
+            )));
+            result.status = 'processed';
+            await sqs.deleteMessage({queueUrl, receiptHandle});
+        } catch (e) {
+            result.status = 'failed';
+            result.message = e.message;
+        }
         return result;
     };
     const processDirectMessage = async r =>
@@ -33,7 +33,7 @@ export default (allListeners = {}) => {
                 acc[k] = (<any>m).stringValue;
                 return acc;
             }, {}),
-            eventType: r.messageAttributes.fullType.stringValue.toLowerCase().replace(/\./g, '_'),
+            eventType: r.messageAttributes[typeKey].stringValue.toLowerCase().replace(/\./g, '_'),
             queueUrl: sqs.getQueueUrlFromEventSourceArn(r['eventSourceARN']),
         })
     ;
@@ -46,14 +46,14 @@ export default (allListeners = {}) => {
                 acc[k] = (<any>m).Value;
                 return acc;
             }, {}),
-            eventType: body.MessageAttributes.fullType.Value.toLowerCase().replace(/\./g, '_'),
+            eventType: body.MessageAttributes[typeKey].Value.toLowerCase().replace(/\./g, '_'),
             queueUrl: sqs.getQueueUrlFromEventSourceArn(r['eventSourceARN']),
         });
     };
     return {
         consume: async ({Records = []}) => {
             await Promise.all(Records.map(async r =>
-                (r['messageAttributes'] && r['messageAttributes']['fullType'] && r['messageAttributes']['fullType']['stringValue'])
+                (r['messageAttributes'] && r['messageAttributes'][typeKey] && r['messageAttributes'][typeKey]['stringValue'])
                     ? processDirectMessage(r)
                     : processEncapsulatedMessage(r)
             ));
