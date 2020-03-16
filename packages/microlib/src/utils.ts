@@ -34,6 +34,23 @@ export const isTransition = (attribute, from, to, data) => {
 
 export const isValue = (attribute, value, data) => data && data.data && (value === data.data[attribute]);
 
+export const findPlugin = (type, name, dir) => {
+    let h;
+    if ('@' === name.substr(0, 1)) {
+        h = require(`./${type}s/${name.substr(1)}`).default;
+    } else {
+        h = require(`${dir}/${type}s/${name}`);
+    }
+    return h;
+};
+export const loadPlugin = (pluginType, cfg, {dir}) => {
+    const t = typeof cfg;
+    if ('function' === t) return cfg;
+    if ('string' === t) cfg = {type: '@operation', config: {operation: cfg}};
+    const {type, config = {}} = cfg || {};
+    return findPlugin(pluginType, type, dir)(config);
+};
+
 export const createOperationHelpers = (operation, model, dir) => {
     const origDir = dir;
     dir = `${dir}/../..`;
@@ -49,12 +66,7 @@ export const createOperationHelpers = (operation, model, dir) => {
             const data = Array.isArray(d) ? d[1] : d;
             if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
         }
-        let h;
-        if ('@' === n.substr(0, 1)) {
-            h = require(`./hooks/${n.substr(1)}`).default;
-        } else {
-            h = require(`${dir}/hooks/${n}`);
-        }
+        const h = findPlugin('hook', n, dir);
         const args = Array.isArray(d) ? d : [d];
         if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
         return h({...c, o: operation, operationName, model, dir, hook})(...args);

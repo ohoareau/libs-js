@@ -1,19 +1,18 @@
 import sqs from './aws/sqs';
+import {loadPlugin} from '../utils';
 
-const buildListener = ({type, config = {}}) => require(`../listeners/${type}`).default(config);
-
-export default (allListeners = {}, {typeKey = 'fullType'} = {}) => {
+export default (allListeners = {}, {dir = undefined, typeKey = 'type'} = {}) => {
     const consumeMessage = async ({receiptHandle, attributes, rawMessage, eventType, queueUrl}) => {
-        const listeners = allListeners[eventType] || [];
+        let listeners = allListeners[eventType] || [];
+        !Array.isArray(listeners) && (listeners = !!listeners ? [] : [listeners]);
         const result = {status: 'ignored', message: undefined, listeners: listeners.length};
-
         if (!listeners.length) {
             await sqs.deleteMessage({queueUrl, receiptHandle});
             return result;
         }
         const message = JSON.parse(rawMessage);
         try {
-            await Promise.all(listeners.map(async listener => (('function' === typeof listener) ? listener : buildListener(listener))(
+            await Promise.all(listeners.map(async listener => loadPlugin('listener', listener, {dir})(
                 message,
                 {attributes, queueUrl, receiptHandle}
             )));
@@ -46,18 +45,17 @@ export default (allListeners = {}, {typeKey = 'fullType'} = {}) => {
                 acc[k] = (<any>m).Value;
                 return acc;
             }, {}),
-            eventType: body.MessageAttributes[typeKey].Value.toLowerCase().replace(/\./g, '_'),
+            eventType: ((body.MessageAttributes[typeKey] || {}).Value || 'unknown').toLowerCase().replace(/\./g, '_'),
             queueUrl: sqs.getQueueUrlFromEventSourceArn(r['eventSourceARN']),
         });
     };
     return {
-        consume: async ({Records = []}) => {
-            await Promise.all(Records.map(async r =>
+        consume: async ({Records = []}) =>
+            Promise.all(Records.map(async r =>
                 (r['messageAttributes'] && r['messageAttributes'][typeKey] && r['messageAttributes'][typeKey]['stringValue'])
                     ? processDirectMessage(r)
                     : processEncapsulatedMessage(r)
-            ));
-            return {}; // @todo return summary/report counters
-        },
+            ))
+        ,
     };
 }
