@@ -48,7 +48,7 @@ export const loadPlugin = (pluginType, cfg, {dir}) => {
     if ('function' === t) return cfg;
     if ('string' === t) cfg = {type: '@operation', config: {operation: cfg}};
     const {type, config = {}} = cfg || {};
-    return findPlugin(pluginType, type, dir)(config);
+    return findPlugin(pluginType, type, dir)({...config, dir});
 };
 
 export const createOperationHelpers = (operation, model, dir) => {

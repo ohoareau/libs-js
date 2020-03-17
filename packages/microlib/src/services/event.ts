@@ -21,6 +21,7 @@ export default (allListeners = {}, {dir = undefined, typeKey = 'type'} = {}) => 
         } catch (e) {
             result.status = 'failed';
             result.message = e.message;
+            console.error('message processing failed', e, {receiptHandle, attributes, rawMessage, eventType, queueUrl});
         }
         return result;
     };
