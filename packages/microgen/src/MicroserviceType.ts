@@ -393,6 +393,14 @@ export default class MicroserviceType {
                 default: return undefined;
             }
         }
+        if (!rawOpts && '@set' === type) {
+            const cc = `${this.stringifyForHook(config['value'], options)}`;
+            switch (options['position']) {
+                case 'before': return `    ${conditionCode ? `${conditionCode || ''}(query.${config['key']} = ${cc});` : `query.${config['key']} = ${cc};`}`;
+                case 'after': return `    ${conditionCode ? `${conditionCode || ''}(result.${config['key']} = ${cc});` : `result.${config['key']} = ${cc};`}`;
+                default: return undefined;
+            }
+        }
         const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
         switch (options['position']) {
             case 'before':
