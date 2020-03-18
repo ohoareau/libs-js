@@ -10,16 +10,17 @@ export type MicroserviceTypeOperationConfig = {
     vars: {[key: string]: any},
     prefetch: string[],
     hooks: {[key: string]: any[]},
+    handler: boolean,
 };
 
 export default class MicroserviceTypeOperation {
     public readonly name: string;
-    public readonly handler: Handler;
+    public readonly handler?: Handler;
     public readonly microserviceType: MicroserviceType;
-    constructor(microserviceType, {name, type = undefined, middlewares = [], backend, vars = {}, hooks = {}, prefetch = []}: MicroserviceTypeOperationConfig) {
+    constructor(microserviceType, {name, type = undefined, handler = true, middlewares = [], backend, vars = {}, hooks = {}, prefetch = []}: MicroserviceTypeOperationConfig) {
         this.microserviceType = microserviceType;
         this.name = name;
-        this.handler = new Handler({name: `${microserviceType.name}_${this.name}`, type: 'service', middlewares, directory: 'handlers', params: {
+        this.handler = handler ? new Handler({name: `${microserviceType.name}_${this.name}`, type: 'service', middlewares, directory: 'handlers', params: {
                 on: this.name,
                 m: microserviceType.name,
                 b: backend,
@@ -29,7 +30,7 @@ export default class MicroserviceTypeOperation {
                 method: type || name,
                 paramsKey: true,
                 configureService: false,
-            }});
+            }}) : undefined;
         const model = microserviceType.model;
         const registerReferenceEventListener = (v, operation, listener) =>
             microserviceType.microservice.package.registerEventListener(
@@ -112,6 +113,6 @@ export default class MicroserviceTypeOperation {
         }
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
-        return this.handler.generate(vars);
+        return this.handler ? this.handler.generate(vars) : Promise.resolve({});
     }
 }
