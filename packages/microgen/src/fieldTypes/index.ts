@@ -13,6 +13,7 @@ export {default as fax} from './fax';
 export {default as firstName} from './firstName';
 export {default as flag} from './flag';
 export {default as instagram} from './instagram';
+export {default as number} from './number';
 export {default as lastName} from './lastName';
 export {default as loggedAt} from './loggedAt';
 export {default as object} from './object';

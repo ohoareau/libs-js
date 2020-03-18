@@ -11,6 +11,7 @@ export type MicroserviceTypeConfig = {
     attributes: {[key: string]: any},
     handlers?: any,
     operations?: {[key: string]: MicroserviceTypeOperationConfig},
+    functions?: {[key: string]: {args?: any, code?: string}},
     middlewares?: string[],
     backends?: string[] | {type: string, name: string}[],
 };
@@ -18,6 +19,7 @@ export type MicroserviceTypeConfig = {
 export default class MicroserviceType {
     public readonly name: string;
     public readonly operations: {[key: string]: MicroserviceTypeOperation} = {};
+    public readonly functions: {[key: string]: {args?: any, code?: string}} = {};
     public readonly model: any;
     public readonly hooks: {[key: string]: any[]} = {};
     public readonly handlers: {[key: string]: Handler} = {};
@@ -26,11 +28,12 @@ export default class MicroserviceType {
     public readonly microservice: Microservice;
     private readonly rawAttributes;
     private readonly rawOperations;
-    constructor(microservice: Microservice, {name, attributes = {}, operations = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
+    constructor(microservice: Microservice, {name, attributes = {}, operations = {}, functions = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
         this.rawAttributes = attributes;
         this.rawOperations = operations;
+        this.functions = functions;
         this.model = new SchemaParser().parse({name: this.name, attributes, operations});
         this.backends = (<any>backends).reduce((acc, b) => {
             if ('string' === typeof b) b = {type: 'backend', name: b};
@@ -65,7 +68,7 @@ export default class MicroserviceType {
         return this;
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
-        const service = new Service({name: `crud/${this.name}`, ...this.buildServiceConfig({attributes: this.rawAttributes, operations: this.rawOperations})});
+        const service = new Service({name: `crud/${this.name}`, ...this.buildServiceConfig({attributes: this.rawAttributes, operations: this.rawOperations, functions: this.functions})});
         vars = {...vars, model: this.model};
         return (await Promise.all(Object.values(this.operations).map(
             async o => o.generate(vars)))).reduce((acc, r) =>
@@ -107,7 +110,11 @@ export default class MicroserviceType {
             return acc;
         }, {});
     }
-    buildServiceConfig({attributes, operations}) {
+    buildServiceConfig({attributes, operations, functions}) {
+        functions = Object.entries(functions).reduce((acc, [k, v]) => {
+            acc[k] = this.buildServiceFunctionConfig({attributes, name: k, ...<any>v});
+            return acc;
+        }, {});
         const methods = Object.entries(operations).reduce((acc, [k, v]) => {
             acc[k] = this.buildServiceMethodConfig({attributes, name: k, ...<any>v});
             return acc;
@@ -118,7 +125,7 @@ export default class MicroserviceType {
                 ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {helpers: {code: `require('@ohoareau/microlib/lib/utils').createOperationHelpers`}} : {}),
                 ...this.buildBackendsVariables(),
             },
-            methods,
+            methods: {...functions, ...methods},
             test: {
                 mocks: Object.entries(this.backends).map(([n, {realName, type}]) => {
                     n = realName || n;
@@ -190,6 +197,13 @@ export default class MicroserviceType {
             async: true,
             args: batchMode ? ['{data = [], ...query}'] : ['query'],
             code: lines.join("\n"),
+        };
+    }
+    buildServiceFunctionConfig({name, async = false, args = [], code = ''}) {
+        return {
+            async,
+            args,
+            code: ((code || '').trim()).split(/\n/g).map(l => `    ${l}`).join("\n"),
         };
     }
     buildBackendCall({prefix, name, method, args, value}) {
