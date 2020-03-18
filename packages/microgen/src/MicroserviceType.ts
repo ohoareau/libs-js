@@ -122,7 +122,7 @@ export default class MicroserviceType {
         return {
             variables: {
                 model: {code: undefined},
-                ...(!!Object.values(methods).find(m => !!(<any>m)['needHook']) ? {helpers: {code: `require('@ohoareau/microlib/lib/utils').createOperationHelpers`}} : {}),
+                ...(!!Object.values(methods).find(m => !!(<any>m)['neededUtils'].length) ? {helpers: {code: `require('@ohoareau/microlib/lib/utils').createOperationHelpers`}} : {}),
                 ...this.buildBackendsVariables(),
             },
             methods: {...functions, ...methods},
@@ -178,15 +178,15 @@ export default class MicroserviceType {
         const batchMode = /^batch/.test(name);
         let nonBatchName = name.replace(/^batch/, '');
         nonBatchName = `${nonBatchName.substr(0, 1).toLowerCase()}${nonBatchName.substr(1)}`;
-        const neededUtils = ['hook', ...Object.keys(localRequirements)];
+        const neededUtils = [...(needHook ? ['hook'] : []), ...Object.keys(localRequirements)];
         neededUtils.sort();
         const lines = [
-            needHook && `    const {${neededUtils.join(', ')}} = service.helpers('${this.name}_${name}', model, __dirname);`,
+            !!neededUtils.length && `    const {${neededUtils.join(', ')}} = service.helpers('${this.name}_${name}', model, __dirname);`,
             ...befores,
             (!backendDef && !batchMode && !afters.length) && `    return undefined;`,
             (!!backendDef && !batchMode && !afters.length) && `    return ${this.buildBackendCall({prefix: 'service.', ...backendDef})};`,
             (!backendDef && !batchMode && !!afters.length) && `    let result = undefined;`,
-            (!!backendDef && !batchMode && !!afters.length) && `    let result = await ${this.buildBackendCall({prefix: 'service.', ...backendDef})};`,
+            (!!backendDef && !batchMode && !!afters.length) && `    let result = ${this.buildBackendCall({prefix: 'service.', ...backendDef}, true)};`,
             (batchMode && !afters.length) && `    return Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             (batchMode && !!afters.length) && `    let result = Promise.all(data.map(d => service.${nonBatchName}({data: d, ...query})));`,
             ...afters,
@@ -194,6 +194,7 @@ export default class MicroserviceType {
         ].filter(x => !!x);
         return {
             needHook,
+            neededUtils,
             async: true,
             args: batchMode ? ['{data = [], ...query}'] : ['query'],
             code: lines.join("\n"),
@@ -206,38 +207,63 @@ export default class MicroserviceType {
             code: ((code || '').trim()).split(/\n/g).map(l => `    ${l}`).join("\n"),
         };
     }
-    buildBackendCall({prefix, name, method, args, value}) {
+    buildBackendCall({prefix, name, method, args, value}, async = false) {
         switch (name) {
             case 'this':
-                return `${prefix}${method}(${args.join(', ')})`;
+                return `${async ? 'await ' : ''}${prefix}${method}(${args.join(', ')})`;
             case 'mock':
-                return value || '{}';
+                return value ? `${async ? 'await ' : ''}${value}` : '{}';
             case 'none':
-                return value || '{}';
+                return value ? `${async ? 'await ' : ''}${value}` : '{}';
             default:
-                return `${prefix}${name}.${method}(${args.join(', ')})`;
+                return `${async ? 'await ' : ''}${prefix}${name}.${method}(${args.join(', ')})`;
         }
+    }
+    mapDataKey(k) {
+        switch (k) {
+            case '$': return 'data';
+            case '%': return 'oldData';
+            case '#': return 'user';
+            default: return 'data';
+        }
+    }
+    buildDataKeyString(k) {
+        const s = this.mapDataKey(k);
+        if ('data' === s) return '';
+        return `, '${s}'`;
     }
     buildConditionPartCode(condition, requirements) {
         if ('string' === typeof condition) {
-            let matches = condition.match(/^\s*@([a-z0-9_]+)\s*\[\s*([a-z0-9_]+|\*)\s*=>\s*([a-z0-9_]+|\*)\s*]\s*$/i);
+            let matches = condition.match(/^\s*(\$)([a-z0-9_]+)\s*\[\s*([a-z0-9_]+|\*)\s*=>\s*([a-z0-9_]+|\*)\s*]\s*$/i);
             if (!matches) {
-                matches = condition.match(/^\s*@([a-z0-9_]+)\s*=(.*)$/i);
+                matches = condition.match(/^\s*(\$|%|#)([a-z0-9_]+)\s*(=|>|<|<>|!=|%)(.*)$/i);
                 if (!matches) {
-                    throw new Error(`Unsupported condition definition: ${condition}`);
+                    matches = condition.match(/^\s*(\$|%|#)([a-z0-9_]+)$/i);
+                    if (!matches) {
+                        throw new Error(`Unsupported condition definition: ${condition}`);
+                    } else {
+                        condition = {
+                            type: 'defined',
+                            attribute: matches[2],
+                            dataKey: matches[1],
+                        };
+                    }
                 } else {
+                    const opMap = {'=': 'eq', '>': 'gt', '>=': 'gte', '<': 'lt', '<=': 'lte', '<>': 'ne', '!=': 'ne', '%': 'mod'};
                     condition = {
-                        type: 'value',
-                        attribute: matches[1],
-                        value: matches[2],
+                        type: opMap[matches[3]] || opMap['eq'],
+                        attribute: matches[2],
+                        value: matches[4],
+                        dataKey: matches[1],
                     };
                 }
             } else {
                 condition = {
                     type: 'transition',
-                    attribute: matches[1],
-                    from: matches[2],
-                    to: matches[3],
+                    attribute: matches[2],
+                    from: matches[3],
+                    to: matches[4],
+                    dataKey: matches[1],
                 };
             }
         } else if ('object' === typeof condition) {
@@ -249,9 +275,33 @@ export default class MicroserviceType {
             case 'transition':
                 requirements['isTransition'] = true;
                 return `isTransition('${condition.attribute}', '${condition.from}', '${condition.to}', query)`;
-            case 'value':
-                requirements['isValue'] = true;
-                return `isValue('${condition.attribute}', '${condition.value}', query)`;
+            case 'eq':
+                requirements['isEqualTo'] = true;
+                return `isEqualTo('${condition.attribute}', '${condition.value}', query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'ne':
+                requirements['isNotEqualTo'] = true;
+                return `isNotEqualTo('${condition.attribute}', '${condition.value}', query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'lt':
+                requirements['isLessThan'] = true;
+                return `isLessThan('${condition.attribute}', ${condition.value}, query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'lte':
+                requirements['isLessOrEqualThan'] = true;
+                return `isLessOrEqualThan('${condition.attribute}', ${condition.value}, query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'gt':
+                requirements['isGreaterThan'] = true;
+                return `isGreaterThan('${condition.attribute}', ${condition.value}, query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'gte':
+                requirements['isGreaterOrEqualThan'] = true;
+                return `isGreaterOrEqualThan('${condition.attribute}', ${condition.value}, query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'mod':
+                requirements['isModulo'] = true;
+                return `isModulo('${condition.attribute}', ${condition.value}, query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'defined':
+                requirements['isDefined'] = true;
+                return `isDefined('${condition.attribute}', query${this.buildDataKeyString(condition.dataKey)})`;
+            case 'not-defined':
+                requirements['isNotDefined'] = true;
+                return `isNotDefined('${condition.attribute}', query${this.buildDataKeyString(condition.dataKey)})`;
             default:
                 throw new Error(`Unknown condition type '${condition.type}'`);
         }
@@ -302,6 +352,30 @@ export default class MicroserviceType {
             requirements['deleteReferences'] = true;
             return `    ${conditionCode || ''}await deleteReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`
         }
+        if ('@validate' === type) {
+            requirements['validate'] = true;
+            return `    ${conditionCode || ''}await validate(query${false === config['required'] ? ', false' : ''});`;
+        }
+        if ('@prepare' === type) {
+            requirements['prepare'] = true;
+            return `    ${conditionCode || ''}await prepare(query);`;
+        }
+        if ('@dispatch' === type) {
+            requirements['dispatch'] = true;
+            return `    ${conditionCode || ''}await dispatch(result, query);`;
+        }
+        if ('@after' === type) {
+            requirements['after'] = true;
+            return `    ${conditionCode || ''}await after(result, query);`;
+        }
+        if ('@prefetch' === type) {
+            requirements['prefetch'] = true;
+            return `    ${conditionCode || ''}await prefetch(query);`;
+        }
+        if ('@populate' === type) {
+            requirements['populate'] = true;
+            return `    ${conditionCode || ''}await populate(query${!!config['prefix'] ? `, '${config['prefix']}'` : ''});`;
+        }
         if ('@update-references' === type) {
             requirements['updateReferences'] = true;
             return `    ${conditionCode || ''}await updateReferences(${this.stringifyForHook(config['name'], options)}, ${this.stringifyForHook(config['key'], options)}, result.${config['idField']});`
@@ -309,6 +383,15 @@ export default class MicroserviceType {
         if (!rawOpts && '@operation' === type) {
             requirements['call'] = true;
             return `    ${conditionCode || ''}await call('${config['operation']}', ${this.stringifyForHook(config['params'], options)});`;
+        }
+        if (!rawOpts && '@operation-result' === type) {
+            requirements['call'] = true;
+            const cc = `await call('${config['operation']}', ${this.stringifyForHook(config['params'], options)})`;
+            switch (options['position']) {
+                case 'before': return `    ${conditionCode ? `${conditionCode || ''}(${this.buildHookStatement(cc, 'query', returnValue)});` : `${this.buildHookStatement(cc, 'query', returnValue)};`}`;
+                case 'after':  return `    ${conditionCode ? `${conditionCode || ''}(${this.buildHookStatement(cc, 'result', returnValue)});` : `${this.buildHookStatement(cc, 'result', returnValue)};`}`;
+                default: return undefined;
+            }
         }
         const cfg = (!!Object.keys(config).length || !!rawOpts) ? `, ${this.stringifyForHook(config, options)}` : '';
         switch (options['position']) {
@@ -372,7 +455,7 @@ export default class MicroserviceType {
         if (/'%[a-z0-9_]+'/i.test(x)) {
             let a;
             const r = /'%([a-z0-9]+)'/i;
-            let prefix = 'query.oldData.';
+            let prefix = 'query[\'oldData\'].';
             while ((a = r.exec(x)) !== null) {
                 x = x.replace(a[0], `${prefix}${a[1]}`);
             }
