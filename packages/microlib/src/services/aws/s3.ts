@@ -75,4 +75,6 @@ export default {
     getFileViewUrl,
     fromJsonFile,
     toJsonFile,
+    setFile,
+    setFileContent,
 }
