@@ -1,9 +1,9 @@
 const path = require('path');
 const s3 = new (require('aws-sdk/clients/s3'));
 
-const getFile = async ({bucket, key}) => {
+const getFile = async ({bucket, key, raw = false}) => {
     const f = await s3.getObject({Bucket: bucket, Key: key}).promise();
-    return {body: (f && f.Body) ? f.Body.toString() : undefined};
+    return {body: (f && f.Body) ? (raw ? f.Body : f.Body.toString()) : undefined};
 };
 
 const setFile = async ({bucket, key}, content) =>
