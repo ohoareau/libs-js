@@ -45,10 +45,10 @@ export default class Service {
         const variables = Object.values(this.variables);
         variables.sort((a, b) => a.name < b.name ? -1 : (a.name === b.name ? 0 : 1));
         const files = {
-            [`services/${this.name}.js`]: ({renderFile}) => renderFile('service.js.ejs', {...this.vars, ...vars, variables, methods}),
+            [`services/${this.name}.js`]: ({renderFile}) => renderFile('js_lambda/service.js.ejs', {...this.vars, ...vars, variables, methods}),
         };
         if (this.test) {
-            files[`__tests__/services/${this.name}.test.js`] = ({renderFile}) => renderFile('tests/service.test.js.ejs', {...this.vars, ...vars, test: this.test});
+            files[`__tests__/services/${this.name}.test.js`] = ({renderFile}) => renderFile('js_lambda/tests/service.test.js.ejs', {...this.vars, ...vars, test: this.test});
         }
         return files;
     }

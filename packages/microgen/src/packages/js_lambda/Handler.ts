@@ -78,10 +78,10 @@ export default class Handler {
             directory: this.directory,
         };
         const files = {
-            [`${this.directory ? `${this.directory}/` : ''}${this.name}.js`]: ({renderFile}) => renderFile(`handlers/${this.type}.js.ejs`, vars),
+            [`${this.directory ? `${this.directory}/` : ''}${this.name}.js`]: ({renderFile}) => renderFile(`js_lambda/handlers/${this.type}.js.ejs`, vars),
         };
         if (this.test) {
-            files[`__tests__/${this.directory ? `${this.directory}/` : ''}${this.name}.test.js`] = ({renderFile}) => renderFile(`tests/handler.test.js.ejs`, {...vars, test: this.test});
+            files[`__tests__/${this.directory ? `${this.directory}/` : ''}${this.name}.test.js`] = ({renderFile}) => renderFile(`js_lambda/tests/handler.test.js.ejs`, {...vars, test: this.test});
         }
         return files;
     }

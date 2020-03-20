@@ -95,12 +95,12 @@ export default class Package {
                 author: vars.author ? `${vars.author.name} <${vars.author.email}>` : 'Confidential',
                 private: true,
             }, null, 4),
-            ['LICENSE.md']: ({renderFile}) => renderFile('LICENSE.md.ejs', vars),
-            ['README.md']: ({renderFile}) => renderFile('README.md.ejs', vars),
-            ['.gitignore']: ({renderFile}) => renderFile('.gitignore.ejs', vars),
-            ['Makefile']: ({renderFile}) => renderFile('Makefile.ejs', vars),
+            ['LICENSE.md']: ({renderFile}) => renderFile('common/licenses/custom.md.ejs', vars),
+            ['README.md']: ({renderFile}) => renderFile('js_lambda/README.md.ejs', vars),
+            ['.gitignore']: ({renderFile}) => renderFile('js_lambda/.gitignore.ejs', vars),
+            ['Makefile']: ({renderFile}) => renderFile('js_lambda/Makefile.ejs', vars),
             ...(Object.entries(this.files).reduce((acc, [k, v]) => {
-                acc[k] = 'string' === typeof v ? (() => v) : (({renderFile}) => renderFile(v.template, v));
+                acc[k] = 'string' === typeof v ? (() => v) : (({renderFile}) => renderFile(`js_lambda/${v.template}`, v));
                 return acc;
             }, {}))
         });
@@ -118,13 +118,9 @@ export default class Package {
         if (this.externalEvents && !!Object.keys(this.externalEvents).length) {
             files['models/externalEvents.js'] = ({jsStringify}) => `module.exports = ${jsStringify(this.externalEvents, 100)};`
         }
+        files['package-excludes.lst'] = ({renderFile}) => renderFile('js_lambda/package-excludes.lst.ejs');
         if (vars.write) {
             if (!vars.targetDir) throw new Error('No target directory specified');
-            await Promise.all(fs.readdirSync(`${__dirname}/../statics`, {}).map(async f => {
-                f = `${f}`;
-                if ('.' === f || '..' === f) return;
-                files[f] = ({copy}) => copy(`${__dirname}/../statics/${f}`, f);
-            }));
             const root = vars.configFileDir;
             await Promise.all((this.sources).map(async dir => {
                 if (!fs.existsSync(`${root}/${dir}`)) return [];
