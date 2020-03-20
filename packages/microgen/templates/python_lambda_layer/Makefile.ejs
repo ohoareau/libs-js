@@ -36,8 +36,9 @@ test-ci:
 	@source venv/bin/activate && python -m unittest tests/*.py -v
 
 build: clean
-	@cd cd v-env/lib/python*/site-packages && zip -r9 ../../../../build/layer.zip .
-	@cd layer && zip -g build/layer.zip *
+	@mkdir -p build
+	@cd venv/lib/python*/site-packages && zip -r9 ../../../../build/layer.zip . >/dev/null
+	@cd layer && zip -g ../build/layer.zip * >/dev/null
 
 <% if (true === deployable) { %>
 deploy:
