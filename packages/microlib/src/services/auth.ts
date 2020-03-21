@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import BadCredentialsError from '../errors/BadCredentialsError';
 
@@ -11,6 +10,7 @@ const defaultPopulate = ({id, username, email, admin = false}) => ({id, username
 
 const generateTokensForUser = (data, populate: Function|undefined = undefined) => {
     data = (populate || defaultPopulate)(data) || {};
+    const jwt = require('jsonwebtoken');
     return {
         token: jwt.sign({
             exp: Math.floor(Date.now() / 1000) + jwtTokenDuration,
@@ -33,6 +33,7 @@ const createAuthToken = async ({user, password, populate = undefined}) => {
 
 const refreshAuthToken = async ({refreshToken, fetch = undefined, populate = undefined}) => {
     let data, user;
+    const jwt = require('jsonwebtoken');
     try {
         data = jwt.verify(refreshToken, jwtRefreshSecret);
         user = fetch ? await (<any>fetch)(data) : data;

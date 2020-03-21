@@ -1,18 +1,22 @@
-import migrator from '@ohoareau/migrate';
+let db = undefined;
 
-import dbFactory from './dynamoose';
-const db = dbFactory.getDb({
-    name: 'migration',
-    schema: {
-        id: {type: String, hashKey: true, required: true},
-    },
-    schemaOptions: {
-        timestamps: true,
-    },
-    options: {
-        create: false, update: false, waitForActive: false,
-    },
-});
+const getDb = () => {
+    if (!db) {
+        db = require('./dynamoose').default.getDb({
+            name: 'migration',
+            schema: {
+                id: {type: String, hashKey: true, required: true},
+            },
+            schemaOptions: {
+                timestamps: true,
+            },
+            options: {
+                create: false, update: false, waitForActive: false,
+            },
+        });
+    }
+    return <any>db;
+};
 
 const createLogger = ({add, remove}) => async (event, data) => {
     switch (event) {
@@ -54,12 +58,12 @@ const createLogger = ({add, remove}) => async (event, data) => {
     }
 };
 
-const getMigrations = async () => db.find({});
-const getMigration = async query => db.get(query);
-const deleteMigration = async query => db.delete(query);
-const createMigration = async query => db.create(query);
+const getMigrations = async () => getDb().find({});
+const getMigration = async query => getDb().get(query);
+const deleteMigration = async query => getDb().delete(query);
+const createMigration = async query => getDb().create(query);
 
-const migrate = async ({rootDir}) => migrator(
+const migrate = async ({rootDir}) => require('@ohoareau/migrate').default(
     `${rootDir}/migrations`,
     (await getMigrations()).items.map(i => i.id),
     {},

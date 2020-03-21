@@ -21,17 +21,17 @@
         "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
     },
     "dependencies": {
-        "@ohoareau/gvalues": "^0.2.0",
-        "@ohoareau/migrate": "^0.3.0",
-        "apollo-server-lambda": "^2.9.16",
         "bcryptjs": "^2.4.3",
-        "dynamoose": "^1.11.1",
-        "graphql": "^14.6.0",
-        "jsonwebtoken": "^8.5.1",
         "uuid": "^3.4.0"
     },
     "devDependencies": {
-        "aws-sdk": "^2.615.0"
+        "aws-sdk": "^2.615.0",
+        "@ohoareau/gvalues": "^0.2.0",
+        "@ohoareau/migrate": "^0.3.0",
+        "apollo-server-lambda": "^2.9.16",
+        "dynamoose": "^1.11.1",
+        "graphql": "^14.6.0",
+        "jsonwebtoken": "^8.5.1"
     },
     "bin": {
         "build-package": "./bin/build-package",
