@@ -18,7 +18,7 @@ venv-deactivate:
 pre-install: create-venv
 
 install:
-ifdef "CI"
+ifdef CI
 	@echo "Pre-installing virtual env for CI"
 	@make pre-install
 endif
