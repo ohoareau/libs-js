@@ -88,7 +88,7 @@ const buildQueryDefinitionFromCriteria = (index, hashKey, rangeKey, criteria) =>
         }
         if (rangeKey) {
             modifiers.push({type: 'where', name: rangeKey[0]});
-            modifiers.push({type: rangeKey[1], ...(('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]})});
+            modifiers.push({type: rangeKey[1], ...(('undefined' === typeof rangeKey[2]) ? {} : (('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]}))});
         }
     } else {
         if (hashKey) {
@@ -96,7 +96,7 @@ const buildQueryDefinitionFromCriteria = (index, hashKey, rangeKey, criteria) =>
         }
         if (rangeKey) {
             modifiers.push({type: 'where', name: rangeKey[0]});
-            modifiers.push({type: rangeKey[1], ...(('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]})});
+            modifiers.push({type: rangeKey[1], ...(('undefined' === typeof rangeKey[2]) ? {} : (('object' === typeof rangeKey[2]) ? rangeKey[2] : {value: rangeKey[2]}))});
         }
     }
     if (localCriteria._) modifiers = buildQueryModifiers(localCriteria._);
@@ -128,6 +128,10 @@ const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
             return qq.not();
         case 'null':
             return qq.null();
+        case 'defined':
+            return qq.not().null();
+        case 'ne':
+            return qq.not().eq(m.value);
         case 'eq':
             return qq.eq(m.value);
         case 'lt':
@@ -146,6 +150,8 @@ const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
             return qq.contains(m.value);
         case 'in':
             return qq.in(m.values);
+        case 'nin':
+            return qq.not().in(m.values);
         default:
             throw new Error(`Unknown query modifier type '${m.type}'`);
     }

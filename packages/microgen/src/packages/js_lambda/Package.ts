@@ -76,7 +76,7 @@ export default class Package {
                 name: vars.name,
                 license: vars.license,
                 dependencies: {
-                    '@ohoareau/microlib': '^0.6.43',
+                    '@ohoareau/microlib': '^0.6.44',
                     ...(vars.dependencies || {}),
                 },
                 scripts: {
