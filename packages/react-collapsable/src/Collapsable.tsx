@@ -10,6 +10,7 @@ import CollapsablePanelDetails from './CollapsablePanelDetails';
 
 const Collapsable = withStyles(() => ({
     details: {
+        flex: 1,
     },
     checkbox: {
     },

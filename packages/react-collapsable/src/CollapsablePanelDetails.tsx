@@ -4,6 +4,7 @@ import ExpansionPanelDetails, {ExpansionPanelDetailsProps} from '@material-ui/co
 const CollapsablePanelDetails = withStyles(() => ({
     root: {
         padding: 0,
+        display: 'flex',
     },
 }))(ExpansionPanelDetails);
 
