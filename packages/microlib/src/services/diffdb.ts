@@ -18,7 +18,7 @@ const selectValue = ({s, i, f, b, n, o}) =>
 ;
 const changeResult = (change, s, m = undefined) => ({...change, s, ...(m ? {m} : {})});
 const changeKey = ({pa}, {pr}) => ({pr, pa: pa || '@'});
-const changeData = change => (change.d || []).reduce((acc, {k,...values}) => Object.assign(acc, {[k]: selectValue(values)}), {});
+const changeData = change => (change.d || []).reduce((acc, {k,...values}) => Object.assign(acc, {[k]: selectValue(<any>values)}), {});
 
 const marshallValueAndCheckChanged = (v, p) => {
     const t = typeof v;

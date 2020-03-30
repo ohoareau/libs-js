@@ -17,6 +17,9 @@ test: build
 build-package:
 	@cd packages/$(package) && yarn --silent build
 
+story-package:
+	@cd packages/$(package) && yarn --silent story
+
 test-package: build-package
 	@cd packages/$(package) && yarn --silent test --coverage --detectOpenHandles
 
