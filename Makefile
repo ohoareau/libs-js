@@ -15,13 +15,13 @@ test: build
 	@yarn --silent test --runInBand --coverage
 
 build-package:
-	@cd packages/$(package) && yarn --silent build
+	@cd packages/$(package)$(p) && yarn --silent build
 
-story-package:
-	@cd packages/$(package) && yarn --silent story
+story:
+	@cd packages/$(package)$(p) && yarn --silent story
 
 test-package: build-package
-	@cd packages/$(package) && yarn --silent test --coverage --detectOpenHandles
+	@cd packages/$(package)$(p) && yarn --silent test --coverage --detectOpenHandles
 
 publish:
 	@yarn --silent lerna publish
