@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-document-designer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "React Document Designer",
   "license": "MIT",
   "main": "lib/index.js",
