@@ -1,17 +1,16 @@
-import React, {ComponentType, useCallback} from 'react';
+import React, {useCallback} from 'react';
+import component from '@ohoareau/react-component';
 import IconButton from '@material-ui/core/IconButton';
-import withStyles from '@material-ui/core/styles/withStyles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {useConfirm} from 'material-ui-confirm';
-import {withTranslation} from 'react-i18next';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 
-const DataTableBodyRowCellAction: ComponentType<DataTableBodyRowCellActionProps> = withStyles(() => ({
+const DataTableBodyRowCellAction = component<DataTableBodyRowCellActionProps>({
     button: {
         marginRight: 5,
     },
-}))(withTranslation()(({buttonComponent, classes = {}, t = () => {}, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
+}, ({buttonComponent, classes = {}, t = () => {}, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
     const Button: any = buttonComponent;
     const confirm = useConfirm();
     const handleConfirmableClick = e => {
@@ -28,17 +27,19 @@ const DataTableBodyRowCellAction: ComponentType<DataTableBodyRowCellActionProps>
     };
     const handleNonConfirmableClick = useCallback(e => {e.stopPropagation(); onClick && onClick(row)}, [onClick, row]);
     const handleClick = confirmable ? handleConfirmableClick : handleNonConfirmableClick;
-    if ('icon' === type) {
-        return (
-            <div><IconButton style={{marginLeft: 5}} color="secondary" size="small" onClick={handleClick}>
-                <DeleteIcon/>
-            </IconButton></div>
-        );
-    }
     return (
-        <div><Button variant="outlined" color="inherit" size="small" className={classes.button} onClick={handleClick} startIcon={expanded ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>} label={t(expanded ? (expandedLabel || label) : label)} /></div>
+        <div>
+            {('icon' === type) && (
+                <IconButton style={{marginLeft: 5}} color="secondary" size="small" onClick={handleClick}>
+                    <DeleteIcon/>
+                </IconButton>
+            )}
+            {('icon' !== type) && (
+                <Button variant="outlined" color="inherit" size="small" className={classes.button} onClick={handleClick} startIcon={expanded ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>} label={t(expanded ? (expandedLabel || label) : label)} />
+            )}
+        </div>
     );
-}));
+});
 
 export interface DataTableBodyRowCellActionProps {
     buttonComponent?: Function,

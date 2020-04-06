@@ -1,5 +1,5 @@
 import React from 'react';
-import Designer from "../src/Designer";
+import Designer from '../src/Designer';
 
 export default {
     title: 'Designer',

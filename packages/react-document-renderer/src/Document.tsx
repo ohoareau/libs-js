@@ -4,7 +4,7 @@ import {Document as RendererDocument} from '@react-pdf/renderer';
 
 const Document: ComponentType<DocumentProps> = ({document = {fragments: []}}: DocumentProps) => (
     <RendererDocument>
-        {(document.fragments || []).map((f, i) => <Fragment key={i} fragment={f} />)}
+        {((document.fragments || []) as any[]).map((f, i) => <Fragment key={i} fragment={f} />)}
     </RendererDocument>
 );
 

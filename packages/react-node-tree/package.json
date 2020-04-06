@@ -20,6 +20,10 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`",
     "story": "start-storybook -c ../../.storybook"
   },
+  "dependencies": {
+    "@ohoareau/react-component": "^0",
+    "uuid": "^7.0.3"
+  },
   "peerDependencies": {
     "@material-ui/core": "^4.9.7",
     "@material-ui/lab": "^4.0.0-alpha.47",

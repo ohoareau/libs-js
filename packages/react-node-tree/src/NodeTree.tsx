@@ -1,7 +1,7 @@
 import React, {ComponentType} from 'react';
 import Node from './Node';
-import uuidv4 from 'uuid/v4';
 import TreeView from '@material-ui/lab/TreeView';
+import {v4 as uuid} from 'uuid';
 import PlusSquareIcon from './icons/PlusSquareIcon';
 import CloseSquareIcon from './icons/CloseSquareIcon';
 import MinusSquareIcon from './icons/MinusSquareIcon';
@@ -14,7 +14,7 @@ const NodeTree: ComponentType<NodeTreeProps> = ({nodes = [], defaultExpanded = [
         defaultEndIcon={<CloseSquareIcon />}
     >
         {nodes.map((n: {nodeId: string, label: string, [key: string]: any}) => {
-            n.nodeId = n.nodeId || uuidv4();
+            n.nodeId = n.nodeId || uuid();
             return <Node key={n.nodeId} {...n} />
         })}
     </TreeView>

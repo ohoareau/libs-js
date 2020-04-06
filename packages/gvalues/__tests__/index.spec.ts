@@ -1,4 +1,4 @@
-import convert from "..";
+import convert from '..';
 
 describe('marshall', () => {
     [

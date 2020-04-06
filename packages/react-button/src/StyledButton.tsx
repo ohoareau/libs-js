@@ -1,8 +1,7 @@
-import {ComponentType} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import Button, {ButtonProps} from '@material-ui/core/Button';
 
-const StyledButton: ComponentType<StyledButtonProps> = withStyles(() => ({
+const StyledButton = component<StyledButtonProps>({
     root: {
         boxShadow: 'none',
         borderRadius: 0,
@@ -11,7 +10,7 @@ const StyledButton: ComponentType<StyledButtonProps> = withStyles(() => ({
         boxShadow: 'none',
         borderRadius: 0,
     }
-}))(Button);
+}, Button);
 
 export type StyledButtonProps = ButtonProps
 

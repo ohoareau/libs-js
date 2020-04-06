@@ -1,9 +1,9 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import TableRow from '@material-ui/core/TableRow';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import DataTableBodyRowCell from './DataTableBodyRowCell';
 
-const DataTableBodyRowExpansion: ComponentType<DataTableBodyRowExpansionProps> = withStyles(() => ({
+const DataTableBodyRowExpansion = component<DataTableBodyRowExpansionProps>({
     root: {
         backgroundColor: 'unset',
         '&:hover': {
@@ -17,7 +17,7 @@ const DataTableBodyRowExpansion: ComponentType<DataTableBodyRowExpansionProps> =
         },
     },
     selected: {},
-}))(({children, classes, row, selected, columns = [], actions = []}: DataTableBodyRowExpansionProps) => (
+}, ({classes = {}, children, row, selected, columns = [], actions = []}: DataTableBodyRowExpansionProps) => (
     <TableRow classes={classes} tabIndex={-1} selected={selected}>
         <DataTableBodyRowCell index={0} cols={columns.length} selected={selected} row={row} column={{id: 'details'}} actions={actions}>
             {children}

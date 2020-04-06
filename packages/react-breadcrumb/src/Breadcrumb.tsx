@@ -1,14 +1,14 @@
-import React, {ComponentType, useCallback} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import React, {useCallback} from 'react';
+import component from '@ohoareau/react-component';
 
-const Breadcrumb: ComponentType<BreadcrumbProps> = withStyles(() => ({
+const Breadcrumb = component<BreadcrumbProps>({
     span: {
         '&:hover': {
             cursor: 'pointer',
             textDecoration: 'underline',
         }
     },
-}))(({classes = {}, formatLabel, onSelect, item, context, parentScopes = [], scope}: BreadcrumbProps) => {
+}, ({classes = {}, formatLabel, onSelect, item, context, parentScopes = [], scope}: BreadcrumbProps) => {
     const labelFormatter = useCallback(data =>
         formatLabel ? formatLabel(data) : (data.scope ? (data.scope.name || data.scope.title || data.scope.id) : '?')
     , [formatLabel]);

@@ -1,8 +1,9 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
+import {fade} from '@material-ui/core/styles';
+import component from '@ohoareau/react-component';
 import MuiTreeItem from '@material-ui/lab/TreeItem';
-import {fade, withStyles} from '@material-ui/core/styles';
 
-const TreeItem: ComponentType<TreeItemProps> = withStyles(theme => ({
+const TreeItem = component<TreeItemProps>(theme => ({
     root: {
         '&:focus > $content': {
             backgroundColor: (props: TreeItemProps) => props.locked ? (theme.palette['locked'] || theme.palette.secondary).main : (props.selected ? theme.palette.primary.dark : 'unset'),
@@ -28,7 +29,7 @@ const TreeItem: ComponentType<TreeItemProps> = withStyles(theme => ({
         paddingLeft: 12,
         borderLeft: `1px dashed ${fade(theme.palette.text.primary, 0.4)}`,
     },
-}))(({iconComponent: IconComp, selected = false, locked, ...props}: TreeItemProps) => {
+}), ({iconComponent: IconComp, selected = false, locked, ...props}: TreeItemProps) => {
     const extraProps: {[key: string]: any} = {};
     if (IconComp) {
         extraProps.endIcon = <IconComp size={16}/>;

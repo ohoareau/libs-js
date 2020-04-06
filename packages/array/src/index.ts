@@ -1,0 +1,1 @@
+export const arrayize = v => Array.isArray(v) ? v : (undefined !== v ? [v] : []);

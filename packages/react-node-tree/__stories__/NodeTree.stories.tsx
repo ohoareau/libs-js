@@ -1,5 +1,5 @@
 import React from 'react';
-import NodeTree from "../src/NodeTree";
+import NodeTree from '../src/NodeTree';
 
 export default {
     title: 'NodeTree',

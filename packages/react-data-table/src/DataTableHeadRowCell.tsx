@@ -1,12 +1,11 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import Checkbox from './Checkbox';
+import component from '@ohoareau/react-component';
 import TableCell from '@material-ui/core/TableCell';
-import withStyles from '@material-ui/core/styles/withStyles';
 import capitalize from '@material-ui/core/utils/capitalize';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
-import {withTranslation} from 'react-i18next';
 
-const DataTableHeadRowCell: ComponentType<DataTableHeadRowCellProps> = withStyles(() => ({
+const DataTableHeadRowCell = component<DataTableHeadRowCellProps>({
     visuallyHidden: {
         border: 0,
         clip: 'rect(0 0 0 0)',
@@ -18,7 +17,7 @@ const DataTableHeadRowCell: ComponentType<DataTableHeadRowCellProps> = withStyle
         top: 20,
         width: 1,
     },
-}))(withTranslation()(({sortable, selectedCount = 0, count = 0, onSelectAllClick, classes = {}, t = () => {}, column, sortEnabled = false, sortDirection = 'asc', onSortClick}: DataTableHeadRowCellProps) => {
+}, ({sortable, selectedCount = 0, count = 0, onSelectAllClick, classes = {}, t = () => {}, column, sortEnabled = false, sortDirection = 'asc', onSortClick}: DataTableHeadRowCellProps) => {
     let content;
     const extraProps: {[key: string]: any} = {sortDirection};
     const type = column.type || column.id;
@@ -52,7 +51,7 @@ const DataTableHeadRowCell: ComponentType<DataTableHeadRowCellProps> = withStyle
             break;
     }
     return <TableCell {...extraProps}>{content}</TableCell>;
-}));
+});
 
 export interface DataTableHeadRowCellProps {
     sortable?: boolean,

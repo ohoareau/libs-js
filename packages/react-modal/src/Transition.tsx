@@ -1,6 +1,6 @@
 import React, {ComponentType, forwardRef} from 'react';
 import Slide from '@material-ui/core/Slide';
-import {Theme} from "@material-ui/core/styles/createMuiTheme";
+import {Theme} from '@material-ui/core/styles/createMuiTheme';
 
 const Transition: ComponentType<TransitionProps> = forwardRef((props: TransitionProps, ref) => (
     <Slide direction={props.direction || 'up'} ref={ref} {...props} />

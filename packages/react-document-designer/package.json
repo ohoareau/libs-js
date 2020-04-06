@@ -21,6 +21,7 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
+    "@ohoareau/react-component": "^0",
     "@ohoareau/react-document-renderer": "^0.1.0",
     "@ohoareau/react-selector": "^0.1.0"
   },

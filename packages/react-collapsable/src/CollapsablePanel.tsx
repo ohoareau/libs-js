@@ -1,7 +1,7 @@
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import ExpansionPanel, {ExpansionPanelProps} from '@material-ui/core/ExpansionPanel';
 
-const CollapsablePanel = withStyles({
+const CollapsablePanel = component<CollapsablePanelProps>({
     root: {
         boxShadow: 'none',
         '&:not(:last-child)': {
@@ -16,7 +16,7 @@ const CollapsablePanel = withStyles({
         },
     },
     expanded: {},
-})(ExpansionPanel);
+}, ExpansionPanel);
 
 type ExtraProps = {
 };

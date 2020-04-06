@@ -1,15 +1,11 @@
-import React, {ComponentType} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import React from 'react';
+import component from '@ohoareau/react-component';
 
-const Editor: ComponentType<EditorProps> = withStyles(() => ({
-
-}))(({fragment, onChange}: EditorProps) => {
-    return (
-        <div>
-            {!!fragment && <>{fragment.id}</>}
-        </div>
-    );
-});
+const Editor = component<EditorProps>(undefined, ({fragment}: EditorProps) => (
+    <div>
+        {!!fragment && <>{fragment.id}</>}
+    </div>
+));
 
 export interface EditorProps {
     fragment: {id: string, [key: string]: any},

@@ -1,13 +1,13 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
+import component from '@ohoareau/react-component';
 import {Selector} from '@ohoareau/react-selector';
-import withStyles from '@material-ui/core/styles/withStyles';
 import NavigatorItem from './NavigatorItem';
 
-const Navigator: ComponentType<NavigatorProps> = withStyles(() => ({
+const Navigator = component<NavigatorProps>({
     root: {
         padding: 10,
     }
-}))(({fragments = [], current, onChange, classes = {}}: NavigatorProps) => (
+}, ({fragments = [], current, onChange, classes = {}}: NavigatorProps) => (
     <div className={classes.root}>
         <Selector items={fragments} value={current} space={2} component={NavigatorItem} onChange={onChange} />
     </div>

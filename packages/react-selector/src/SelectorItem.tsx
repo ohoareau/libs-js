@@ -1,7 +1,7 @@
-import React, {ComponentType, useCallback} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import React, {useCallback} from 'react';
+import component from '@ohoareau/react-component';
 
-const SelectorItem: ComponentType<SelectorItemProps> = withStyles(theme => ({
+const SelectorItem = component<SelectorItemProps>(theme => ({
     root: {
         flex: 1,
         marginBottom: (props: SelectorItemProps) => props.space ? props.space * 5 : 'unset',
@@ -30,7 +30,7 @@ const SelectorItem: ComponentType<SelectorItemProps> = withStyles(theme => ({
         width: 10,
         backgroundColor: (props: SelectorItemProps) => 'function' === typeof props.visualMark ? (theme.palette[props.visualMark(props.item)] || theme.palette.primary).main : theme.palette.primary.main,
     },
-}))(({id, item, component: Component, componentProps = {}, onSelect, data, classes = {}, visualMark = false}: SelectorItemProps) => (
+}), ({id, item, component: Component, componentProps = {}, onSelect, data, classes = {}, visualMark = false}: SelectorItemProps) => (
     <div className={classes.root} onClick={useCallback(() => onSelect && onSelect(id), [onSelect, id])}>
         {!!visualMark && <div className={classes.visualMark} />}
         <div className={classes.container}>

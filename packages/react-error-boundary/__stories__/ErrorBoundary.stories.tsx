@@ -1,5 +1,5 @@
 import React from 'react';
-import ErrorBoundary from "../src/ErrorBoundary";
+import ErrorBoundary from '../src/ErrorBoundary';
 
 export default {
     title: 'ErrorBoundary',

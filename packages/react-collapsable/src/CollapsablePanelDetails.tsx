@@ -1,15 +1,15 @@
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import ExpansionPanelDetails, {ExpansionPanelDetailsProps} from '@material-ui/core/ExpansionPanelDetails';
 
-const CollapsablePanelDetails = withStyles(() => ({
+const CollapsablePanelDetails = component<CollapsablePanelDetailsProps>({
     root: {
         padding: 0,
         display: 'flex',
     },
-}))(ExpansionPanelDetails);
+}, ExpansionPanelDetails);
 
 type ExtraProps = {
-    variant: string
+    variant?: string
 };
 
 export type CollapsablePanelDetailsProps = ExpansionPanelDetailsProps & ExtraProps;

@@ -1,4 +1,4 @@
-import {existsSync, readdirSync} from "fs";
+import {existsSync, readdirSync} from 'fs';
 
 export class MigrateError extends Error {
     protected result: {planned: string[], failed: string[], failures: {[key: string]: string}, deployed: string[]};

@@ -1,19 +1,18 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import Tooltip from '@material-ui/core/Tooltip';
 import {lighten} from '@material-ui/core/styles';
 import CheckIcon from '@material-ui/icons/Check';
+import component from '@ohoareau/react-component';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
-import withStyles from '@material-ui/core/styles/withStyles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import CircularProgress from '@material-ui/core/CircularProgress';
-import {withTranslation} from 'react-i18next';
 
 // noinspection TypeScriptValidateJSTypes
-const DataTableToolBar: ComponentType<DataTableToolBarProps> = withStyles((theme: any) => ({
+const DataTableToolBar = component<DataTableToolBarProps>((theme: any) => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
@@ -35,7 +34,7 @@ const DataTableToolBar: ComponentType<DataTableToolBarProps> = withStyles((theme
         padding: 30,
         backgroundColor: lighten(theme.palette.secondary.light, 0.85),
     },
-}))(withTranslation()(({t = () => {}, buttonComponent, selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, classes = {}, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
+}), ({classes = {}, t = () => {}, buttonComponent, selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
     const Button: any = buttonComponent;
     const hasFilters = !!Object.keys(filters || {}).length;
     const filterable = !!FilterPanelComp;
@@ -72,7 +71,7 @@ const DataTableToolBar: ComponentType<DataTableToolBarProps> = withStyles((theme
             )}
         </>
     ) : null;
-}));
+});
 
 export interface DataTableToolBarProps {
     t?: Function,

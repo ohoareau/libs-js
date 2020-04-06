@@ -1,10 +1,10 @@
-import React, {ComponentType, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import TableRow from '@material-ui/core/TableRow';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import DataTableBodyRowCell from './DataTableBodyRowCell';
 import DataTableBodyRowExpansion from './DataTableBodyRowExpansion';
 
-const DataTableBodyRow: ComponentType<DataTableBodyRowProps> = withStyles(theme => ({
+const DataTableBodyRow = component<DataTableBodyRowProps>(theme => ({
     root: (props: DataTableBodyRowProps) => {
         const {hover = {}, selected = {}, selectedHover = {}, ...properties} = props.formatRow ? props.formatRow(props.row, theme) : {};
         return {
@@ -28,7 +28,7 @@ const DataTableBodyRow: ComponentType<DataTableBodyRowProps> = withStyles(theme 
         };
     },
     selected: () => ({}),
-}))(({buttonComponent, classes, row, expandedComponent: ExpandedComponent, onClick, selected, expanded, columns, actions}: DataTableBodyRowProps) => (
+}), ({buttonComponent, classes, row, expandedComponent: ExpandedComponent, onClick, selected, expanded, columns, actions}: DataTableBodyRowProps) => (
     <>
         <TableRow classes={classes} role="checkbox" aria-checked={selected} tabIndex={-1} selected={selected}
                   onClick={useCallback(event => onClick && onClick(event, row.id), [row.id, onClick])}

@@ -1,15 +1,14 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import Table from '@material-ui/core/Table';
 import Paper from '@material-ui/core/Paper';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import {formatize} from './data-table-helpers';
 import DataTableBody from './DataTableBody';
 import DataTableHead from './DataTableHead';
 import DataTableToolBar from './DataTableToolBar';
-import {withTranslation} from 'react-i18next';
 
 // noinspection TypeScriptValidateJSTypes
-const ComparisonTable: ComponentType<ComparisonTableProps> = withStyles((theme: any) => ({
+const ComparisonTable = component<ComparisonTableProps>((theme: any) => ({
     root: {
         width: '100%',
     },
@@ -23,7 +22,7 @@ const ComparisonTable: ComponentType<ComparisonTableProps> = withStyles((theme: 
     tableWrapper: {
         overflowX: 'auto',
     },
-}))(withTranslation()(({classes = {}, t = () => {}, data, totalCount, rows = [], title, subTitle, toolbar = true, size = 'medium'}: ComparisonTableProps) => {
+}), ({classes = {}, t = () => {}, data, totalCount, rows = [], title, subTitle, toolbar = true, size = 'medium'}: ComparisonTableProps) => {
     const count = data.items.length;
     let columns: any[] = data.items.reduce((acc, item, i) => {
         acc.push({id: `item_${i}`, type: 'centered', label: String.fromCharCode(i + 65)});
@@ -63,7 +62,7 @@ const ComparisonTable: ComponentType<ComparisonTableProps> = withStyles((theme: 
             </Paper>
         </div>
     );
-}));
+});
 
 export interface ComparisonTableProps {
     t?: Function,

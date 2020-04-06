@@ -1,8 +1,7 @@
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import MuiCheckbox, {CheckboxProps as MuiCheckboxProps} from '@material-ui/core/Checkbox';
-import {ComponentType} from "react";
 
-const Checkbox: ComponentType<CheckboxProps> = withStyles(theme => ({
+const Checkbox = component<CheckboxProps>(theme => ({
     colorPrimary: {
         color: 'inherit',
         '&$checked': {
@@ -13,7 +12,7 @@ const Checkbox: ComponentType<CheckboxProps> = withStyles(theme => ({
         },
     },
     checked: {},
-}))(MuiCheckbox);
+}), MuiCheckbox);
 
 interface ExtraProps {
     inverted?: boolean,

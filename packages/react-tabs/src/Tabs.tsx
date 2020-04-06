@@ -1,20 +1,20 @@
-import React, {ComponentType, useCallback} from 'react';
+import React, {useCallback} from 'react';
 import Box from '@material-ui/core/Box';
 import Tab from '@material-ui/core/Tab';
 import Paper from '@material-ui/core/Paper';
 import MuiTabs from '@material-ui/core/Tabs';
 import RawSpan from './RawSpan';
 import Tooltip from '@material-ui/core/Tooltip';
+import component from '@ohoareau/react-component';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
 
-const Tabs: ComponentType<TabsProps> = withStyles(() => ({
+const Tabs = component<TabsProps>({
     root: {
         flexGrow: 1,
         width: '100%',
         backgroundColor: 'rgb(250, 250, 250)',
     },
-}))(({classes = {}, optimize = false, padding = true, tabs = [], tab, onChange, extraProps = {}}: TabsProps) => {
+}, ({classes = {}, optimize = false, padding = true, tabs = [], tab, onChange, extraProps = {}}: TabsProps) => {
     tabs = tabs.filter(x => !!x);
     const defaultTab = tabs.find(t => t.default) || {};
     tab = tab || defaultTab.name;
