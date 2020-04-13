@@ -19,9 +19,9 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "peerDependencies": {
-    "i18next": "^19.3.4"
+    "i18next": "^19.4.1"
   },
   "devDependencies": {
-    "i18next": "^19.3.4"
+    "i18next": "^19.4.1"
   }
 }

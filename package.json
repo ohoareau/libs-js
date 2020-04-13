@@ -12,12 +12,12 @@
     "packages/*"
   ],
   "devDependencies": {
-    "lerna": "^3.15.0",
-    "jest": "^24.8.0",
-    "typescript": "^3.5.1",
-    "@types/node": "^12.0.7",
-    "aws-sdk": "^2.472.0",
-    "@types/jest": "^24.0.13",
-    "ts-jest": "^24.0.2"
+    "lerna": "^3.20.2",
+    "jest": "^25.3.0",
+    "typescript": "^3.8.3",
+    "@types/node": "^13.11.1",
+    "aws-sdk": "^2.656.0",
+    "@types/jest": "^25.2.1",
+    "ts-jest": "^25.3.1"
   }
 }

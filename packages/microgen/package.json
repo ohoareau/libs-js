@@ -23,12 +23,12 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "ejs": "^3.0.1",
+    "ejs": "^3.0.2",
     "fs-extra": "^8.1.0",
     "stringify-object": "^3.3.0"
   },
   "devDependencies": {
-    "aws-sdk": "^2.615.0"
+    "aws-sdk": "^2.656.0"
   },
   "bin": {
     "microgen": "./bin/microgen"

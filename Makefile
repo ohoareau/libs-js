@@ -8,6 +8,9 @@ yarn-install:
 bootstrap:
 	@yarn --silent lerna bootstrap
 
+install-package:
+	@yarn --silent lerna bootstrap --scope $(p)
+
 build:
 	@yarn --silent lerna run build --stream
 

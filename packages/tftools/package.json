@@ -21,7 +21,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "handlebars": "^4.5.3"
+    "handlebars": "^4.7.6"
   },
   "bin": {
     "tfgen": "./bin/tfgen",

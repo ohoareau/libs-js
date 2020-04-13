@@ -109,7 +109,7 @@ export const useLogout = (dispatch, targetRoute = undefined) => {
 const defaultUserState = {token: undefined, refreshToken: undefined, authenticated: false};
 
 export const reducer = (state: any = undefined, action) => {
-    if (undefined === state) state = {...defaultUserState, locale: i18n.languages[0]};
+    if (undefined === state) state = {...defaultUserState, locale: i18n.languages ? i18n.languages[0] : 'en'};
     switch(action.type) {
         case ACTION_TYPE_USER_CHANGED:
             const user = decodeJwt(action.payload.token);
