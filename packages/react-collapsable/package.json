@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-collapsable",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "React Collapsable",
   "license": "MIT",
   "main": "lib/index.js",
@@ -21,7 +21,7 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
-    "@ohoareau/react-component": "^0"
+    "@ohoareau/react-component": "^0.1.0"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.7",
