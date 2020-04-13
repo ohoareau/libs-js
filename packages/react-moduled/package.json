@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-moduled",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "React Moduled",
   "license": "MIT",
   "main": "lib/index.js",
@@ -21,13 +21,13 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
-    "@ohoareau/cache": "^0.1.0",
-    "@ohoareau/string": "^0.1.0"
+    "@ohoareau/cache": "^0",
+    "@ohoareau/string": "^0"
   },
   "peerDependencies": {
-    "graphql": "^15.0.0",
     "react": "^16.11.0",
-    "react-dom": "^16.11.0"
+    "react-dom": "^16.11.0",
+    "graphql": "^15.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.7.6",
@@ -38,9 +38,9 @@
     "@storybook/react": "^5.2.5",
     "@types/react": "^16.9.20",
     "babel-loader": "^8.0.6",
-    "graphql": "^15.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "source-map-loader": "^0.2.4"
+    "source-map-loader": "^0.2.4",
+    "graphql": "^15.0.0"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-node-tree",
-  "version": "0.2.0",
+  "version": "0.1.0",
   "description": "React Node Tree",
   "license": "MIT",
   "main": "lib/index.js",
@@ -21,7 +21,7 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
-    "@ohoareau/react-component": "^0.1.0",
+    "@ohoareau/react-component": "^0",
     "uuid": "^7.0.3"
   },
   "peerDependencies": {

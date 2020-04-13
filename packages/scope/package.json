@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/scope",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/sorter": "^0.1.0",
-    "@ohoareau/string": "^0.1.0"
+    "@ohoareau/string": "^0",
+    "@ohoareau/sorter": "^0"
   }
 }

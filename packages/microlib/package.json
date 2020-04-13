@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.6.46",
+    "version": "0.6.45",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -26,7 +26,7 @@
     },
     "devDependencies": {
         "@ohoareau/gvalues": "^0.2.0",
-        "@ohoareau/migrate": "^0.3.1",
+        "@ohoareau/migrate": "^0.3.0",
         "apollo-server-lambda": "^2.9.16",
         "aws-sdk": "^2.615.0",
         "dynamoose": "^1.11.1",
