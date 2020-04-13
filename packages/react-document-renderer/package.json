@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-document-renderer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "React Document Renderer",
   "license": "MIT",
   "main": "lib/index.js",

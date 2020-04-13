@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-moduled",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React Moduled",
   "license": "MIT",
   "main": "lib/index.js",
@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@ohoareau/cache": "^0.1.0",
-    "@ohoareau/string": "^0.1.0"
+    "@ohoareau/string": "^0.2.0"
   },
   "peerDependencies": {
     "graphql": "^14.6.0",

@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-scope",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React Scope",
   "license": "MIT",
   "main": "lib/index.js",
@@ -23,9 +23,9 @@
   "dependencies": {
     "@ohoareau/clone": "^0.1.0",
     "@ohoareau/generate": "^0.1.0",
-    "@ohoareau/react-moduled": "^0.1.0",
-    "@ohoareau/scope": "^0.1.0",
-    "@ohoareau/string": "^0.1.0"
+    "@ohoareau/react-moduled": "^0.2.0",
+    "@ohoareau/scope": "^0.2.0",
+    "@ohoareau/string": "^0.2.0"
   },
   "peerDependencies": {
     "@material-ui/icons": "^4.9.1",
