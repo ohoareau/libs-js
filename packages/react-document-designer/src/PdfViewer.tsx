@@ -1,18 +1,18 @@
-import React, {useState, useEffect, useCallback, ComponentType} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import Page from 'react-pdf/dist/Page';
 // noinspection ES6CheckImport
 import {pdf} from '@react-pdf/renderer';
-import { pdfjs } from 'react-pdf';
-import withStyles from '@material-ui/core/styles/withStyles';
+import {pdfjs}  from 'react-pdf';
+import component from '@ohoareau/react-component';
 import PdfDocument from 'react-pdf/dist/Document';
 
 pdfjs['GlobalWorkerOptions'].workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-const PdfViewer: ComponentType<PdfViewerProps> = withStyles(() => ({
+const PdfViewer = component<PdfViewerProps>({
     page: {
         marginBottom: 30,
     }
-}))(({classes = {}, document, onError}: PdfViewerProps) => {
+}, ({classes = {}, document, onError}: PdfViewerProps) => {
     const [doc, setDoc]: [any, any] = useState(undefined);
     const [numPages, setNumPages] = useState(0);
     const onLoadSuccess = useCallback(({numPages}) => {

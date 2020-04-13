@@ -1,21 +1,18 @@
 import React from 'react';
 import Block from '../Block';
-import {View, StyleSheet} from '@react-pdf/renderer';
+import {View} from '@react-pdf/renderer';
+import {pdfComponent} from '../hocs';
 
-const styles = StyleSheet.create({
+const HeaderBlock = pdfComponent({
     root: {
         fontSize: 12,
         marginBottom: 15,
         textAlign: 'center',
     },
-});
-
-const HeaderBlock = ({block: {header = []}}) => {
-    return (
-        <View fixed style={styles.root}>
-            {header.map((b, i) => <Block key={i} block={b} />)}
-        </View>
-    );
-};
+}, ({classes = {}, block: {header = []}}) => (
+    <View fixed style={classes.root}>
+        {header.map((b, i) => <Block key={i} block={b} />)}
+    </View>
+));
 
 export default HeaderBlock

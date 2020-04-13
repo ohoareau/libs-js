@@ -1,6 +1,6 @@
 import React, {ComponentType} from 'react'
-import {Document} from '@ohoareau/react-document-renderer';
 import PdfViewer from './PdfViewer';
+import {Document} from '@ohoareau/react-document-renderer';
 
 const Viewer: ComponentType<ViewerProps> = ({document}: ViewerProps) => (
     <PdfViewer document={<Document document={document} />} />

@@ -1,7 +1,7 @@
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import ExpansionPanelSummary, {ExpansionPanelSummaryProps} from '@material-ui/core/ExpansionPanelSummary';
 
-const CollapsablePanelSummary = withStyles((theme: any) => ({
+const CollapsablePanelSummary = component<CollapsablePanelSummaryProps>((theme: any) => ({
     root: {
         backgroundColor: (props: CollapsablePanelSummaryProps) => props.variant === 'dark' ? (theme.palette.header || theme.palette.primary).dark : (theme.palette.header || theme.palette.primary).main,
         minHeight: 56,
@@ -15,7 +15,7 @@ const CollapsablePanelSummary = withStyles((theme: any) => ({
         },
     },
     expanded: {},
-}))(ExpansionPanelSummary);
+}), ExpansionPanelSummary);
 
 type ExtraProps = {
     variant?: string

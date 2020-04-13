@@ -1,6 +1,6 @@
-const { writeFileSync } = require('fs');
-const { execSync } = require('child_process');
-const { resolve } = require('path');
+const {writeFileSync} = require('fs');
+const {execSync} = require('child_process');
+const {resolve} = require('path');
 
 const buildSequence = (steps, actions) => actions.reduce((acc, action) => {
     const s = steps[action];

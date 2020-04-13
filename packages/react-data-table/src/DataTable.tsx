@@ -1,16 +1,15 @@
-import React, {ComponentType, useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import Table from '@material-ui/core/Table';
 import Paper from '@material-ui/core/Paper';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import DataTableBody from './DataTableBody';
 import DataTableHead from './DataTableHead';
 import DataTableToolBar from './DataTableToolBar';
-import {withTranslation} from 'react-i18next';
 import DataTablePaginationBar from './DataTablePaginationBar';
 import {formatize, stableSort, getSorting} from './data-table-helpers';
 
 // noinspection TypeScriptValidateJSTypes
-const DataTable: ComponentType<DataTableProps> = withStyles((theme: any) => ({
+const DataTable = component<DataTableProps>((theme: any) => ({
     root: {
         width: '100%',
     },
@@ -24,7 +23,7 @@ const DataTable: ComponentType<DataTableProps> = withStyles((theme: any) => ({
     tableWrapper: {
         overflowX: 'auto',
     },
-}))(withTranslation()(({classes = {}, buttonComponent, comparable = 0, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
+}),({classes = {}, buttonComponent, comparable = 0, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
     const [filterOpened, setFilterOpened] = useState(defaultFilterOpened);
     const [order, setOrder] = useState(defaultOrder);
     const [orderBy, setOrderBy] = useState(defaultOrderBy);
@@ -93,7 +92,7 @@ const DataTable: ComponentType<DataTableProps> = withStyles((theme: any) => ({
             </Paper>
         </div>
     );
-}));
+});
 
 export interface DataTableProps {
     classes?: {[key: string]: any},

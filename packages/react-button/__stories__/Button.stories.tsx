@@ -6,4 +6,5 @@ export default {
     component: Button,
 }
 
-export const basic = () => <Button type={'submit'} />;
+export const submit = () => <Button type={'submit'} />;
+export const cancel = () => <Button type={'cancel'} />;

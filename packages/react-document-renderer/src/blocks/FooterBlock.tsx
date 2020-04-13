@@ -1,8 +1,9 @@
 import React from 'react';
 import Block from '../Block';
-import {View, StyleSheet} from '@react-pdf/renderer';
+import {View} from '@react-pdf/renderer';
+import {pdfComponent} from '../hocs';
 
-const styles = StyleSheet.create({
+const FooterBlock = pdfComponent({
     root: {
         position: 'absolute',
         fontSize: 12,
@@ -11,14 +12,10 @@ const styles = StyleSheet.create({
         right: 0,
         textAlign: 'center',
     },
-});
-
-const FooterBlock = ({block: {footer = []}}) => {
-    return (
-        <View fixed style={styles.root}>
-            {footer.map((b, i) => <Block key={i} block={b} />)}
-        </View>
-    );
-};
+}, ({classes = {}, block: {footer = []}}) => (
+    <View fixed style={classes.root}>
+        {footer.map((b, i) => <Block key={i} block={b} />)}
+    </View>
+));
 
 export default FooterBlock

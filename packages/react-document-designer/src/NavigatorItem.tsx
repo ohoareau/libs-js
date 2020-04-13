@@ -1,13 +1,13 @@
-import React, {ComponentType} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import React from 'react';
+import component from '@ohoareau/react-component';
 
-const NavigatorItem: ComponentType<NavigatorItemProps> = withStyles(() => ({
+const NavigatorItem = component<NavigatorItemProps>({
     root: {
         padding: 2,
         margin: 5,
         fontWeight: props => props['changed'] ? 'bold' : 'unset',
     },
-}))(({item, classes = {}}: NavigatorItemProps) => (
+}, ({item, classes = {}}: NavigatorItemProps) => (
     <div className={classes.root}>{item.name || item.id}</div>
 ));
 

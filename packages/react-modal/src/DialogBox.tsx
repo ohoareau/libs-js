@@ -1,12 +1,11 @@
-import {ComponentType} from 'react';
-import withStyles from '@material-ui/core/styles/withStyles';
+import component from '@ohoareau/react-component';
 import Dialog, {DialogProps} from '@material-ui/core/Dialog';
 
-const DialogBox: ComponentType<DialogBoxProps> = withStyles({
+const DialogBox = component<DialogBoxProps>({
     paper: {
         borderRadius: 0,
     }
-})(Dialog);
+}, Dialog);
 
 export interface DialogBoxProps extends DialogProps {}
 

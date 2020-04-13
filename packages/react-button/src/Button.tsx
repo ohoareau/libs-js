@@ -1,11 +1,11 @@
-import React, {ComponentType} from 'react';
+import React from 'react';
 import Tooltip from '@material-ui/core/Tooltip';
 import Spinner from './Spinner';
+import component from '@ohoareau/react-component';
 import StyledButton, {StyledButtonProps} from './StyledButton';
-import {withTranslation} from 'react-i18next';
 
 // @ts-ignore
-const Button: ComponentType<ButtonProps> = withTranslation()(({tooltip, color, startIcon, endIcon, variant = 'contained', noLabel, dispatch, tReady, size, t = () => {}, submitting, label, noStartIcon, ...props }: ButtonProps) => {
+const Button = component<ButtonProps>(undefined, ({tooltip, color, startIcon, endIcon, variant = 'contained', noLabel, dispatch, tReady, size, t = () => {}, submitting, label, noStartIcon, ...props }: ButtonProps) => {
     const compProps: StyledButtonProps = {
         disableElevation: true,
         size,
@@ -39,6 +39,7 @@ export type ButtonProps = StyledButtonProps & {
     submitting?: boolean,
     label?: any,
     noStartIcon?: boolean,
+    type?: string,
 };
 
 export default Button

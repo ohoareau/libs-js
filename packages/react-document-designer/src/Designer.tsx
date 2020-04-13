@@ -1,13 +1,13 @@
-import React, {ComponentType, useCallback, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import Editor from './Editor';
 import Viewer from './Viewer';
 import InfoIcon from '@material-ui/icons/Info';
 import Navigator from './Navigator';
+import component from '@ohoareau/react-component';
 import Typography from '@material-ui/core/Typography';
-import withStyles from '@material-ui/core/styles/withStyles';
 import {buildTemplatedDocumentFragment, buildTemplatedDocumentFragmentList} from './utils';
 
-const Designer: ComponentType<DesignerProps> = withStyles(() => ({
+const Designer = component<DesignerProps>({
     root: {
         position: 'absolute',
         left: 0,
@@ -60,7 +60,7 @@ const Designer: ComponentType<DesignerProps> = withStyles(() => ({
     infoText: {
         flex: 1,
     },
-}))(({model, template, data, onChange, classes = {}}: DesignerProps) => {
+}, ({model, template, data, onChange, classes = {}}: DesignerProps) => {
     const [current, setCurrent]: [any, any] = useState(undefined);
     const fragments = buildTemplatedDocumentFragmentList(template, data, model);
     const fragment = buildTemplatedDocumentFragment(template, data, model, current);

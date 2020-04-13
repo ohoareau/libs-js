@@ -1,0 +1,49 @@
+{
+  "name": "@ohoareau/react-scope",
+  "version": "0.0.0",
+  "description": "React Scope",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`",
+    "story": "start-storybook -c ../../.storybook"
+  },
+  "dependencies": {
+    "@ohoareau/scope": "^0",
+    "@ohoareau/string": "^0",
+    "@ohoareau/clone": "^0",
+    "@ohoareau/generate": "^0",
+    "@ohoareau/react-moduled": "^0"
+  },
+  "peerDependencies": {
+    "@material-ui/icons": "^4.9.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
+    "@babel/preset-typescript": "^7.9.0",
+    "@material-ui/icons": "^4.9.1",
+    "@storybook/addon-info": "^5.3.17",
+    "@storybook/preset-typescript": "^3.0.0",
+    "@storybook/react": "^5.2.5",
+    "@types/react": "^16.9.20",
+    "babel-loader": "^8.0.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "source-map-loader": "^0.2.4"
+  }
+}

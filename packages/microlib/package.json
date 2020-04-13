@@ -22,7 +22,7 @@
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
-        "uuid": "^3.4.0"
+        "uuid": "^7.0.3"
     },
     "devDependencies": {
         "@ohoareau/gvalues": "^0.2.0",

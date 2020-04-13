@@ -1,8 +1,7 @@
-export default prefix =>
-    Object.entries(process.env).reduce((acc, [name, defaultValue]) => {
-        if (new RegExp(`^${prefix}`).test(name)) {
-            acc += (acc ? "\n" : '') + `${name}=${(process.env.hasOwnProperty(name) ? process.env[name] : defaultValue) || ''}`;
-        }
-        return acc;
-    }, '').trim()
-;
+export default (prefix: string|undefined, env: any[]|undefined = undefined): string => {
+    const envs = <any[]>(env || process.env);
+    const l = (prefix || '').length;
+    return Object.entries(envs).reduce((acc, [name, value]) =>
+        acc + ((!l || (prefix === name.slice(0, l))) ? ((acc ? "\n" : '') + `${name}=${value || ''}`) : '')
+    , '').trim()
+}

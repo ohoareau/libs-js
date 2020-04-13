@@ -1,5 +1,5 @@
+import component from '@ohoareau/react-component';
 import {darken, lighten} from '@material-ui/core';
-import withStyles from '@material-ui/core/styles/withStyles';
 import LinearProgress, {LinearProgressProps} from '@material-ui/core/LinearProgress';
 
 const colorMap = theme => ({level}: ProgressBarProps) => {
@@ -15,7 +15,7 @@ const colorMap = theme => ({level}: ProgressBarProps) => {
     }
 };
 
-const ProgressBar = withStyles(theme => {
+const ProgressBar = component<ProgressBarProps>(theme => {
     const computeColor = colorMap(theme);
     return {
         root: {
@@ -27,7 +27,7 @@ const ProgressBar = withStyles(theme => {
             backgroundColor: (props: ProgressBarProps) => props.darken ? darken(computeColor(props), 0.3) : computeColor(props),
         },
     };
-})(LinearProgress);
+}, LinearProgress);
 
 type ExtraProps = {
     margin?: boolean,

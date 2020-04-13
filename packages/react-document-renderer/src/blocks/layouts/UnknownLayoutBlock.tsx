@@ -1,7 +1,8 @@
 import React from 'react';
-import {View, Text, StyleSheet} from '@react-pdf/renderer';
+import {View, Text} from '@react-pdf/renderer';
+import {pdfComponent} from '../../hocs';
 
-const styles = StyleSheet.create({
+const UnknownLayoutBlock = pdfComponent({
     root: {
         display: 'flex',
         border: '1px solid red',
@@ -13,12 +14,10 @@ const styles = StyleSheet.create({
         color: 'red',
         fontWeight: 'bold',
     },
-});
-
-const UnknownLayoutBlock = ({block}) => (
-    <View style={styles.root}>
-        <Text style={styles.message}>**UNKNOWN LAYOUT {`${(block.layout || '')}`}**</Text>
+}, ({classes = {}, block}) => (
+    <View style={classes.root}>
+        <Text style={classes.message}>**UNKNOWN LAYOUT {`${(block.layout || '')}`}**</Text>
     </View>
-);
+));
 
 export default UnknownLayoutBlock

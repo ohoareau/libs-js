@@ -66,3 +66,28 @@ const parentsUpdate = ({data, path, context, model}) => {
     Object.assign(parent, data);
     return parentsUpdate({data, path: previouses, context, model});
 };
+
+export const buildPath = ({path, context}) =>
+    path.reduce((acc, p) => `${acc || ''}${acc ? '.' : ''}${p}s${context[`${p}Id`] ? '.' : ''}${context[`${p}Id`] || ''}`, '')
+;
+
+export const getModelPath = ({path, model}) => {
+    const tokens = path.split(/\./g);
+    let i = 0;
+    const n = tokens.length;
+    let kk;
+    const context = {};
+    const parents = <any[]>[];
+    while (model && (i < n)) {
+        parents.push(model);
+        model = (model[tokens[i]] || []).find(item => item.id === tokens[i + 1]);
+        if (model) {
+            kk = tokens[i].replace(/s$/, '');
+            context[`${kk}Id`] = tokens[i + 1];
+            context[kk] = model;
+        }
+        i = i + 2;
+    }
+    parents.shift();
+    return {model, parents, context};
+};

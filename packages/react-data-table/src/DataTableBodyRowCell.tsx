@@ -47,7 +47,7 @@ const DataTableBodyRowCell: ComponentType<DataTableBodyRowCellProps> = ({buttonC
             extraProps.style = {...extraProps.style, width: (actions.length > 1) ? 160 : 130};
             content = (
                 <div style={{display: 'flex'}}>
-                    {actions.map((action) => <DataTableBodyRowCellAction key={action.id} buttonComponent={buttonComponent} {...action} expanded={expanded} row={row} />)}
+                    {(actions as any[]).map((action) => <DataTableBodyRowCellAction key={action.id} buttonComponent={buttonComponent} {...action} expanded={expanded} row={row} />)}
                 </div>
             );
             break;
