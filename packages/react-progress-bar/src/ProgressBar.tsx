@@ -27,7 +27,7 @@ const ProgressBar = component<ProgressBarProps>(theme => {
             backgroundColor: (props: ProgressBarProps) => props.darken ? darken(computeColor(props), 0.3) : computeColor(props),
         },
     };
-}, LinearProgress);
+}, LinearProgress, undefined, {i18n: false});
 
 type ExtraProps = {
     margin?: boolean,

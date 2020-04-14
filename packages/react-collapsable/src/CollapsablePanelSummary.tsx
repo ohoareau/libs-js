@@ -15,7 +15,7 @@ const CollapsablePanelSummary = component<CollapsablePanelSummaryProps>((theme: 
         },
     },
     expanded: {},
-}), ExpansionPanelSummary);
+}), ExpansionPanelSummary, undefined, {i18n: false});
 
 type ExtraProps = {
     variant?: string

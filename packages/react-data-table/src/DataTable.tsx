@@ -23,7 +23,7 @@ const DataTable = component<DataTableProps>((theme: any) => ({
     tableWrapper: {
         overflowX: 'auto',
     },
-}),({classes = {}, buttonComponent, comparable = 0, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
+}),({classes = {}, buttonComponent, comparable = 0, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, tReady = false, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
     const [filterOpened, setFilterOpened] = useState(defaultFilterOpened);
     const [order, setOrder] = useState(defaultOrder);
     const [orderBy, setOrderBy] = useState(defaultOrderBy);
@@ -104,6 +104,7 @@ export interface DataTableProps {
     formatRow?: any,
     globalActions?: any[],
     t?: Function,
+    tReady?: boolean,
     filterPanelComponent?: any,
     onFilter?: Function,
     filters?: {[key: string]: any},

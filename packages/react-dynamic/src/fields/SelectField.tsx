@@ -18,7 +18,7 @@ export const SelectField = component<SelectFieldProps>(undefined, ({input, label
             <FieldHelper touched={touched}  error={error} />
         </FormControl>
     );
-});
+}, undefined, {i18n: false});
 
 export interface SelectFieldProps {
     input?: any,

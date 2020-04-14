@@ -1,9 +1,6 @@
 import React from 'react';
-import Modal from '../src/Modal';
 
 export default {
-    title: 'Modal',
-    component: Modal,
+    title: 'Moduled',
+    component: () => <div/>,
 }
-
-export const basic = () => <Modal name={'the-modal'}>This is the content of the modal</Modal>;

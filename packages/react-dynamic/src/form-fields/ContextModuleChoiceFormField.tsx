@@ -9,7 +9,7 @@ export const ContextModuleChoiceFormField = component<ContextModuleChoiceFormFie
     alert: {
         borderRadius: 0,
     },
-}, ({classes = {}, t = () => {}, context, ...props}: ContextModuleChoiceFormFieldProps) => {
+}, ({classes = {}, t = () => {}, tReady = false, context, ...props}: ContextModuleChoiceFormFieldProps) => {
     const items = ((context && context.modules) || []).map(i => ({...i, id: i.module, moduleActivationId: i.id}));
     return !!items.length ? (
         <FormField component={ItemChoiceField}
@@ -21,6 +21,7 @@ export const ContextModuleChoiceFormField = component<ContextModuleChoiceFormFie
 export interface ContextModuleChoiceFormFieldProps extends FormFieldProps {
     classes?: {[key: string]: any},
     t?: Function,
+    tReady?: boolean,
     context: any,
 }
 

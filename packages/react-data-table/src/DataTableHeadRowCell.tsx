@@ -17,7 +17,7 @@ const DataTableHeadRowCell = component<DataTableHeadRowCellProps>({
         top: 20,
         width: 1,
     },
-}, ({sortable, selectedCount = 0, count = 0, onSelectAllClick, classes = {}, t = () => {}, column, sortEnabled = false, sortDirection = 'asc', onSortClick}: DataTableHeadRowCellProps) => {
+}, ({sortable, selectedCount = 0, count = 0, onSelectAllClick, classes = {}, t = () => {}, tReady = false, column, sortEnabled = false, sortDirection = 'asc', onSortClick}: DataTableHeadRowCellProps) => {
     let content;
     const extraProps: {[key: string]: any} = {sortDirection};
     const type = column.type || column.id;
@@ -60,6 +60,7 @@ export interface DataTableHeadRowCellProps {
     onSelectAllClick?: any,
     classes?: {[key: string]: any},
     t?: Function,
+    tReady?: boolean,
     column?: any,
     sortEnabled?: boolean,
     sortDirection?: 'asc' | 'desc',

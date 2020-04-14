@@ -39,7 +39,7 @@ const TreeItem = component<TreeItemProps>(theme => ({
     return (
         <MuiTreeItem {...extraProps} {...props} />
     );
-});
+}, undefined, {i18n: false});
 
 export interface TreeItemProps {
     iconComponent?: any,

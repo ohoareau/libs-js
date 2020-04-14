@@ -43,7 +43,7 @@ const DataTableBodyRow = component<DataTableBodyRowProps>(theme => ({
             </DataTableBodyRowExpansion>
         )}
     </>
-));
+), undefined, {i18n: false});
 
 export interface DataTableBodyRowProps {
     buttonComponent?: any,

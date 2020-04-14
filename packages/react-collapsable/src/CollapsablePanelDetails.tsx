@@ -6,7 +6,7 @@ const CollapsablePanelDetails = component<CollapsablePanelDetailsProps>({
         padding: 0,
         display: 'flex',
     },
-}, ExpansionPanelDetails);
+}, ExpansionPanelDetails, undefined, {i18n: false});
 
 type ExtraProps = {
     variant?: string

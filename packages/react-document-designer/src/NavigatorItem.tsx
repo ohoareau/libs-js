@@ -9,7 +9,7 @@ const NavigatorItem = component<NavigatorItemProps>({
     },
 }, ({item, classes = {}}: NavigatorItemProps) => (
     <div className={classes.root}>{item.name || item.id}</div>
-));
+), undefined, {i18n: false});
 
 export interface NavigatorItemProps {
     item: {id: string, name: string, [key: string]: any},

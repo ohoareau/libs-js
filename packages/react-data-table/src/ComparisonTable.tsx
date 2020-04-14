@@ -22,7 +22,7 @@ const ComparisonTable = component<ComparisonTableProps>((theme: any) => ({
     tableWrapper: {
         overflowX: 'auto',
     },
-}), ({classes = {}, t = () => {}, data, totalCount, rows = [], title, subTitle, toolbar = true, size = 'medium'}: ComparisonTableProps) => {
+}), ({classes = {}, t = () => {}, tReady = false, data, totalCount, rows = [], title, subTitle, toolbar = true, size = 'medium'}: ComparisonTableProps) => {
     const count = data.items.length;
     let columns: any[] = data.items.reduce((acc, item, i) => {
         acc.push({id: `item_${i}`, type: 'centered', label: String.fromCharCode(i + 65)});
@@ -66,6 +66,7 @@ const ComparisonTable = component<ComparisonTableProps>((theme: any) => ({
 
 export interface ComparisonTableProps {
     t?: Function,
+    tReady?: boolean,
     classes?: {[key: string]: any},
     data?: any,
     totalCount?: number,

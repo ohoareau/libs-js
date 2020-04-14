@@ -37,7 +37,7 @@ const RowContent = component<RowContentProps>({
         padding: '5px 10px 5px 10px',
     },
 
-}, ({classes = {}, t = () => {}, index, context, definition, data}: RowContentProps) => {
+}, ({classes = {}, t = () => {}, tReady = false, index, context, definition, data}: RowContentProps) => {
     definition = 'object' === typeof definition ? definition : {key: definition, value: data[definition]};
     const title = t([
         `module_${context.module}:field_${context.type.join('_')}_${definition.key.toLowerCase()}_label`,
@@ -59,6 +59,7 @@ const RowContent = component<RowContentProps>({
 export interface RowContentProps {
     classes?: {[key: string]: any},
     t?: Function,
+    tReady?: boolean,
     index: any,
     context: any,
     definition: any,

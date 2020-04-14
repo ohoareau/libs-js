@@ -12,7 +12,7 @@ const Checkbox = component<CheckboxProps>(theme => ({
         },
     },
     checked: {},
-}), MuiCheckbox);
+}), MuiCheckbox, undefined, {i18n: false});
 
 interface ExtraProps {
     inverted?: boolean,

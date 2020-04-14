@@ -5,7 +5,7 @@ const DialogBox = component<DialogBoxProps>({
     paper: {
         borderRadius: 0,
     }
-}, Dialog);
+}, Dialog, undefined, {i18n: false});
 
 export interface DialogBoxProps extends DialogProps {}
 

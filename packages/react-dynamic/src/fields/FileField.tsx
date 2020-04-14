@@ -3,7 +3,7 @@ import 'react-dropzone-uploader/dist/styles.css';
 import Dropzone from 'react-dropzone-uploader/dist/react-dropzone-uploader';
 import component from '@ohoareau/react-component';
 
-export const DropZone = component<DropZoneProps>(undefined, ({getUploadParams, value, onChange, multiple, accept = '.xls,.xlsx,.jpg,.jpeg,.gif,.png,.pdf,.rtf,.json,.csv,.zip,.txt', t = () => {}}: DropZoneProps) => {
+export const DropZone = component<DropZoneProps>(undefined, ({t = () => {}, tReady = false, getUploadParams, value, onChange, multiple, accept = '.xls,.xlsx,.jpg,.jpeg,.gif,.png,.pdf,.rtf,.json,.csv,.zip,.txt'}: DropZoneProps) => {
     const handleChangeStatus = useCallback(({meta, remove}, status) => {
         if ('headers_received' === status) onChange(multiple ? [...value, meta] : meta);
     }, [onChange, value, multiple]);
@@ -34,6 +34,7 @@ export interface DropZoneProps {
     multiple: any,
     accept: string,
     t?: Function,
+    tReady?: boolean,
 }
 
 export const FileField = component<FileFieldProps>(undefined, ({errors, placeholder, label, input, multiple = false, ...props}: FileFieldProps) => (

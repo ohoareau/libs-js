@@ -11,7 +11,7 @@ const Navigator = component<NavigatorProps>({
     <div className={classes.root}>
         <Selector items={fragments} value={current} space={2} component={NavigatorItem} onChange={onChange} />
     </div>
-));
+), undefined, {i18n: false});
 
 export interface NavigatorProps {
     fragments?: {id: string, [key: string]: any}[],

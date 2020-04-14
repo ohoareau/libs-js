@@ -3,65 +3,41 @@ import cache from '@ohoareau/cache';
 import {camelcase} from '@ohoareau/string';
 import {DocumentNode} from 'graphql';
 
-const plugins = {
-    rootComponentFileImporter: undefined,
-    moduleFileImporter: undefined,
-    moduleVersionDefinitionGetter: undefined,
-    moduleEnricher: undefined,
-    modulePostLoader: undefined,
-    graphQLQueryGetter: undefined,
-    configSectionGetter: undefined,
-};
+const plugins = {};
 
-export const registerPlugin = (name, plugin) => plugins[name] = plugin;
-
-export const importRootComponentFile = async path => {
-    if (!plugins.rootComponentFileImporter) throw new Error('No root component file importer registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.rootComponentFileImporter(path);
-};
-export const importModuleFile = async (module, path) => {
-    if (!plugins.moduleFileImporter) throw new Error('No module file importer registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.moduleFileImporter(module, path);
-};
-export const getModuleVersionDefinition = async (name, version) => {
-    if (!plugins.moduleVersionDefinitionGetter) throw new Error('No module version definition getter registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.moduleVersionDefinitionGetter(name, version);
-};
-
-export const getGraphQLQuery = (name: string): DocumentNode => {
-    if (!plugins.graphQLQueryGetter) throw new Error('No GraphQL query getter registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.graphQLQueryGetter(name);
+export const getPlugins = () => plugins;
+export const register = (name, plugin, module = 'all') =>
+    (plugins[module] = (plugins[module] || {}))[name] = ('function' === typeof plugin) ? plugin : () => plugin
+;
+export const call = (type: string, args: any[] = [], module: string = 'root', throwErrorIfNone = true) => {
+    if ((module !== 'all') && plugins[module] && plugins[module][type]) return plugins[module][type](...args, {module});
+    if (plugins['all'] && plugins['all'][type]) return plugins['all'][type](...args, {module});
+    if (throwErrorIfNone) throw new Error(`No '${type}' plugin registered${('all' !== module) ? ` for module '${module}'` : ''}`);
 }
+export const importComponentFile = async (path: string, module: string = 'root') =>
+    call('component', [path], module)
+;
+export const importFile = async (path: string, module: string = 'root') =>
+    call('file', [path], module)
+;
+export const getDefinition = async (version: string, module: string = 'root') =>
+    call('definition', [version], module)
+;
+export const getGraphQLQuery = (name: string, module: string = 'root'): DocumentNode =>
+    call('graphql', [name], module)
+;
+export const getConfig = (defaultValue: {[key: string]: any} = {}, module: string = 'root'): {[key: string]: any} =>
+    call('config', [], module) || defaultValue
+;
+export const getConfigSection = (name: string, defaultValue: {[key: string]: any} = {}, module: string = 'root'): {[key: string]: any} =>
+    call('config', [name], module) || defaultValue
+;
 
-export const getConfigSection = (name: string, defaultValue: {[key: string]: any} = {}): {[key: string]: any} => {
-    if (!plugins.configSectionGetter) throw new Error('No config section getter registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.configSectionGetter(name) || defaultValue;
-}
-
-const enrichModule = async module => {
-    if (!plugins.moduleEnricher) throw new Error('No module enricher registered');
-    // noinspection JSValidateTypes
-    // @ts-ignore
-    return plugins.moduleEnricher(module);
-};
-export const getModuleComponent = ({module, path, name}, fallback) => {
+export const getComponent = ({module = 'root', path, name}, fallback) => {
     const key = `${module}-${path}-${name}`;
     let cached = cache.get('components', key);
     if (!cached) {
-        const Component = lazy(() => {
-            if (module === 'root') return importRootComponentFile(`${path}/${name}.jsx`);
-            return importModuleFile(module, `components/${path}/${name}.jsx`);
-        });
+        const Component = lazy(() => importComponentFile(`${path}/${name}`, module));
         cached = cache.set('components', key, props => (
             <Suspense fallback={fallback}>
                 <Component {...props} />
@@ -71,23 +47,25 @@ export const getModuleComponent = ({module, path, name}, fallback) => {
     return cached;
 };
 
-export const getTypedModuleComponent = ({def, type, path}, fallback: any = <div />) => {
+export const getTypedComponent = ({def, type, path}, fallback: any = <div />) => {
     const tokens = def.type.split(/:/);
     const [module, name] = (1 < tokens.length)
         ? [tokens[0], camelcase(tokens.slice(1).join(':'), type)]
         : ['root', camelcase(def.type, type)]
     ;
-    return getModuleComponent({module, path, name}, fallback);
+    return getComponent({module, path, name}, fallback);
 };
 
-const loadModule = async name => {
-    const module = await getModuleVersionDefinition(name, '1.0');
-    // @ts-ignore
-    // noinspection JSValidateTypes
-    return plugins.modulePostLoader ? plugins.modulePostLoader(module) : module;
+const load = async (name = 'root') => {
+    const module = await getDefinition('1.0', name);
+    return call('load', [module], name, false) || module;
 };
+
+const enrich = async module =>
+    (await call('enrich', [module], module.name, false)) || module
+;
 export const getModule = async (name = 'root') =>
-    cache.get('modules', name) || enrichModule(await cache.set('modules', name, await loadModule(name)))
+    cache.get('modules', name) || enrich(await cache.set('modules', name, await load(name)))
 ;
 
-export const getModuleSync = name => cache.get('modules', name, {models: {}, rules: {}});
+export const getModuleSync = name => cache.get('modules', name, {});

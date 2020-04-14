@@ -50,7 +50,7 @@ export const ComboBoxField = component<ComboBoxFieldProps>(undefined, ({freeSolo
             )}
         />
     );
-});
+}, undefined, {i18n: false});
 
 export interface ComboBoxFieldProps {
     freeSolo?: boolean,

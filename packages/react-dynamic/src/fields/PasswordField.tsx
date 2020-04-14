@@ -44,7 +44,7 @@ export const PasswordField = component<PasswordFieldProps>(undefined, ({errors, 
             {helperText && <FormHelperText error={inError}>{helperText}</FormHelperText>}
         </FormControl>
     );
-});
+}, undefined, {i18n: false});
 
 export interface PasswordFieldProps {
     errors?: any,

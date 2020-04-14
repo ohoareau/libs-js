@@ -25,7 +25,7 @@ const Modal = component<ModalProps>(theme => ({
         marginLeft: (props: ModalProps) => props.disableEscapeKeyDown ? 'unset' : theme.spacing(2),
         flex: 1,
     },
-}), ({classes = {}, t = () => {}, disableEscapeKeyDown = false, name = 'modal', i18nPrefix, noTitle = false, mode = 'dialog', open = true, onClose, onCancel, onSubmit, children, loading = false, isSubmittable = true, cancelLabel = undefined, submitLabel = undefined}: ModalProps) => {
+}), ({classes = {}, t = () => {}, tReady = false, disableEscapeKeyDown = false, name = 'modal', i18nPrefix, noTitle = false, mode = 'dialog', open = true, onClose, onCancel, onSubmit, children, loading = false, isSubmittable = true, cancelLabel = undefined, submitLabel = undefined}: ModalProps) => {
     const title = t([...tKeys('title', i18nPrefix), name.replace(/_/g, ' ')]);
     const description = t([...tKeys('description', i18nPrefix), '']);
     return (
@@ -72,6 +72,7 @@ const Modal = component<ModalProps>(theme => ({
 export interface ModalProps {
     classes?: {[key: string]: any},
     t?: Function,
+    tReady?: boolean,
     disableEscapeKeyDown?: boolean,
     name?: string,
     i18nPrefix?: string,

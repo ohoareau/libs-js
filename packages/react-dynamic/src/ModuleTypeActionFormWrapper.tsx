@@ -3,9 +3,10 @@ import {ErrorBoundary} from '@ohoareau/react-error-boundary';
 import {useModuleTypeForm} from './hooks';
 import ModuleTypeActionForm from './ModuleTypeActionForm';
 
-const ModuleTypeActionFormWrapper: ComponentType<ModuleTypeActionFormWrapperProps> = ({form, actionButtons = {}, context, module, type, action, view, mode, width = 600, onSubmit, onCancel, disabled, errors, initialValues = {}, ...props}: ModuleTypeActionFormWrapperProps) => {
-    const {contents, defaults, loading} = useModuleTypeForm(module, type, view ? `${action}_${view}` : action);
+const ModuleTypeActionFormWrapper: ComponentType<ModuleTypeActionFormWrapperProps> = ({form, actionButtons = {}, context = {}, module, type, action, view, mode, width = 600, onSubmit, onCancel, disabled, errors, initialValues = {}, ...props}: ModuleTypeActionFormWrapperProps) => {
+    const {contents, defaults, loading, error} = useModuleTypeForm(module, type, view ? `${action}_${view}` : action);
     if (loading) return <div>...</div>;
+    if (error) return <div>Error: {error.message}<br/>{error.stack}</div>;
     return (
         <ErrorBoundary metadata={{location: 'form', type, action}}>
             <ModuleTypeActionForm
@@ -28,9 +29,9 @@ const ModuleTypeActionFormWrapper: ComponentType<ModuleTypeActionFormWrapperProp
 export interface ModuleTypeActionFormWrapperProps {
     form: string,
     actionButtons?: {},
-    context: any,
+    context?: any,
     module: string,
-    type: any,
+    type: string|string[],
     action: string,
     view?: string,
     mode?: 'dialog' | 'fullscreen',

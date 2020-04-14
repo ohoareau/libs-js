@@ -29,7 +29,7 @@ const Breadcrumb = component<BreadcrumbProps>({
             ))}
         </>
     );
-});
+}, undefined, {i18n: false});
 
 export interface BreadcrumbProps {
     classes?: {[key: string]: any},

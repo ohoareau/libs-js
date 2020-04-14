@@ -19,7 +19,7 @@ const UnitValueField = component<UnitValueFieldProps>({
     unitContainer: {
         flex: 1,
     },
-}, ({classes = {}, t = () => {}, tReady, i18n, errors, placeholder, default: defaultValue, label, unitLabel, input, units, kind, defaultUnit, meta: {touched, invalid, error}, ...props}: UnitValueFieldProps) => {
+}, ({classes = {}, t = () => {}, tReady = false, i18n, errors, placeholder, default: defaultValue, label, unitLabel, input, units = [], kind, defaultUnit, meta: {touched, invalid, error}, ...props}: UnitValueFieldProps) => {
     const value = input.value ? input.value : {value: defaultValue || '', unit: defaultUnit || [...units].shift()};
     const onValueChange = useCallback(event => input.onChange({value: event.target.value, unit: value.unit}), [input, value]);
     const onUnitChange = useCallback(event => input.onChange({value: value.value, unit: event.target.value}), [input, value]);

@@ -63,7 +63,7 @@ const Tabs = component<TabsProps>({
             ))}
         </>
     );
-});
+}, undefined, {i18n: false});
 
 export interface TabsProps {
     classes?: {[key: string]: any},

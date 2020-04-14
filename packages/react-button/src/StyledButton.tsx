@@ -10,7 +10,7 @@ const StyledButton = component<StyledButtonProps>({
         boxShadow: 'none',
         borderRadius: 0,
     }
-}, Button);
+}, Button, undefined, {i18n: false});
 
 export type StyledButtonProps = ButtonProps
 

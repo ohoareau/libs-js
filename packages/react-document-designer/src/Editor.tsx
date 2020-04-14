@@ -5,7 +5,7 @@ const Editor = component<EditorProps>(undefined, ({fragment}: EditorProps) => (
     <div>
         {!!fragment && <>{fragment.id}</>}
     </div>
-));
+), undefined, {i18n: false});
 
 export interface EditorProps {
     fragment: {id: string, [key: string]: any},

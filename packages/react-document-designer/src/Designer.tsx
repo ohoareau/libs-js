@@ -91,7 +91,7 @@ const Designer = component<DesignerProps>({
             </div>
         </div>
     );
-});
+}, undefined, {i18n: false});
 
 export interface DesignerProps {
     model?: any,

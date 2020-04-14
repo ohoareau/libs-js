@@ -10,7 +10,7 @@ const DataTableBodyRowCellAction = component<DataTableBodyRowCellActionProps>({
     button: {
         marginRight: 5,
     },
-}, ({buttonComponent, classes = {}, t = () => {}, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
+}, ({buttonComponent, classes = {}, t = () => {}, tReady = false, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
     const Button: any = buttonComponent;
     const confirm = useConfirm();
     const handleConfirmableClick = e => {
@@ -45,6 +45,7 @@ export interface DataTableBodyRowCellActionProps {
     buttonComponent?: Function,
     classes?: {[key: string]: any},
     t?: Function,
+    tReady ?: boolean,
     expandedLabel?: string,
     label?: string,
     expanded?: boolean,

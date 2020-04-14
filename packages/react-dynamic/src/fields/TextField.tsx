@@ -2,7 +2,7 @@ import React from 'react';
 import component from '@ohoareau/react-component';
 import MuiTextField, {TextFieldProps as MuiTextFieldProps} from '@material-ui/core/TextField';
 
-const TextField = component<TextFieldProps>(undefined, ({errors, placeholder, label, input, meta: {touched, invalid, error}, ...props}: TextFieldProps) => (
+const TextField = component<TextFieldProps>(undefined, ({t = () => {}, tReady = false, errors, placeholder, label, input, meta: {touched, invalid, error}, ...props}: TextFieldProps) => (
     <MuiTextField
         fullWidth={true}
         label={label}
@@ -20,6 +20,8 @@ export type TextFieldProps = MuiTextFieldProps & {
     label?: any,
     input?: any,
     meta?: any,
+    t?: Function,
+    tReady?: boolean,
 }
 
 export default TextField

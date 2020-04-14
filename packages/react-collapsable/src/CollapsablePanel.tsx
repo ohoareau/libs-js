@@ -16,7 +16,7 @@ const CollapsablePanel = component<CollapsablePanelProps>({
         },
     },
     expanded: {},
-}, ExpansionPanel);
+}, ExpansionPanel, undefined, {i18n: false});
 
 type ExtraProps = {
 };

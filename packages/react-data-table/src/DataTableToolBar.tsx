@@ -34,7 +34,7 @@ const DataTableToolBar = component<DataTableToolBarProps>((theme: any) => ({
         padding: 30,
         backgroundColor: lighten(theme.palette.secondary.light, 0.85),
     },
-}), ({classes = {}, t = () => {}, buttonComponent, selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
+}), ({classes = {}, t = () => {}, tReady = false, buttonComponent, selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
     const Button: any = buttonComponent;
     const hasFilters = !!Object.keys(filters || {}).length;
     const filterable = !!FilterPanelComp;
@@ -75,6 +75,7 @@ const DataTableToolBar = component<DataTableToolBarProps>((theme: any) => ({
 
 export interface DataTableToolBarProps {
     t?: Function,
+    tReady?: boolean,
     buttonComponent?: Function,
     selectionHeader?: boolean,
     filterPanelComponent?: Function,

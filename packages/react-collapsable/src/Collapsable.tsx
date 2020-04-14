@@ -48,7 +48,7 @@ const Collapsable = component<CollapsableProps>({
             </CollapsablePanelDetails>
         </CollapsablePanel>
     </div>
-));
+), undefined, {i18n: false});
 
 export type CollapsableProps = {
     classes?: {[key: string]: any},

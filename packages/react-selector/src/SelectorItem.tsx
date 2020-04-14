@@ -37,7 +37,7 @@ const SelectorItem = component<SelectorItemProps>(theme => ({
             <Component {...componentProps} item={item} data={data} />
         </div>
     </div>
-));
+), undefined, {i18n: false});
 
 export interface SelectorItemProps {
     id?: string,

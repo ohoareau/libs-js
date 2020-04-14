@@ -38,7 +38,7 @@ const PdfViewer = component<PdfViewerProps>({
             </div>
         </div>
     );
-});
+}, undefined, {i18n: false});
 
 export interface PdfViewerProps {
     classes?: {[key: string]: any},

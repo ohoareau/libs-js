@@ -7,7 +7,7 @@ export const SliderField = component<SliderFieldProps>({
         width: '100%',
         marginTop: 50,
     },
-}, ({classes = {}, errors, placeholder, label, unit, interval, step = 1, input, ...props}: SliderFieldProps) => {
+}, ({classes = {}, errors, placeholder, label, unit, interval = [0, 100], step = 1, input, ...props}: SliderFieldProps) => {
     const buildValueText = useCallback(value => `${value}${unit ? ` ${unit}` : ''}`, [unit]);
     let value = input.value;
     if (!value) {
@@ -37,7 +37,7 @@ export const SliderField = component<SliderFieldProps>({
             onChange={onChange}
         />
     );
-});
+}, undefined, {i18n: false});
 
 export interface SliderFieldProps {
     classes?: {[key: string]: any},

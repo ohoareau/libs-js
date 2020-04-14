@@ -1,24 +1,9 @@
-import React, {ComponentType, memo, Suspense, useCallback} from 'react';
-import cache from '@ohoareau/cache';
-import {camelcase} from '@ohoareau/string';
-import {getModuleComponent} from '@ohoareau/react-moduled';
+import React, {ComponentType, memo} from 'react';
+import {useModulePanelGenericContent} from "./hooks";
 
 const ModuleTypePanelGenericContent: ComponentType<ModuleTypePanelGenericContentProps> = memo(({item, panel, module, type, definition, context}: ModuleTypePanelGenericContentProps) => {
-    const factory = useCallback(() => {
-        const tokens = (definition.type as string).split(/:/);
-        const [module, name] = (1 < tokens.length)
-            ? [tokens[0], camelcase(tokens.slice(1).join(':'), 'Content')]
-            : ['root', camelcase(definition.type, 'Content')]
-        ;
-        return getModuleComponent({module, path: 'contents', name}, <div />);
-    }, [definition]);
-    const Component = cache.getset('components', `${module}-${type}-panels-${panel}-generics-${definition.type}`, factory);
-    const WrapperComponent: ComponentType<{[key: string]: any}> = memo(props => (
-        <Suspense fallback={<div/>}>
-            <Component {...definition} {...props} context={{context, module, type, panel}} />
-        </Suspense>
-    ));
-    return <WrapperComponent name={definition.name} data={item} />;
+    const [Component] = useModulePanelGenericContent(panel, definition, {module, type, panel, ...context}) as unknown as [ComponentType<{name: string, data: any}>];
+    return <Component name={definition.name} data={item} />;
 });
 
 export interface ModuleTypePanelGenericContentProps {

@@ -19,7 +19,7 @@ export const ItemChoiceField = component<ItemChoiceFieldProps>({
             {items.map((item, i) => <Component key={item.id || i} {...item} selected={!!selected[item.id]} onClick={() => toggle(item.id)}/>)}
         </div>
     );
-});
+}, undefined, {i18n: false});
 
 export interface ItemChoiceFieldProps {
     classes?: {[key: string]: any},

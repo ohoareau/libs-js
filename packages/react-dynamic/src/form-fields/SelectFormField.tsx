@@ -25,7 +25,7 @@ export const convertToSelectValues = (i18n, values, defaultValue = undefined, so
     return result;
 };
 
-export const SelectFormField = component<SelectFormFieldProps>(undefined, ({t = () => {}, i18n, tReady = false, context, defaultValue, sort = true, formatOption, resultKey, values, extraProps = {}, ...props}: SelectFormFieldProps) => {
+export const SelectFormField = component<SelectFormFieldProps>(undefined, ({t = () => {}, tReady = false, i18n, context, defaultValue, sort = true, formatOption, resultKey, values, extraProps = {}, ...props}: SelectFormFieldProps) => {
     const {labels, defaultId} = convertToSelectValues(i18n, values, defaultValue, sort, {...context, name: props.name, prefix: props.prefix});
     return (
         <FormField component={SelectField}

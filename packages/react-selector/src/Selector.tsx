@@ -12,7 +12,7 @@ const Selector = component<SelectorProps>({
     <div className={classes.root}>
         {((items || []) as any[]).map((item, i) => <SelectorItem key={item.id || i} id={item.id} item={item} component={component} componentProps={componentProps} selected={value === item.id} data={selections[item.id] || {}} onSelect={onChange} visualMark={visualMark} {...(inline ? {hspace: space} : {space})} />)}
     </div>
-));
+), undefined, {i18n: false});
 
 export interface SelectorProps {
     items?: any[],

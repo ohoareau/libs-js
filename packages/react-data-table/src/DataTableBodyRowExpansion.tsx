@@ -23,7 +23,7 @@ const DataTableBodyRowExpansion = component<DataTableBodyRowExpansionProps>({
             {children}
         </DataTableBodyRowCell>
     </TableRow>
-));
+), undefined, {i18n: false});
 
 export interface DataTableBodyRowExpansionProps {
     children?: any,

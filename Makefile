@@ -1,15 +1,12 @@
 all: install
 
-install: yarn-install bootstrap build
+install: install-root install-packages build
 
-yarn-install:
+install-root:
 	@yarn --silent install
 
-bootstrap:
+install-packages:
 	@yarn --silent lerna bootstrap
-
-install-package:
-	@yarn --silent lerna bootstrap --scope $(p)
 
 build:
 	@yarn --silent lerna run build --stream
@@ -17,14 +14,17 @@ build:
 test: build
 	@yarn --silent test --runInBand --coverage
 
-build-package:
-	@cd packages/$(package)$(p) && yarn --silent build
+package-install:
+	@yarn --silent lerna bootstrap --scope $(p)
 
-story:
-	@cd packages/$(package)$(p) && yarn --silent story
+package-build:
+	@cd packages/$(p) && yarn --silent build
 
-test-package: build-package
-	@cd packages/$(package)$(p) && yarn --silent test --coverage --detectOpenHandles
+package-test: package-build
+	@cd packages/$(p) && yarn --silent test --coverage --detectOpenHandles
+
+package-storybook:
+	@cd packages/$(p) && yarn --silent story
 
 publish:
 	@yarn --silent lerna publish
@@ -48,4 +48,4 @@ clean-coverage:
 clean-buildinfo:
 	@find packages/ -name tsconfig.tsbuildinfo -exec rm -rf {} +
 
-.PHONY: all install test yarn-install build bootstrap publish clean-buildinfo clean-modules clean-lib clean-coverage clean
+.PHONY: all install install-root install-packages test build publish clean-buildinfo clean-modules clean-lib clean-coverage clean package-build package-install package-storybook package-test

@@ -7,7 +7,7 @@ import {useModuleType} from './hooks';
 import ModuleTypeActionFormWrapper from './ModuleTypeActionFormWrapper';
 import {isValid, submit, isSubmitting} from 'redux-form';
 
-const ModuleTypeActionModal = component<ModuleTypeActionModalProps>(undefined, ({t = () => {}, formName = '', formIsValid, formIsSubmitting, context, dispatch = () => {}, module, type, action, view, mode = 'dialog', open, onClose, onCancel, onSubmit, initialValues}: ModuleTypeActionModalProps) => {
+const ModuleTypeActionModal = component<ModuleTypeActionModalProps>(undefined, ({t = () => {}, tReady = false, formName = '', formIsValid, formIsSubmitting, context, dispatch = () => {}, module, type, action, view, mode = 'dialog', open, onClose, onCancel, onSubmit, initialValues}: ModuleTypeActionModalProps) => {
     const onSubmitWrapper = useCallback(() => dispatch(submit(formName)), [dispatch, formName]);
     const {loading, error} = useModuleType(module, type);
     return (loading && !error) ? null : (
@@ -40,6 +40,7 @@ const ModuleTypeActionModal = component<ModuleTypeActionModalProps>(undefined, (
 
 export interface ModuleTypeActionModalProps {
     t?: Function,
+    tReady?: boolean,
     formName?: string,
     formIsValid?: boolean,
     formIsSubmitting?: boolean,
