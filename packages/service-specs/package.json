@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/service-specs",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,11 +19,11 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "uuid": "^7.0.3",
-    "@ohoareau/service-model": "^0.1.0",
-    "@ohoareau/diff": "^0.1.0",
     "@ohoareau/clone": "^0.1.0",
+    "@ohoareau/diff": "^0.1.0",
     "@ohoareau/path-model": "^0.2.0",
-    "@ohoareau/scope": "^0.2.0"
+    "@ohoareau/scope": "^0.2.0",
+    "@ohoareau/service-model": "^0.1.0",
+    "uuid": "^7.0.3"
   }
 }
