@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {Fragment, useCallback} from 'react';
 import component from '@ohoareau/react-component';
 
 const Breadcrumb = component<BreadcrumbProps>({
@@ -23,9 +23,9 @@ const Breadcrumb = component<BreadcrumbProps>({
     return (
         <>
             {items.map((it, i) => (
-                <>
-                    <span key={i} className={classes.span} style={it.emphasize ? {fontWeight: 'bold'} : {}} onClick={onClick ? () => onClick(scope) : undefined}>{it.label}</span>{!(i === lastIndex) && ' / '}
-                </>
+                <Fragment key={i}>
+                    <span className={classes.span} style={it.emphasize ? {fontWeight: 'bold'} : {}} onClick={onClick ? () => onClick(scope) : undefined}>{it.label}</span>{!(i === lastIndex) && ' / '}
+                </Fragment>
             ))}
         </>
     );
