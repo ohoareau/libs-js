@@ -1,0 +1,1 @@
+export {default as SpecsService, default as default} from './SpecsService';

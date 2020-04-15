@@ -15,7 +15,7 @@ test: build
 	@yarn --silent test --runInBand --coverage
 
 package-install:
-	@yarn --silent lerna bootstrap --scope $(p)
+	@yarn --silent lerna bootstrap --scope @ohoareau/$(p)
 
 package-build:
 	@cd packages/$(p) && yarn --silent build
