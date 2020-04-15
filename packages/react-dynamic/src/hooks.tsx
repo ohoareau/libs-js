@@ -41,6 +41,13 @@ export const useModuleType = (module, type) => {
     return {model: models[key] || {}, loading: false, error};
 };
 
+export const useModuleTypeTable = (module, type, name) => {
+    type = Array.isArray(type) ? type : [type];
+    const {model, loading} = useModuleType(module, type);
+    if (loading) return {table: undefined, loading: true};
+    return {table: ((model || {})['tables'] || {})[name] || {}, loading: false};
+};
+
 export const useModuleTypePanel = (module, type, name) => {
     type = Array.isArray(type) ? type : [type];
     const key = `${module}/${type.join('-')}/${name}`;
