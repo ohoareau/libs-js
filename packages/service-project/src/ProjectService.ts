@@ -12,17 +12,17 @@ export default class ProjectService {
     }
     async load(id: string, ctx: any): Promise<any> {
         return [
-            this.progress(0, 'loading_project_query_subTitle', 'loading_project_title'),
-            this.loadProject,
-            this.progress(40, 'loading_project_model_subTitle'),
-            this.loadProjectModel,
-            this.progress(45, 'loading_project_definition_subTitle'),
-            this.loadProjectDefinition,
-            this.progress(60, 'loading_project_specs_query_subTitle'),
-            this.loadProjectSpecs,
-            this.progress(90, 'loading_project_specs_model_subTitle'),
-            this.prepareComplete,
-            this.progress(100, 'loading_project_completed_title'),
+            this.progress(0, 'loading_project_query_subTitle', 'loading_project_title').bind(this),
+            this.loadProject.bind(this),
+            this.progress(40, 'loading_project_model_subTitle').bind(this),
+            this.loadProjectModel.bind(this),
+            this.progress(45, 'loading_project_definition_subTitle').bind(this),
+            this.loadProjectDefinition.bind(this),
+            this.progress(60, 'loading_project_specs_query_subTitle').bind(this),
+            this.loadProjectSpecs.bind(this),
+            this.progress(90, 'loading_project_specs_model_subTitle').bind(this),
+            this.prepareComplete.bind(this),
+            this.progress(100, 'loading_project_completed_title').bind(this),
         ]
             .reduce((p, c) => p.then(c), Promise.resolve(ctx)).then(x => {
                 return x;
