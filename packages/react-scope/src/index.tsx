@@ -35,7 +35,7 @@ export const getScopeIconComponent = scope => props => {
     );
 };
 
-const enrichScope = async s => {
+export const enrichScope = async s => {
     s.subScopes = s.subScopes || [];
     s.features = s.features || {};
     if (s.features['addSubScopesFromScopeTemplates']) {
