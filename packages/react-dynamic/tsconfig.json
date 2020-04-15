@@ -1,11 +1,14 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
     "jsx": "react",
     "rootDir": "./src",
     "outDir": "./lib",
     "composite": true,
-    "lib": ["dom"]
+    "lib": ["dom"],
+    "removeComments": false
   },
   "include": ["./src"]
 }
