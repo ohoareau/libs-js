@@ -1,3 +1,4 @@
+import React from 'react';
 import component from '@ohoareau/react-component';
 import MuiCheckbox, {CheckboxProps as MuiCheckboxProps} from '@material-ui/core/Checkbox';
 
@@ -12,12 +13,10 @@ const Checkbox = component<CheckboxProps>(theme => ({
         },
     },
     checked: {},
-}), MuiCheckbox, undefined, {i18n: false});
+}), ({inverted = false, ...props}: CheckboxProps) => <MuiCheckbox {...props} />, undefined, {i18n: false});
 
-interface ExtraProps {
+export interface CheckboxProps extends MuiCheckboxProps {
     inverted?: boolean,
 }
-
-export interface CheckboxProps extends MuiCheckboxProps,ExtraProps {}
 
 export default Checkbox
