@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-button",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "React Button",
   "license": "MIT",
   "main": "lib/index.js",
