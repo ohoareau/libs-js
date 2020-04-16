@@ -2,22 +2,27 @@ import React from 'react';
 import {View, Text} from '@react-pdf/renderer';
 import {pdfComponent} from '../../hocs';
 
-const UnknownLayoutBlock = pdfComponent({
-    root: {
+export const UnknownLayoutBlock = pdfComponent({
+    layouts_unknown: {
         display: 'flex',
         border: '1px solid red',
         padding: 15,
         minHeight: 50,
         textAlign: 'center',
     },
-    message: {
+    layouts_unknown_message: {
         color: 'red',
         fontWeight: 'bold',
     },
-}, ({classes = {}, block}) => (
-    <View style={classes.root}>
-        <Text style={classes.message}>**UNKNOWN LAYOUT {`${(block.layout || '')}`}**</Text>
+}, ({s = () => {}, block}: UnknownLayoutBlockProps) => (
+    <View style={s('layouts_unknown')}>
+        <Text style={s('layouts_unknown_message')}>**UNKNOWN LAYOUT {`${(block.layout || '')}`}**</Text>
     </View>
 ));
+
+export interface UnknownLayoutBlockProps {
+    s?: Function,
+    block: any,
+}
 
 export default UnknownLayoutBlock

@@ -1,14 +1,14 @@
 import React from 'react';
 import component from '@ohoareau/react-component';
+import Typography from '@material-ui/core/Typography';
 
 const NavigatorItem = component<NavigatorItemProps>({
     root: {
-        padding: 2,
-        margin: 5,
+        padding: 10,
         fontWeight: props => props['changed'] ? 'bold' : 'unset',
     },
 }, ({item, classes = {}}: NavigatorItemProps) => (
-    <div className={classes.root}>{item.name || item.id}</div>
+    <Typography className={classes.root}>{item.name || item.id}</Typography>
 ), undefined, {i18n: false});
 
 export interface NavigatorItemProps {

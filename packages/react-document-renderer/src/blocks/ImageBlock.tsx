@@ -2,6 +2,13 @@ import React from 'react';
 import {Image} from '@react-pdf/renderer';
 import {pdfComponent} from '../hocs';
 
-const ImageBlock = pdfComponent({}, ({block}) => <Image src={block.url} />);
+export const ImageBlock = pdfComponent<ImageBlockProps>(undefined, ({block}: ImageBlockProps) => (
+    <Image src={block.url} cache={false} />
+));
+
+export interface ImageBlockProps {
+    s?: Function,
+    block: any,
+}
 
 export default ImageBlock

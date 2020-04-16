@@ -23,7 +23,11 @@
   "dependencies": {
     "@ohoareau/react-component": "^0.3.0",
     "@ohoareau/react-document-renderer": "^0.3.0",
-    "@ohoareau/react-selector": "^0.3.1"
+    "@ohoareau/react-selector": "^0.3.1",
+    "@ohoareau/react-tabs": "^0.3.1",
+    "slate": "^0.57.1",
+    "slate-react": "^0.57.1",
+    "react-debounce-render": "^6.0.0"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.10",

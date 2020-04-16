@@ -1,0 +1,1 @@
+export {default as model1} from './model1';

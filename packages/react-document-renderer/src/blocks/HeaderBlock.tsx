@@ -3,16 +3,15 @@ import Block from '../Block';
 import {View} from '@react-pdf/renderer';
 import {pdfComponent} from '../hocs';
 
-const HeaderBlock = pdfComponent({
-    root: {
-        fontSize: 12,
-        marginBottom: 15,
-        textAlign: 'center',
-    },
-}, ({classes = {}, block: {header = []}}) => (
-    <View fixed style={classes.root}>
-        {header.map((b, i) => <Block key={i} block={b} />)}
+export const HeaderBlock = pdfComponent<HeaderBlockProps>(undefined, ({s = () => {}, block: {header = []}}: HeaderBlockProps) => (
+    <View fixed wrap style={s('header')}>
+        {header.map((b, i) => <Block key={i} id={b.id} block={b} />)}
     </View>
 ));
+
+export interface HeaderBlockProps {
+    s?: Function,
+    block: any,
+}
 
 export default HeaderBlock

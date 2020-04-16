@@ -21,7 +21,13 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
-    "@react-pdf/renderer": "^1.6.8"
+    "@react-pdf/renderer": "^1.6.8",
+    "unified": "^9.0.0",
+    "remark-parse": "^8.0.0",
+    "qrious": "^4.0.2",
+    "handlebars": "^4.7.6",
+    "object-path": "^0.11.4",
+    "jexl": "^2.2.2"
   },
   "peerDependencies": {
     "react": "^16.13.1",

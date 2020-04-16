@@ -3,32 +3,37 @@ import Block from '../../Block';
 import {View} from '@react-pdf/renderer';
 import {pdfComponent} from '../../hocs';
 
-const Row010LayoutBlock = pdfComponent({
-    root: {
+export const Row010LayoutBlock = pdfComponent<Row010LayoutBlockProps>({
+    layouts_row010: {
         display: 'flex',
         flexDirection: 'row',
     },
-    left: {
+    layouts_row010_left: {
         width: '20%',
         justifyContent: 'flex-start',
     },
-    center: {
+    layouts_row010_center: {
         flex: 1,
         justifyContent: 'center',
     },
-    right: {
+    layouts_row010_right: {
         width: '20%',
         justifyContent: 'flex-end',
     }
-}, ({classes = {}, block}) => {
+}, ({s = () => {}, block}: Row010LayoutBlockProps) => {
     const content = block.content || {};
     return (
-        <View style={classes.root}>
-            {!!content.left && <View style={classes.left}><Block block={content.left} /></View>}
-            {!!content.center && <View style={classes.center}><Block block={content.center || {}} /></View>}
-            {!!content.right && <View style={classes.right}><Block block={content.right} /></View>}
+        <View style={s('layouts_row010')}>
+            {!!content.left && <View style={s('layouts_row010_left')}><Block id={content.left.id} block={content.left} /></View>}
+            {!!content.center && <View style={s('layouts_row010_center')}><Block id={content.center.id} block={content.center || {}} /></View>}
+            {!!content.right && <View style={s('layouts_row010_right')}><Block id={content.right.id} block={content.right} /></View>}
         </View>
     );
 });
+
+export interface Row010LayoutBlockProps {
+    s?: Function,
+    block: any,
+}
 
 export default Row010LayoutBlock

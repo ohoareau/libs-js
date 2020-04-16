@@ -2,23 +2,22 @@ import React from 'react';
 import {pdfComponent} from '../hocs';
 import {View, Text} from '@react-pdf/renderer';
 
-const UnknownBlock = pdfComponent({
-    root: {
+export const UnknownBlock = pdfComponent<UnknownBlockProps>({
+    unknown: {
         display: 'flex',
-        border: '1px solid red',
-        padding: 15,
-        minHeight: 50,
-        textAlign: 'center',
-        backgroundColor: 'red',
-        color: 'white',
     },
-    message: {
+    unknown_text: {
         fontWeight: 'bold',
     },
-}, ({classes = {}, block}) => (
-    <View style={classes.root}>
-        <Text style={classes.message}>**UNKNOWN BLOCK {`${(block.type || '')}`}**</Text>
+}, ({s = () => {}, block}: UnknownBlockProps) => (
+    <View style={s('unknown')}>
+        <Text style={s('unknown_text')}>**UNKNOWN BLOCK {`${(block.type || '')}`}**</Text>
     </View>
 ));
+
+export interface UnknownBlockProps {
+    s?: Function,
+    block: any,
+}
 
 export default UnknownBlock

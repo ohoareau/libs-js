@@ -5,11 +5,10 @@ import NavigatorItem from './NavigatorItem';
 
 const Navigator = component<NavigatorProps>({
     root: {
-        padding: 10,
     }
 }, ({fragments = [], current, onChange, classes = {}}: NavigatorProps) => (
     <div className={classes.root}>
-        <Selector items={fragments} value={current} space={2} component={NavigatorItem} onChange={onChange} />
+        <Selector items={fragments} value={current} component={NavigatorItem} onChange={onChange} />
     </div>
 ), undefined, {i18n: false});
 
