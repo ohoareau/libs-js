@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-dynamic",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "React Dynamic",
   "license": "MIT",
   "main": "lib/index.js",
@@ -24,7 +24,7 @@
     "@ohoareau/array": "^0.1.0",
     "@ohoareau/cache": "^0.1.0",
     "@ohoareau/conditions": "^0.1.0",
-    "@ohoareau/contents": "^0.1.0",
+    "@ohoareau/contents": "^0.1.1",
     "@ohoareau/react-button": "^0.3.2",
     "@ohoareau/react-collapsable": "^0.3.1",
     "@ohoareau/react-component": "^0.3.0",
