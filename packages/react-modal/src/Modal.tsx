@@ -1,7 +1,7 @@
 import React from 'react';
-import Button from '@material-ui/core/Button';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import {Button} from '@ohoareau/react-button';
 import DialogBox from './DialogBox';
 import CloseIcon from '@material-ui/icons/Close';
 import component from '@ohoareau/react-component';
@@ -52,7 +52,7 @@ const Modal = component<ModalProps>(theme => ({
                 <DialogActions>
                     {!!onSubmit && (
                         <>
-                            <Button disabled={loading} onClick={onCancel} color="primary">{cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))}</Button>
+                            {onCancel && <Button disabled={loading} onClick={onCancel} color="primary">{cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))}</Button>}
                             <Button startIcon={loading ? <CircularProgress size={20} color={'inherit'} /> : null} disabled={loading || !isSubmittable} variant={'contained'} type={'submit'} onClick={onSubmit} color="primary">
                                 {submitLabel || t(tKeys('buttons_submit_label', i18nPrefix))}
                             </Button>
