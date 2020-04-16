@@ -1,21 +1,27 @@
 import React from 'react';
 import clone from '@ohoareau/clone';
+import * as rules from './rules';
 import * as icons from '@material-ui/icons';
 import {camelcase} from '@ohoareau/string';
 import {generateValues} from '@ohoareau/generate';
 import {getModule, getModuleSync} from '@ohoareau/react-moduled';
 import {pathize, cloneScope, buildSubScopeTree} from '@ohoareau/scope';
 
-export const onScopeAction = async (ctx, action, data = {}, extraData = {}) => {
-    const {scope} = ctx;
-    const rules = (await getModule(scope.module)).rules || {};
-    const key = `on_${action}_${scope.name}`;
-    if (rules[key]) {
-        const r = await rules[key]({...ctx, action, data, extraData});
-        if (r) data = r;
-    }
-    return {...ctx, data, ...extraData, action};
-};
+export const mutateRule = def =>
+    !def ? rules.noop() : (('function' === typeof def) ? def : (rules[def.type] || rules.noop)(def))
+;
+
+export const applyRules = (rules, x) => rules.reduce((data, r) => mutateRule(r)(x) || data, x.data);
+
+export const onScopeAction = async (ctx, action, data = {}, extraData = {}) => ({
+    ...ctx,
+    data: applyRules(
+        (((await getModule(ctx.scope.module)).models || {}).rules || {})[action] || [],
+        {...ctx, action, data, extraData}
+    ),
+    ...extraData,
+    action,
+});
 
 export const buildDefinition = async moduleNames =>
     pathize(cloneScope(buildSubScopeTree(await Promise.all(moduleNames.map(async m => ({
@@ -47,4 +53,3 @@ export const enrichScope = async s => {
     }
     return s;
 };
-
