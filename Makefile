@@ -11,8 +11,13 @@ install-packages:
 build:
 	@yarn --silent lerna run build --stream
 
-test: build
+test: build test-only
+
+test-only:
 	@yarn --silent test --runInBand --coverage
+
+test-local:
+	@yarn --silent test --coverage
 
 package-install:
 	@yarn --silent lerna bootstrap --scope @ohoareau/$(p)

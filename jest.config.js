@@ -3,8 +3,11 @@ module.exports = {
     modulePaths: ['<rootDir>'],
     moduleNameMapper: {'~(.*)$': '<rootDir>/$1'},
     testEnvironment: 'node',
-    moduleFileExtensions: ['ts', 'tsx', 'js'],
+    moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
     transform: {".(ts|tsx)$": "ts-jest"},
     testMatch: ['**/__tests__/**/*.spec.(ts|tsx)'],
-    coverageDirectory: './coverage'
+    coverageDirectory: './coverage',
+    setupFilesAfterEnv: [
+        "@testing-library/jest-dom/extend-expect"
+    ],
 };
