@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-modal",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "React Modal",
   "license": "MIT",
   "main": "lib/index.js",
@@ -21,8 +21,8 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
-    "@ohoareau/react-component": "^0.3.0",
-    "@ohoareau/react-button": "^0.3.1"
+    "@ohoareau/react-button": "^0.3.1",
+    "@ohoareau/react-component": "^0.3.0"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.10",

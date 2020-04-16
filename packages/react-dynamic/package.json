@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-dynamic",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "React Dynamic",
   "license": "MIT",
   "main": "lib/index.js",
@@ -29,7 +29,7 @@
     "@ohoareau/react-collapsable": "^0.3.1",
     "@ohoareau/react-component": "^0.3.0",
     "@ohoareau/react-error-boundary": "^0.3.0",
-    "@ohoareau/react-modal": "^0.3.1",
+    "@ohoareau/react-modal": "^0.3.2",
     "@ohoareau/react-moduled": "^0.3.0",
     "@ohoareau/string": "^0.2.0",
     "@ohoareau/validator": "^0.2.0",
