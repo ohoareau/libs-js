@@ -36,7 +36,9 @@ const parseContents = (contents, def, model) => (contents || []).reduce((acc, r)
     acc.push(parseContentRow(r ? (Array.isArray(r) ? r : [r]) : [], def, model));
     return acc;
 }, []);
-const describe = (model, definition = {}) =>
-    ({...definition, contents: parseContents(definition['contents'] || [], definition, model)})
-;
+const describe = (model, definition = {}) => {
+    // definition is updated potentially deeply in the following call, so do it first before return
+    const contents = parseContents(definition['contents'] || [], definition, model);
+    return {...definition, contents};
+};
 export default describe
