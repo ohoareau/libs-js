@@ -52,15 +52,13 @@ const Modal = component<ModalProps>(theme => ({
                 <DialogActions>
                     {!!onSubmit && (
                         <>
-                            {onCancel && <Button disabled={loading} onClick={onCancel} color="primary">{cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))}</Button>}
-                            <Button startIcon={loading ? <CircularProgress size={20} color={'inherit'} /> : null} disabled={loading || !isSubmittable} variant={'contained'} type={'submit'} onClick={onSubmit} color="primary">
-                                {submitLabel || t(tKeys('buttons_submit_label', i18nPrefix))}
-                            </Button>
+                            {onCancel && <Button disabled={loading} onClick={onCancel} color="primary" type={'cancel'} label={cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))} />}
+                            <Button startIcon={loading ? <CircularProgress size={20} color={'inherit'} /> : null} disabled={loading || !isSubmittable} variant={'contained'} type={'submit'} onClick={onSubmit} color="primary" label={submitLabel || t(tKeys('buttons_submit_label', i18nPrefix))} />
                         </>
                     )}
                     {!onSubmit && (
                         <>
-                            <Button startIcon={loading ? <CircularProgress size={20} color={'inherit'} /> : null} disabled={loading} variant={'contained'} onClick={onCancel} color="secondary">{cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))}</Button>
+                            <Button startIcon={loading ? <CircularProgress size={20} color={'inherit'} /> : null} disabled={loading} variant={'contained'} onClick={onCancel} color="secondary" type={'cancel'} label={cancelLabel || t(tKeys('buttons_cancel_label', i18nPrefix))} />
                         </>
                     )}
                 </DialogActions>

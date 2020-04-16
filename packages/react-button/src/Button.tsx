@@ -5,7 +5,7 @@ import component from '@ohoareau/react-component';
 import StyledButton, {StyledButtonProps} from './StyledButton';
 
 // @ts-ignore
-const Button = component<ButtonProps>(undefined, ({t = () => {}, tReady = false, tooltip, color, startIcon, endIcon, variant = 'contained', noLabel, dispatch, size, submitting, label, noStartIcon, ...props }: ButtonProps) => {
+const Button = component<ButtonProps>(undefined, ({t = () => {}, type, tReady = false, tooltip, color, startIcon, endIcon, variant = 'contained', noLabel, dispatch, size, submitting, label, noStartIcon, ...props }: ButtonProps) => {
     const compProps: StyledButtonProps = {
         disableElevation: true,
         size,
@@ -18,14 +18,14 @@ const Button = component<ButtonProps>(undefined, ({t = () => {}, tReady = false,
         ...props,
         ...(props.onClick ? {} : {type: 'submit'}),
     };
-    const content = noLabel ? <></> : (label || t([`buttons_${props.type}_label`, props.type]));
+    const content = noLabel ? <></> : (label || t([`buttons_${type}_label`, type]));
     return tooltip
         ? <Tooltip title={tooltip}><StyledButton {...compProps}>{content}</StyledButton></Tooltip>
         : <StyledButton {...compProps}>{content}</StyledButton>
     ;
 });
 
-export type ButtonProps = StyledButtonProps & {
+export type ButtonProps = Omit<StyledButtonProps, "type"> & {
     tooltip?: any,
     color?: string,
     startIcon?: any,
