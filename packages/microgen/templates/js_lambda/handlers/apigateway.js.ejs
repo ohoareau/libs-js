@@ -3,7 +3,11 @@ const r = p => {
     return async (event, context) => {
         const handlerEvent = {params: event.body ? JSON.parse(event.body) : {}};
         (!!event && !!event.user) && (handlerEvent.user = event.user);
-        return h(handlerEvent, {...context});
+        const result = await h(handlerEvent, {...context});
+        return {
+            statusCode: 200,
+            body: JSON.stringify(result),
+        }
     };
 };
 
