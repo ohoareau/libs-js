@@ -1,0 +1,25 @@
+const r = p => {
+    const h = require(`.<%- ('undefined' === typeof operationDirectory) ? '' : `/${operationDirectory}` -%>/<%- 'undefined' !== typeof prefix ? `${prefix}_` : '' -%>${p}`).handler;
+    return async (event, context) => {
+        const handlerEvent = {params: event.body ? JSON.parse(event.body) : {}};
+        (!!event && !!event.user) && (handlerEvent.user = event.user);
+        return h(handlerEvent, {...context});
+    };
+};
+
+<%- pre_init %>
+const <%- fnName -%> = async () => ({});
+<%- post_init %>
+<% var len = Object.keys(routes).reduce((acc, r) => r.length > acc ? r.length : acc, 0); -%>
+module.exports = {
+    handler: async (event, context) => {
+        let h;
+        switch (`${(event || {}).httpMethod} ${(event || {}).path}`) {
+<% Object.entries(routes).forEach(([k, v]) => { -%>
+            case '<%- k -%>': <%- ''.padStart(len - k.length, ' ') %>h = r('<%- v -%>'); break;
+<% }) -%>
+            default: h = hn; break;
+        }
+        return h(event, context);
+    },
+};
