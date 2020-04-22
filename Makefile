@@ -28,6 +28,9 @@ package-build:
 package-test: package-build
 	@cd packages/$(p) && yarn --silent test --coverage --detectOpenHandles
 
+package-clear-test:
+	@cd packages/$(p) && yarn --silent jest --clearCache
+
 package-storybook:
 	@cd packages/$(p) && yarn --silent story
 

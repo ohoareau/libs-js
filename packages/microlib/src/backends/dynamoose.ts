@@ -33,11 +33,11 @@ function mutateField(def) {
     return def.list ? [field] : field;
 }
 
-export default model => dynamoose.getDb(
+export default (model, cfg: {tableName?: string} = {}) => dynamoose.getDb(
     Object.entries(model.fields || {}).reduce((acc, [k, def]: [string, any]) => {
         if (def.volatile) return acc;
         acc.schema[k] = mutateField(def);
         if (model.requiredFields && model.requiredFields[k]) acc.schema[k].required = true;
         return acc;
-    }, {name: model.name, schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}})
+    }, {name: cfg.tableName || model.name, schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}})
 )
