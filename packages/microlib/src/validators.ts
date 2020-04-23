@@ -1,4 +1,10 @@
 export const boolean = () => ({test: v => 'boolean' === typeof v, message: v => `Not a boolean (actual: ${v})`});
+export const min = ({value: x}) => ({test: v => v >= x, message: v => `Min not satisfied (${v} < ${x})`});
+export const max = ({value: x}) => ({test: v => v <= x, message: v => `Max not satisfied (${v} > ${x})`});
+export const positive = () => ({test: v => v >= 0, message: v => `Must be positive (actual: ${v})`});
+export const negative = () => ({test: v => v <= 0, message: v => `Must be negative (actual: ${v})`});
+export const year = ({min = 1800, max = 2100}) => ({test: v => (v >= min) && (v <= max), message: v => `Year must be >= ${min} and <= ${max} (actual: ${v})`});
+export const range = ({min, max}) => ({test: v => (v >= min) && (v <= max), message: v => `Value must be >= ${min} and <= ${max} (actual: ${v})`});
 export const minLength = ({min: x}) => ({test: v => v.length >= x, message: v => `Min length not satisfied (${v.length} < ${x})`});
 export const maxLength = ({max: x}) => ({test: v => v.length <= x, message: v => `Max length exceeded (${v.length} > ${x})`});
 export const values = ({values: x}) => ({test: v => !!x.find(a => a === v), message: v => `Value not allowed (actual: ${v}, allowed: ${x.join(',')})`});
