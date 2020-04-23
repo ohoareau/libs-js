@@ -34,3 +34,4 @@ export {default as website} from './website';
 export {default as workflow} from './workflow';
 export {default as youtube} from './youtube';
 export {default as zipCode} from './zipCode';
+export {default as year} from './year';
