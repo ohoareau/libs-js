@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/microgen",
-  "version": "0.7.65",
+  "version": "0.7.66",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
