@@ -32,7 +32,7 @@ module.exports = {
     handler: async (event, context) => {
         let h;
         event = event || {};
-        switch (`${event['httpMethod']} ${event['path']}`) {
+        switch (`${event['httpMethod']} ${event['resource']}`) {
 <% Object.entries(routes).forEach(([k, v]) => { -%>
             case '<%- k -%>': <%- ''.padStart(len - k.length, ' ') %>h = r('<%- 'string' === typeof v ? v : v.handler -%>'<%- 'string' === typeof v ? '' : (v.config ? `, ${JSON.stringify(v.config)}` : '') %>); break;
 <% }) -%>
