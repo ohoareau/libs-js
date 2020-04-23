@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-document-designer",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "React Document Designer",
   "license": "MIT",
   "main": "lib/index.js",
@@ -22,12 +22,12 @@
   },
   "dependencies": {
     "@ohoareau/react-component": "^0.3.0",
-    "@ohoareau/react-document-renderer": "^0.3.0",
+    "@ohoareau/react-document-renderer": "^0.4.0",
     "@ohoareau/react-selector": "^0.3.1",
     "@ohoareau/react-tabs": "^0.3.1",
+    "react-debounce-render": "^6.0.0",
     "slate": "^0.57.1",
-    "slate-react": "^0.57.1",
-    "react-debounce-render": "^6.0.0"
+    "slate-react": "^0.57.1"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.10",

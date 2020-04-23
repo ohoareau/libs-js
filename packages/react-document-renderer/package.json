@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-document-renderer",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "React Document Renderer",
   "license": "MIT",
   "main": "lib/index.js",
@@ -22,12 +22,12 @@
   },
   "dependencies": {
     "@react-pdf/renderer": "^1.6.8",
-    "unified": "^9.0.0",
-    "remark-parse": "^8.0.0",
-    "qrious": "^4.0.2",
     "handlebars": "^4.7.6",
+    "jexl": "^2.2.2",
     "object-path": "^0.11.4",
-    "jexl": "^2.2.2"
+    "qrious": "^4.0.2",
+    "remark-parse": "^8.0.0",
+    "unified": "^9.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.1",
