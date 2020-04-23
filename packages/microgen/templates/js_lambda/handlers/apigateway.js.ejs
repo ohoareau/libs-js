@@ -1,12 +1,25 @@
-const r = p => {
+const r = (p, forcedParams = {}) => {
     const h = require(`.<%- ('undefined' === typeof operationDirectory) ? '' : `/${operationDirectory}` -%>/<%- 'undefined' !== typeof prefix ? `${prefix}_` : '' -%>${p}`).handler;
     return async (event, context) => {
-        const handlerEvent = {params: event.body ? JSON.parse(event.body) : {}};
-        (!!event && !!event.user) && (handlerEvent.user = event.user);
-        const result = await h(handlerEvent, {...context});
-        return {
-            statusCode: 200,
-            body: JSON.stringify(result),
+        try {
+            const handlerEvent = {
+                params: {
+                    ...(event['body'] ? JSON.parse(event['body']) : {}),
+                    ...(event['queryStringParameters'] || {}),
+                    ...(event['pathParameters'] || {}),
+                    ...forcedParams,
+                },
+            };
+            (!!event && !!event['user']) && (handlerEvent.user = event['user']);
+            return {
+                statusCode: 200,
+                body: JSON.stringify(await h(handlerEvent, {...context})),
+            }
+        } catch (e) {
+            return {
+                statusCode: ('number' === typeof e.code) ? e.code : 500,
+                body: JSON.stringify(e.serialize ? e.serialize(): e.message),
+            }
         }
     };
 };
@@ -18,9 +31,10 @@ const <%- fnName -%> = async () => ({});
 module.exports = {
     handler: async (event, context) => {
         let h;
-        switch (`${(event || {}).httpMethod} ${(event || {}).path}`) {
+        event = event || {};
+        switch (`${event['httpMethod']} ${event['path']}`) {
 <% Object.entries(routes).forEach(([k, v]) => { -%>
-            case '<%- k -%>': <%- ''.padStart(len - k.length, ' ') %>h = r('<%- v -%>'); break;
+            case '<%- k -%>': <%- ''.padStart(len - k.length, ' ') %>h = r('<%- 'string' === typeof v ? v : v.handler -%>'<%- 'string' === typeof v ? '' : (v.config ? `, ${JSON.stringify(v.config)}` : '') %>); break;
 <% }) -%>
             default: h = hn; break;
         }
