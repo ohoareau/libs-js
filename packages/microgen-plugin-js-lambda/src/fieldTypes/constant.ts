@@ -1,1 +1,0 @@
-export default ({values: allowedValues = []}) => ({type: 'string', validators: [{type: '@values', config: {values: allowedValues}}]})

@@ -1,1 +1,0 @@
-export default () => ({type: 'string', list: true, defaultValue: {type: '@value', config: {value: []}}})

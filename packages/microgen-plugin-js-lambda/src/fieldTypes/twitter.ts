@@ -1,1 +1,0 @@
-export default () => ({type: 'string', validators: [{type: '@url'}, {type: '@maxLength', config: {max: 1024}}]})

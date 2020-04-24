@@ -1,1 +1,0 @@
-export default () => ({type: 'number', value: {type: '@now'}, updateValue: {type: '@now'}})
