@@ -42,7 +42,23 @@ export class Generator implements IGenerator {
             ...vars,
         };
         this.packages = packages;
-        plugins.forEach(p => this.registerPluginFromConfig(p));
+        const localPlugin = `${rootDir}/.microgen`;
+        try {
+            const localPluginPath = fs.realpathSync(localPlugin);
+            if (localPluginPath) plugins.push('./.microgen');
+        } catch (e) {
+            console.log('toto');
+            // nothing to do, local plugin does not exist.
+        }
+        this.loadPlugins(plugins);
+    }
+    protected loadPlugins(plugins: any[]): void {
+        plugins.forEach(p => {
+            if ('string' === typeof p) p = {name: p};
+            if ((p.name.slice(0, 1) === '@') &&  (-1 === p.name.indexOf('/')))
+                p.name = `@ohoareau/microgen-plugin-${p.name}`;
+            this.registerPluginFromConfig(p)
+        });
     }
     getRootDir(): string {
         return this.rootDir;

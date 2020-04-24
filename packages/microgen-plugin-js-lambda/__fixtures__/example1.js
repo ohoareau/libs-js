@@ -1,6 +1,6 @@
 module.exports = {
     plugins: [
-        '@ohoareau/microgen-plugin-js-lambda',
+        '@js-lambda',
     ],
     vars: {
         author: {
