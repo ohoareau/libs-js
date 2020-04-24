@@ -24,6 +24,7 @@ module.exports = {
                 handlerWithCustomError: {
                     type: 'apigateway',
                     vars: {
+                        jwt: true,
                         errors: {
                             404: {code: 403, message: 'You are not allowed to access this resource.'},
                             403: {code: 403, message: 'You are not allowed to access this resource.'},

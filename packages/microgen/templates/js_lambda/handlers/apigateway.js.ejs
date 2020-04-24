@@ -1,6 +1,12 @@
 const r = (handlerName, forcedParams = {}) => async (event = {}, context = {}) => {
     let response = {statusCode: 200, body: '{}'};
     try {
+<% if (('undefined' !== typeof jwt) && jwt) { -%>
+        event.headers && event.headers.Authorization && (event.user = require('jsonwebtoken').verify(
+            event.headers.Authorization.split(' ')[1],
+            String(process.env.JWT_SECRET || 'the-very-secret-secret')
+        ));
+<% } -%>
         response.body = JSON.stringify(await require(`.<%- ('undefined' === typeof operationDirectory) ? '' : `/${operationDirectory}` -%>/<%- 'undefined' !== typeof prefix ? `${prefix}_` : '' -%>${handlerName}`).handler({
             user: event.user || undefined,
             params: {
