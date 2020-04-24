@@ -74,8 +74,10 @@ export default class Generator {
         entries.forEach(([k, x]) => {
             const [p, v] = <any>x;
             const filePath = `${targetDir}/${k}`;
-            result[k] = (<any>v)(this.createPackageHelpers(p, vars));
-            if (write && (true !== result[k])) writeFile(filePath, result[k]);
+            if (!this.vars || !this.vars.locked || !this.vars.locked[k]) {
+                result[k] = (<any>v)(this.createPackageHelpers(p, vars));
+                if (write && (true !== result[k])) writeFile(filePath, result[k]);
+            }
         });
         return result;
     }

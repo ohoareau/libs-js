@@ -15,4 +15,7 @@ export default class TestFile {
             return acc;
         }, <TestGroup[]>[]);
     }
+    hasTests(): boolean {
+        return this.groups.reduce((acc: boolean, g: TestGroup) => acc || g.hasTests(), false);
+    }
 }

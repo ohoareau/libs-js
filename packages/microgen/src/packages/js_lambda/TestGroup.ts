@@ -15,4 +15,7 @@ export default class TestGroup {
             return acc;
         }, <Test[]>[]);
     }
+    hasTests(): boolean {
+        return !!this.tests.length;
+    }
 }

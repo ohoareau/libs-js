@@ -47,7 +47,7 @@ export default class Service {
         const files = {
             [`services/${this.name}.js`]: ({renderFile}) => renderFile('js_lambda/service.js.ejs', {...this.vars, ...vars, variables, methods}),
         };
-        if (this.test) {
+        if (this.test && this.test.hasTests()) {
             files[`__tests__/services/${this.name}.test.js`] = ({renderFile}) => renderFile('js_lambda/tests/service.test.js.ejs', {...this.vars, ...vars, test: this.test});
         }
         return files;

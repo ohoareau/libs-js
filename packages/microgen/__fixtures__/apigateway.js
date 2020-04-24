@@ -46,6 +46,16 @@ module.exports = {
                 user: {
                     types: {
                         user: {
+                            test: {
+                                groups: {
+                                    g1: {
+                                        name: 'g1',
+                                        tests: [
+                                            {name: 'dummy', type: 'empty'},
+                                        ]
+                                    }
+                                }
+                            },
                             backends: ['dynamoose'],
                             operations: {
                                 create: {},

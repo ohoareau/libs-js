@@ -3,6 +3,7 @@ import Handler from './Handler';
 import SchemaParser from './SchemaParser';
 import Microservice from './Microservice';
 import stringifyObject from 'stringify-object';
+import {TestFileConfig} from './TestFile';
 import MicroserviceTypeOperation, {MicroserviceTypeOperationConfig} from './MicroserviceTypeOperation';
 
 export type MicroserviceTypeConfig = {
@@ -14,6 +15,7 @@ export type MicroserviceTypeConfig = {
     functions?: {[key: string]: {args?: any, code?: string}},
     middlewares?: string[],
     backends?: string[] | {type: string, name: string}[],
+    test?: TestFileConfig,
 };
 
 export default class MicroserviceType {
@@ -28,7 +30,8 @@ export default class MicroserviceType {
     public readonly microservice: Microservice;
     private readonly rawAttributes;
     private readonly rawOperations;
-    constructor(microservice: Microservice, {name, attributes = {}, operations = {}, functions = {}, middlewares = [], backends = [], handlers = {}}: MicroserviceTypeConfig) {
+    public readonly test: TestFileConfig|undefined;
+    constructor(microservice: Microservice, {name, attributes = {}, operations = {}, functions = {}, middlewares = [], backends = [], handlers = {}, test = undefined}: MicroserviceTypeConfig) {
         this.microservice = microservice;
         this.name = `${microservice.name}_${name}`;
         this.rawAttributes = attributes;
@@ -60,6 +63,7 @@ export default class MicroserviceType {
             ([name, c]: [string, any]) =>
                 this.handlers[name] = new Handler({name: `${this.name}${'handler' === name ? '' : `_${name}`}`, ...c, directory: 'handlers', vars: {...(c.vars || {}), operations: opNames, prefix: this.name}})
         );
+        this.test = test;
     }
     registerHook(operation, type, hook) {
         this.hooks[operation] = this.hooks[operation] || {};
@@ -68,7 +72,7 @@ export default class MicroserviceType {
         return this;
     }
     async generate(vars: any = {}): Promise<{[key: string]: Function}> {
-        const service = new Service({name: `crud/${this.name}`, ...this.buildServiceConfig({attributes: this.rawAttributes, operations: this.rawOperations, functions: this.functions})});
+        const service = new Service({name: `crud/${this.name}`, ...this.buildServiceConfig({attributes: this.rawAttributes, operations: this.rawOperations, functions: this.functions, test: this.test})});
         vars = {...vars, model: this.model};
         return (await Promise.all(Object.values(this.operations).map(
             async o => o.generate(vars)))).reduce((acc, r) =>
@@ -110,7 +114,7 @@ export default class MicroserviceType {
             return acc;
         }, {});
     }
-    buildServiceConfig({attributes, operations, functions}) {
+    buildServiceConfig({attributes, operations, functions, test = {}}) {
         functions = Object.entries(functions).reduce((acc, [k, v]) => {
             acc[k] = this.buildServiceFunctionConfig({attributes, name: k, ...<any>v});
             return acc;
@@ -127,19 +131,20 @@ export default class MicroserviceType {
             },
             methods: {...functions, ...methods},
             test: {
-                mocks: Object.entries(this.backends).map(([n, {realName, type}]) => {
+                ...test,
+                mocks: [...(test['mocks'] || []), ...Object.entries(this.backends).map(([n, {realName, type}]) => {
                     n = realName || n;
                     if ('@' === n.substr(0, 1)) {
                         return `@ohoareau/microlib/lib/${type}s/${n.substr(1)}`;
                     } else {
                         return `../../${type}s/${n}`;
                     }
-                }),
-                groups: {
-                    [this.name]: {
+                })],
+                groups: {...(test['groups'] || {}), [this.name]: {
                         name: this.name,
                         tests: [],
-                    }
+                        ...((test['groups'] || {})[this.name] || {}),
+                    },
                 }
             }
         };
