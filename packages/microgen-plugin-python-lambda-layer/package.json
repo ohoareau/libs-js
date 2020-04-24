@@ -1,16 +1,14 @@
 {
-  "name": "@ohoareau/microgen",
-  "version": "0.7.73",
+  "name": "@ohoareau/microgen-plugin-python-lambda-layer",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "directories": {
     "lib": "lib",
-    "test": "__tests__",
-    "bin": "bin"
+    "test": "__tests__"
   },
   "files": [
-    "bin",
     "lib",
     "templates"
   ],
@@ -20,17 +18,13 @@
   "scripts": {
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`",
-    "gen": "./bin/microgen"
+    "gen": "../../packages/microgen/bin/microgen"
   },
-  "dependencies": {
-    "ejs": "^3.0.2",
-    "fs-extra": "^8.1.0",
-    "stringify-object": "^3.3.0"
+  "peerDependencies": {
+    "@ohoareau/microgen": "^0.7.73"
   },
   "devDependencies": {
-    "aws-sdk": "^2.656.0"
-  },
-  "bin": {
-    "microgen": "./bin/microgen"
+    "aws-sdk": "^2.656.0",
+    "@ohoareau/microgen": "^0.7.73"
   }
 }
