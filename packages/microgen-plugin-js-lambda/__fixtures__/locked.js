@@ -13,6 +13,7 @@ module.exports = {
     },
     packages: {
         api: {
+            type: 'js-lambda',
             files: {
                 'abcd/def.js': 'module.exports = {};',
             }

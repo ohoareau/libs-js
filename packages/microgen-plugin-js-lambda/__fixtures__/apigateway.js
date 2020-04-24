@@ -10,6 +10,7 @@ module.exports = {
     },
     packages: {
         api: {
+            type: 'js-lambda',
             handlers: {
                 handler: {
                     type: 'apigateway',

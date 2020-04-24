@@ -47,7 +47,6 @@ export class Generator implements IGenerator {
             const localPluginPath = fs.realpathSync(localPlugin);
             if (localPluginPath) plugins.push('./.microgen');
         } catch (e) {
-            console.log('toto');
             // nothing to do, local plugin does not exist.
         }
         this.loadPlugins(plugins);
@@ -56,7 +55,7 @@ export class Generator implements IGenerator {
         plugins.forEach(p => {
             if ('string' === typeof p) p = {name: p};
             if ((p.name.slice(0, 1) === '@') &&  (-1 === p.name.indexOf('/')))
-                p.name = `@ohoareau/microgen-plugin-${p.name}`;
+                p.name = `@ohoareau/microgen-plugin-${p.name.slice(1)}`;
             this.registerPluginFromConfig(p)
         });
     }

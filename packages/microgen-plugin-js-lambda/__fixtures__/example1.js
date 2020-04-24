@@ -10,9 +10,11 @@ module.exports = {
     },
     packages: {
         p0: {
+            type: 'js-lambda',
             name: 'test-project-2',
         },
         p1: {
+            type: 'js-lambda',
             name: 'test-project',
             files: {
                 'schema.graphql': `schema {

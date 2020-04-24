@@ -10,6 +10,7 @@ module.exports = {
     },
     packages: {
         xinea: {
+            type: 'js-lambda',
             handlers: {
                 handler: {
                     type: 'ping',
