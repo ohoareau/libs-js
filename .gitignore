@@ -9,3 +9,4 @@ coverage/
 packages/microgen/old/*
 *.log
 *.tsbuildinfo
+/packages/microgen/generated

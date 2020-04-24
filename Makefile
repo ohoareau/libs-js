@@ -56,4 +56,7 @@ clean-coverage:
 clean-buildinfo:
 	@find packages/ -name tsconfig.tsbuildinfo -exec rm -rf {} +
 
-.PHONY: all install install-root install-packages test build publish clean-buildinfo clean-modules clean-lib clean-coverage clean package-build package-install package-storybook package-test
+microgen-fixture-gen:
+	@make -C packages/microgen fixture-gen e=$(f)
+
+.PHONY: all install install-root install-packages test build publish microgen-example-gen clean-buildinfo clean-modules clean-lib clean-coverage clean package-build package-install package-storybook package-test

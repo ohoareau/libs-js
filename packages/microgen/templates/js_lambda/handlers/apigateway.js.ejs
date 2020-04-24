@@ -1,38 +1,43 @@
-const r = (p, forcedParams = {}) => {
-    const h = require(`.<%- ('undefined' === typeof operationDirectory) ? '' : `/${operationDirectory}` -%>/<%- 'undefined' !== typeof prefix ? `${prefix}_` : '' -%>${p}`).handler;
-    return async (event, context) => {
-        try {
-            const handlerEvent = {
-                params: {
-                    ...(event['body'] ? JSON.parse(event['body']) : {}),
-                    ...(event['queryStringParameters'] || {}),
-                    ...(event['pathParameters'] || {}),
-                    ...forcedParams,
-                },
-            };
-            (!!event && !!event['user']) && (handlerEvent.user = event['user']);
-            return {
-                statusCode: 200,
-                body: JSON.stringify(await h(handlerEvent, {...context})),
-            }
-        } catch (e) {
-            return {
-                statusCode: ('number' === typeof e.code) ? e.code : 500,
-                body: JSON.stringify(e.serialize ? e.serialize(): e.message),
-            }
+const r = (handlerName, forcedParams = {}) => async (event = {}, context = {}) => {
+    let response = {statusCode: 200, body: '{}'};
+    try {
+        response.body = JSON.stringify(await require(`.<%- ('undefined' === typeof operationDirectory) ? '' : `/${operationDirectory}` -%>/<%- 'undefined' !== typeof prefix ? `${prefix}_` : '' -%>${handlerName}`).handler({
+            user: event.user || undefined,
+            params: {
+                ...JSON.parse(event.body || '{}'),
+                ...(event.queryStringParameters || {}),
+                ...(event.pathParameters || {}),
+                ...forcedParams,
+            },
+        }, {...context}));
+    } catch (e) {
+<% var errorConfig = Object.entries(((('undefined' !== typeof errors) && errors) ? errors : undefined) || {}) -%>
+<% if (errorConfig.length) { -%>
+        response.statusCode = ('number' === typeof e.code) ? e.code : 500;
+        response.body = JSON.stringify(e.serialize ? e.serialize(): e.message);
+        switch (response.statusCode) {
+<% var len2 = errorConfig.reduce((acc, r) => `${r[0]}`.length > acc ? `${r[0]}`.length : acc, 0); -%>
+<% errorConfig.sort((a, b) => a[0] < b[0] ? -1 : (a[0] > b[0] ? 1 : 0)) -%>
+<% errorConfig.forEach(([k, v]) => { -%>
+            case <%- k -%>: <%- ''.padStart(len2 - `${k}`.length, ' ') %>response = {statusCode: <%- JSON.stringify(v.code) -%>, body: <%- JSON.stringify(v.message) -%>}; break;
+<% }) -%>
         }
-    };
+<% } else { -%>
+        response.statusCode = ('number' === typeof e.code) ? e.code : 500;
+        response.body = JSON.stringify(e.serialize ? e.serialize(): e.message);
+<% } -%>
+    }
+    return response;
 };
 
 <%- pre_init %>
-const <%- fnName -%> = async () => ({});
+const <%- fnName -%> = async () => { throw Object.assign(new Error('Not Found'), {code: 404}); };
 <%- post_init %>
 <% var len = Object.keys(routes).reduce((acc, r) => r.length > acc ? r.length : acc, 0); -%>
 module.exports = {
-    handler: async (event, context) => {
+    handler: async (event = {}, context = {}) => {
         let h;
-        event = event || {};
-        switch (`${event['httpMethod']} ${event['resource']}`) {
+        switch (`${event.httpMethod} ${event.resource}`) {
 <% Object.entries(routes).forEach(([k, v]) => { -%>
             case '<%- k -%>': <%- ''.padStart(len - k.length, ' ') %>h = r('<%- 'string' === typeof v ? v : v.handler -%>'<%- 'string' === typeof v ? '' : (v.config ? `, ${JSON.stringify(v.config)}` : '') %>); break;
 <% }) -%>
