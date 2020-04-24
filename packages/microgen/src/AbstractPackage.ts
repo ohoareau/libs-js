@@ -24,7 +24,9 @@ export abstract class AbstractPackage<C extends BasePackageConfig = BasePackageC
     public getName(): string {
         return this.name;
     }
-    protected abstract getTemplateRoot(): string;
+    protected getTemplateRoot(): string {
+        return '_no-template-root_';
+    }
     // noinspection JSUnusedLocalSymbols
     protected buildFiles(vars: any, cfg: any): any {
         return {};
