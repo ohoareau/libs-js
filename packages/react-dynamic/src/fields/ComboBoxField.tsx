@@ -4,7 +4,7 @@ import component from '@ohoareau/react-component';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
-export const ComboBoxField = component<ComboBoxFieldProps>(undefined, ({freeSolo = false, multiple = false, input, loadItems, loading, error, items, ...props}: ComboBoxFieldProps) => {
+export const ComboBoxField = component<ComboBoxFieldProps>(undefined, ({freeSolo = false, multiple = false, input, loadItems, loading, error, items = undefined, ...props}: ComboBoxFieldProps) => {
     const [open, setOpen] = useState(false);
     useEffect(() => {
         if (loading || error || items) return;
@@ -28,7 +28,7 @@ export const ComboBoxField = component<ComboBoxFieldProps>(undefined, ({freeSolo
             onOpen={() => {setOpen(true);}}
             onClose={() => {setOpen(false);}}
             getOptionLabel={option => option ? (((option && option.name) ? option.name : (option.id ? option.id : '?')) || '') : ''}
-            options={items}
+            options={items || []}
             loading={loading}
             loadingText={'...'}
             onKeyPress={e=>{e.which === 13 && e.preventDefault();}}
