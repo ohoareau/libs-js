@@ -143,10 +143,11 @@ export default class SpecsService {
     applyAddAction(change, {a: scope, with: data = {}, then: actions = []}, ctx) {
         const changes = <any[]>[];
         const newInfos = {
-            scope: change.scope.subScopes.find(ss => ss.name === scope),
+            scope: (change.scope.subScopes || []).find(ss => ss.name === scope),
             context: {...change.context, [change.scope.name]: change.data, [`${change.scope.name}Id`]: change.data.id},
         };
-        data = {...data, id: uuid(), target: `${buildPath({...change, path: change.scope.path})}.${change.data.id}`, module: change.scope.module, createdAt: ctx.now, updatedAt: ctx.now, createdBy: 'module'};
+        const newContext = {...newInfos.context, [scope]: data, [`${scope}Id`]: data['id']};
+        data = this.replaceVars({...data, id: uuid(), target: `${buildPath({...change, path: change.scope.path})}.${change.data.id}`, module: change.scope.module, createdAt: ctx.now, updatedAt: ctx.now, createdBy: 'module'}, {...newContext, ...(newContext[change.scope.name] || {})});
         const newChange = {
             ...newInfos,
             action: 'new',
@@ -155,12 +156,27 @@ export default class SpecsService {
             data,
         };
         changes.push(newChange);
-        return changes.concat(this.applyActions({...newChange, context: {...newInfos.context, [scope]: data, [`${scope}Id`]: data['id']}}, actions, ctx));
+        return changes.concat(this.applyActions({...newChange, context: newContext}, actions, ctx));
     }
     applySwitchAction(change, {on: attribute, with: cases = {}}, ctx) {
         const value = attribute.split(/\./g).reduce((acc, k) => {
             return acc[k];
         }, change.context);
         return this.applyActions(change, cases[value] || [], ctx);
+    }
+    replaceVars(d, vars) {
+        if (!d) return d;
+        if (Array.isArray(d)) return d.map(v => this.replaceVars(v, vars));
+        if ('object' === typeof d) return Object.entries(d).reduce((acc, [k, v]) => {
+            acc[k] = this.replaceVars(v, vars);
+            return acc;
+        }, {});
+        if ('string' === typeof d) {
+            if (('{{' === d.slice(0, 2)) && ('}}' === d.slice(d.length - 2))) {
+                return require('object-path').get(vars, d.slice(2, d.length - 2));
+            }
+            return d;
+        }
+        return d;
     }
 }
