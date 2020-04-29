@@ -4,6 +4,7 @@ import {buildPath} from '@ohoareau/path-model';
 import {v4 as uuid} from 'uuid';
 import ModelService from '@ohoareau/service-model';
 import {scopeAssign} from '@ohoareau/scope';
+import {generateValues} from '@ohoareau/generate';
 
 export default class SpecsService {
     private readonly modelService: ModelService;
@@ -23,12 +24,13 @@ export default class SpecsService {
         return changes.reduce((acc, change) => {
             const now = new Date().valueOf();
             const ctx = {now};
-            const {actions = {}} = this.scopeDefinitionGetter(change.scope) || {};
+            const {actions = {}, defaultValues = {}, defaults = {}} = this.scopeDefinitionGetter(change.scope) || {};
             switch (change.action) {
                 case 'new':
                     change.modelAction = 'add';
                     change.data.id = uuid();
                     scopeAssign(change.data, {createdAt: now, updatedAt: now, createdBy: user.username});
+                    change.data = this.populateDefaults(change.data, defaultValues, defaults);
                     change = this.mergeChange(change, this.applyActions(change, actions['new'], ctx));
                     break;
                 case 'edit':
@@ -77,12 +79,13 @@ export default class SpecsService {
                         };
                         const {id: oldId, ...newData} = localData;
                         const {[change.scope.name]: xx, [`${change.scope.name}Id`]: xy, ...newContext} = change.context;
+                        const cloneData = this.populateDefaults({...clone(change.item), ...clone(newData)}, defaultValues, defaults);
                         newChanges.push({
                             ...change,
                             modelAction: 'add',
                             scope: change.scope,
                             context: newContext,
-                            data: {...clone(change.item), ...clone(newData)}
+                            data: cloneData,
                         });
                     }
                     change = newChanges;
@@ -142,12 +145,15 @@ export default class SpecsService {
     }
     applyAddAction(change, {a: scope, with: data = {}, then: actions = []}, ctx) {
         const changes = <any[]>[];
+        const newScope = (change.scope.subScopes || []).find(ss => ss.name === scope);
         const newInfos = {
-            scope: (change.scope.subScopes || []).find(ss => ss.name === scope),
+            scope: newScope,
             context: {...change.context, [change.scope.name]: change.data, [`${change.scope.name}Id`]: change.data.id},
         };
         const newContext = {...newInfos.context, [scope]: data, [`${scope}Id`]: data['id']};
         data = this.replaceVars({...data, id: uuid(), target: `${buildPath({...change, path: change.scope.path})}.${change.data.id}`, module: change.scope.module, createdAt: ctx.now, updatedAt: ctx.now, createdBy: 'module'}, {...newContext, ...(newContext[change.scope.name] || {})});
+        const {defaultValues = {}, defaults = {}} = this.scopeDefinitionGetter(newScope) || {};
+        data = this.populateDefaults(data, defaultValues, defaults);
         const newChange = {
             ...newInfos,
             action: 'new',
@@ -178,5 +184,17 @@ export default class SpecsService {
             return d;
         }
         return d;
+    }
+    populateDefaults(data, defaultValues, defaults): any {
+        return {
+            ...generateValues(defaults, {}),
+            ...((defaultValues || {})['*'] || {}),
+            ...(Object.entries(defaultValues || {}).reduce((acc, [k, v]) => {
+                if (!data[k]) return acc;
+                if (('string' !== typeof data[k]) || !(v as any)[data[k]]) return acc;
+                return {...(v as any)[data[k]], ...acc};
+            }, {})),
+            ...data,
+        };
     }
 }

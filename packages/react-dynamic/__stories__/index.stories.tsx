@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useState} from 'react';
 import i18n from 'i18next';
 import {Provider} from 'react-redux';
 import {register} from '@ohoareau/react-moduled';
@@ -40,14 +40,14 @@ register('load', async (rawModule, {module: moduleName}) => {
     return module;
 });
 
-const buildStory = (type, action) => () => {
-    const defaultOnSubmit = useCallback(values => {
+const buildStory = (type, action, onSubmit: any = undefined) => () => {
+    onSubmit = onSubmit || useCallback(values => {
         console.log(values);
     }, []);
     return (
         <Provider store={store}>
             <ModuleTypeActionFormWrapper form={`${type}_${action}`} module={'root'} type={type} action={action}
-                                         onSubmit={defaultOnSubmit} actionButtons={{submit: 'Submit'}} />
+                                         onSubmit={onSubmit} actionButtons={{submit: 'Submit'}} />
         </Provider>
     );
 }
@@ -55,3 +55,20 @@ const buildStory = (type, action) => () => {
 export const basic = buildStory('model1', 'action1');
 export const withDynamicContent = buildStory('model1', 'action2');
 export const fieldTypesShowcase = buildStory('model1', 'action3');
+export const dynamicDefaults = () => {
+    const [data, setData] = useState({});
+    const Comp = buildStory('model2', 'action1', setData);
+
+    return (
+        <div style={{display: 'flex'}}>
+            <div style={{flex: 1}}>
+                <Comp />
+            </div>
+            <div style={{flex: 1, marginLeft: 15, backgroundColor: 'rgb(245, 245, é45)'}}>
+                <pre>
+                    {JSON.stringify(data, null, 4)}
+                </pre>
+            </div>
+        </div>
+    );
+};
