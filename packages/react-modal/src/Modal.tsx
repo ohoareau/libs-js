@@ -31,7 +31,7 @@ const Modal = component<ModalProps>(theme => ({
     return (
         <DialogBox disableEscapeKeyDown={disableEscapeKeyDown} {...(mode === 'fullscreen' ? {fullScreen: true, TransitionComponent: Transition} : {})}
                    fullWidth={true} open={open} onClose={onClose} aria-labelledby="form-dialog-title">
-            {mode === 'fullscreen' && (
+            {mode === 'fullscreen' && !noTitle && (
                 <AppBar className={classes.appBar}>
                     <Toolbar>
                         {!disableEscapeKeyDown && (
