@@ -102,7 +102,12 @@ export const useModuleTypeForm = (module, type: string|string[], name) => {
     if (error) return {contents: [], defaults: {}, loading, error};
     const cached = cache.get('forms', key);
     if (cached) return cached;
-    return cache.set('forms', key, {...describeContentContainer(model, (model.forms || {})[name] || {}), loading: false});
+    const description: any = describeContentContainer(model, (model.forms || {})[name] || {});
+    description.defaults = description.defaults || {};
+    if (model.defaultValues) {
+        Object.assign(description.defaults, model.defaultValues['*'] || {});
+    }
+    return cache.set('forms', key, {...description, loading: false});
 };
 
 export const useModuleFormField = (form, field, context) => {

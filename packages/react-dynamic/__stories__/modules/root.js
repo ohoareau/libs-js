@@ -68,7 +68,46 @@ module.exports = {
                     ]
                 }
             }
-        }
+        },
+        model2: {
+            defaultValues: {
+                "*": {
+                    number: 42
+                },
+                type: {
+                    a: {
+                        number: 43,
+                    },
+                    b: {
+                        number: 44,
+                    }
+                }
+            },
+            attributes: {
+                name: {required: true},
+                type: {type: "selector", values: [
+                        {id: 'a', name: 'Type A'},
+                        {id: 'b', name: 'Type B'},
+                        {id: 'c', name: 'Type C'},
+                        {id: 'd', name: 'Type D'},
+                ]},
+                number: {},
+            },
+            forms: {
+                action1: {
+                    contents: [
+                        ['name'],
+                        ['type'],
+                        ['dyn>type'],
+                    ]
+                },
+                action1_type_a: {
+                    contents: [
+                        ['number'],
+                    ]
+                }
+            }
+        },
     },
     translations: {
         en: {

@@ -23,6 +23,7 @@
     "@ohoareau/diff": "^0.1.0",
     "@ohoareau/path-model": "^0.2.0",
     "@ohoareau/scope": "^0.2.0",
+    "@ohoareau/generate": "^0.1.0",
     "@ohoareau/service-model": "^0.1.0",
     "object-path": "^0.11.4",
     "uuid": "^7.0.3"
