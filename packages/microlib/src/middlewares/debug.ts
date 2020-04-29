@@ -1,14 +1,10 @@
-export default ({o}) => next => async action => {
-    if (!process.env.MICROSERVICE_DEBUG) {
-        return next(action);
-    }
+export default ({o}) => async (req, res, next) => {
+    if (!process.env.MICROSERVICE_DEBUG) return next();
     try {
-        console.log('MICROSERVICE EXECUTION DEBUG - START', o, action);
-        const newAction = await next(action) || {};
-        newAction.response = newAction.response || {};
-        newAction.response.result = await newAction.response.result;
-        console.log('MICROSERVICE EXECUTION DEBUG - END', o, newAction.response.result);
-        return newAction;
+        console.log('MICROSERVICE EXECUTION DEBUG - START', o, {req, res});
+        const r = await next();
+        console.log('MICROSERVICE EXECUTION DEBUG - END', o, {req, res});
+        return r;
     } catch (e) {
         console.log('MICROSERVICE EXECUTION DEBUG - ERROR', e);
         throw e;

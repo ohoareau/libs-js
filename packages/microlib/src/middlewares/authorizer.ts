@@ -4,10 +4,10 @@ function staticAuth({authorized, status}) {
 
 function lambdaAuth({arn, ttl = -1}) {
     const lambda = require('../services/aws/lambda').default;
-    return async action => {
+    return async ({req}: any) => {
         let result;
         try {
-            result = await lambda.execute(arn, {params: {...action.request.authorization, ttl}});
+            result = await lambda.execute(arn, {params: {...req.authorization, ttl}});
         } catch (e) {
             return {status: 'error', error: e, authorized: false};
         }
@@ -30,13 +30,13 @@ function createAuthorizer({type, ...config}) {
 
 export default ({o}) => {
     const authorizer = createAuthorizer({type: 'allowed'}); // @todo not hardcoded
-    return next => async action => {
-        action.request.authorization = {
+    return async (req, res, next) => {
+        req.authorization = {
             authorized: false,
-            user: action.request.user,
+            user: req.user,
             operation: o,
         };
-        const result = await authorizer(action);
+        const result = await authorizer({req, res});
         if (!result || !result.authorized || 'allowed' !== result.status) {
             switch ((result || {}).status) {
                 case 'forbidden':
@@ -51,7 +51,7 @@ export default ({o}) => {
                     throw new Error(`Unknown authorization`);
             }
         }
-        Object.assign(action.request.authorization, result);
-        return next(action);
+        Object.assign(req.authorization, result);
+        return next();
     };
 }
