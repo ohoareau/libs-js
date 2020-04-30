@@ -1,19 +1,5 @@
 import caller from './services/caller';
 
-export const compose = (...f) => f.length === 0  ? a => a : (f.length === 1 ? f[0] : f.reduce((a, b) => (...c) => a(b(...c))));
-export const fn2ex = (fn, xn) => async request => (await (await xn(a => Object.assign(a, {...a, response: {...a.response, result: fn(a.request)}}))({request, response: {}})).response).result;
-export const fn2hn = (fn, middlewares, options = {}) => {
-    const hn = fn2ex(fn, compose(...middlewares));
-    return async (event, context) => hn({
-        ...((options && options['params']) ? ((event || {}).params) : event || {}),
-        ...((options && options['rootDir']) ? {rootDir: options['rootDir']} : {}),
-        user: event.user,
-        headers: event.headers,
-        requestId: context['awsRequestId'],
-        event,
-        context,
-    });
-};
 const pattern = /^\[\[[^\]]+]]$/;
 
 const computeConfig = (c, d) => {
