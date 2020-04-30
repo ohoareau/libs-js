@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.6.49",
+    "version": "0.7.0",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -33,10 +33,10 @@
         "@ohoareau/migrate": "^0.3.1",
         "apollo-server-lambda": "^2.12.0",
         "aws-sdk": "^2.656.0",
+        "cors": "^2.8.5",
         "dynamoose": "^1.11.1",
         "graphql": "^14.6.0",
-        "jsonwebtoken": "^8.5.1",
-        "cors": "^2.8.5"
+        "jsonwebtoken": "^8.5.1"
     },
     "bin": {
         "build-package": "./bin/build-package",
