@@ -45,59 +45,61 @@ export const loadPlugin = (pluginType, cfg, {dir}) => {
     return findPlugin(pluginType, type, dir)({...config, dir});
 };
 
-export const createOperationHelpers = (operation, model, dir) => {
+export const createHelpers = (model, dir) => {
     const origDir = dir;
     dir = `${dir}/../..`;
-    const operationName = operation.substr(model.name.length + 1);
-    const hook = async (n, d, c = {}, opts = {}) => {
-        if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
-            opts['ensureKeys'].reduce((acc, k) => {
-                acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
-                return acc;
-            }, Array.isArray(d) ? d[0] : d);
-        }
-        if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
-            const data = Array.isArray(d) ? d[1] : d;
-            if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
-        }
-        const h = findPlugin('hook', n, dir);
-        const args = Array.isArray(d) ? d : [d];
-        if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
-        return h({...c, o: operation, operationName, model, dir, hook})(...args);
+    return on => {
+        const operation = `${model.name}_${on}`;
+        const hook = async (n, d, c = {}, opts = {}) => {
+            if (opts['ensureKeys'] && Array.isArray(opts['ensureKeys'])) {
+                opts['ensureKeys'].reduce((acc, k) => {
+                    acc[k] = acc.hasOwnProperty(k) ? acc[k] : '';
+                    return acc;
+                }, Array.isArray(d) ? d[0] : d);
+            }
+            if (opts['trackData'] && Array.isArray(opts['trackData']) && (0 < opts['trackData'].length)) {
+                const data = Array.isArray(d) ? d[1] : d;
+                if (0 === opts['trackData'].filter(f => data.hasOwnProperty(f)).length) return Array.isArray(d) ? d[0] : d;
+            }
+            const h = findPlugin('hook', n, dir);
+            const args = Array.isArray(d) ? d : [d];
+            if (!!opts['loop']) return (await Promise.all(((args[0] || {})[opts['loop']] || []).map(async item => h({...computeConfig(c, item), o: operation, model, dir, hook})(...args)))).pop();
+            return h({...c, o: operation, on, operationName: on, model, dir, hook})(...args);
+        };
+        const call = async (name, ...args) => caller.execute(name, args, origDir);
+        const updateReferences = async (name, key, value) => {
+            // @todo handle multiple page
+            try {
+                const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
+                await Promise.all(((page || {}).items || []).map(async i => call(`${name}_update`, {
+                    id: i.id,
+                    data: {[key]: value}
+                })));
+            } catch (e) {
+                console.error('Update references FAILED', {name, key, value}, e);
+            }
+        };
+        const lambdaEvent = async (arn, payload) =>
+            require('./services/aws/lambda').default.execute(arn, payload, {async: true})
+        ;
+        const snsPublish = async (topic, message, attributes = {}) =>
+            require('./services/aws/sns').default.publish({message, attributes, topic})
+        ;
+        const deleteReferences = async (name, key, value) => {
+            // @todo handle multiple page
+            try {
+                const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
+                await Promise.all(((page || {}).items || []).map(async i => call(`${name}_delete`, {id: i.id})));
+            } catch (e) {
+                console.error('Delete references FAILED', {name, key, value}, e);
+            }
+        };
+        const validate = async (query, required = true) => hook('@validate', query, {required});
+        const prefetch = async query => hook('@prefetch', query);
+        const populate = async (query, prefix = undefined) => hook('@populate', query, {prefix});
+        const prepare = async query => hook('@prepare', query);
+        const after = async (result, query) => hook('@after', [result, query]);
+        const dispatch = async (result, query) => hook('@dispatch', [result, query]);
+        return {validate, populate, prefetch, dispatch, prepare, after, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateReferences, deleteReferences, call, lambdaEvent, snsPublish};
     };
-    const call = async (name, ...args) => caller.execute(name, args, origDir);
-    const updateReferences = async (name, key, value) => {
-        // @todo handle multiple page
-        try {
-            const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
-            await Promise.all(((page || {}).items || []).map(async i => call(`${name}_update`, {
-                id: i.id,
-                data: {[key]: value}
-            })));
-        } catch (e) {
-            console.error('Update references FAILED', {name, key, value}, e);
-        }
-    };
-    const lambdaEvent = async (arn, payload) =>
-        require('./services/aws/lambda').default.execute(arn, payload, {async: true})
-    ;
-    const snsPublish = async (topic, message, attributes = {}) =>
-        require('./services/aws/sns').default.publish({message, attributes, topic})
-    ;
-    const deleteReferences = async (name, key, value) => {
-        // @todo handle multiple page
-        try {
-            const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
-            await Promise.all(((page || {}).items || []).map(async i => call(`${name}_delete`, {id: i.id})));
-        } catch (e) {
-            console.error('Delete references FAILED', {name, key, value}, e);
-        }
-    };
-    const validate = async (query, required = true) => hook('@validate', query, {required});
-    const prefetch = async query => hook('@prefetch', query);
-    const populate = async (query, prefix = undefined) => hook('@populate', query, {prefix});
-    const prepare = async query => hook('@prepare', query);
-    const after = async (result, query) => hook('@after', [result, query]);
-    const dispatch = async (result, query) => hook('@dispatch', [result, query]);
-    return {validate, populate, prefetch, dispatch, prepare, after, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateReferences, deleteReferences, call, lambdaEvent, snsPublish};
-};
+}

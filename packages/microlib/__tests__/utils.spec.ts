@@ -1,44 +1,44 @@
 const testMock = jest.fn();
 jest.mock('../src/hooks/test', () => ({default: testMock}), {virtual: true});
-import {createOperationHelpers, isTransition} from '../src/utils';
+import {createHelpers, isTransition} from '../src/utils';
 
 beforeEach(() => {
     jest.resetAllMocks();
 });
 
-describe('createOperationHelpers', () => {
+describe('createHelpers', () => {
     it('return a function', () => {
-        const {hook} = createOperationHelpers('x_y_z', {name: 'xx'}, __dirname);
+        const {hook} = createHelpers({name: 'x_y'}, __dirname)('z');
         expect(hook).toEqual(expect.any(Function));
     });
     it('call specified hook type and return computed value', async () => {
         testMock.mockReturnValue(async () => 12);
-        const {hook} = createOperationHelpers('x_y_z', {name: 'xx'}, __dirname);
+        const {hook} = createHelpers({name: 'x_y'}, __dirname)('z');
         await expect(hook('@test', [])).resolves.toEqual(12);
     });
     it('call specified hook type in a loop with non object items (async) and return array of computed values', async () => {
         testMock.mockReturnValue(async () => 12);
-        const {hook} = createOperationHelpers('x_y_z', {name: 'xx'}, __dirname);
+        const {hook} = createHelpers({name: 'x_y'}, __dirname)('z');
         await expect(hook('@test', [{items: ['a', 'b', 'c']}], {x: '[[value]]'}, {loop: 'items'})).resolves.toEqual(12);
-        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'a', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'b', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'c', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'a', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'b', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'c', hook: expect.any(Function)});
     });
     it('call specified hook type in a loop with object items (async) and return array of computed values', async () => {
         testMock.mockImplementation(({x, y}) => async () => `x => ${x}, y => ${y}`);
-        const {hook} = createOperationHelpers('x_y_z', {name: 'xx'}, __dirname);
+        const {hook} = createHelpers({name: 'x_y'}, __dirname)('z');
         await expect(hook('@test', [{items: [{id: 'abc', name: 'a-b-c'}, {id: 'def', name: 'd-e-f'}, {id: 'ghi', name: 'g-h-i'}]}], {x: '[[id]]', y: '[[name]]'}, {loop: 'items'})).resolves.toEqual('x => ghi, y => g-h-i');
-        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'abc', y: 'a-b-c', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'def', y: 'd-e-f', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: 'ghi', y: 'g-h-i', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'abc', y: 'a-b-c', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'def', y: 'd-e-f', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: 'ghi', y: 'g-h-i', hook: expect.any(Function)});
     });
     it('call specified hook type in a loop with object items (async) and return array of computed values (recursive replaced values)', async () => {
         testMock.mockReturnValue(async () => 13);
-        const {hook} = createOperationHelpers('x_y_z', {name: 'xx'}, __dirname);
+        const {hook} = createHelpers({name: 'x_y'}, __dirname)('z');
         await expect(hook('@test', [{items: [{id: 'abc', name: 'a-b-c'}, {id: 'def', name: 'd-e-f'}, {id: 'ghi', name: 'g-h-i'}]}], {x: {y: {t: '[[id]]'}}, z: 'hello'}, {loop: 'items'})).resolves.toEqual(13);
-        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: {y: {t: 'abc'}}, z: 'hello', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: {y: {t: 'def'}}, z: 'hello', hook: expect.any(Function)});
-        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'xx'}, dir: expect.any(String), x: {y: {t: 'ghi'}}, z: 'hello', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(1, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: {y: {t: 'abc'}}, z: 'hello', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(2, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: {y: {t: 'def'}}, z: 'hello', hook: expect.any(Function)});
+        expect(testMock).toHaveBeenNthCalledWith(3, {o: 'x_y_z', model: {name: 'x_y'}, dir: expect.any(String), x: {y: {t: 'ghi'}}, z: 'hello', hook: expect.any(Function)});
     });
 });
 describe('isTransition', () => {
