@@ -67,7 +67,7 @@ export const createHelpers = (model, dir) => {
             return h({...c, o: operation, on, operationName: on, model, dir, hook})(...args);
         };
         const call = async (name, ...args) => caller.execute(name, args, origDir);
-        const updateReferences = async (name, key, value) => {
+        const updateRefs = async (name, key, value) => {
             // @todo handle multiple page
             try {
                 const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
@@ -85,7 +85,7 @@ export const createHelpers = (model, dir) => {
         const snsPublish = async (topic, message, attributes = {}) =>
             require('./services/aws/sns').default.publish({message, attributes, topic})
         ;
-        const deleteReferences = async (name, key, value) => {
+        const deleteRefs = async (name, key, value) => {
             // @todo handle multiple page
             try {
                 const page = await call(`${name}_find`, {criteria: {[key]: value}, fields: ['id']});
@@ -96,10 +96,13 @@ export const createHelpers = (model, dir) => {
         };
         const validate = async (query, required = true) => hook('@validate', query, {required});
         const prefetch = async query => hook('@prefetch', query);
+        const transform = async query => hook('@transform', query);
+        const mutate = async (query, type, config = {}) => hook('@mutate', query, {type, config});
+        const autoTransition = async (result, query) => hook('@auto-transition', [result, query]);
         const populate = async (query, prefix = undefined) => hook('@populate', query, {prefix});
         const prepare = async query => hook('@prepare', query);
         const after = async (result, query) => hook('@after', [result, query]);
         const dispatch = async (result, query) => hook('@dispatch', [result, query]);
-        return {validate, populate, prefetch, dispatch, prepare, after, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateReferences, deleteReferences, call, lambdaEvent, snsPublish};
+        return {validate, populate, prefetch, dispatch, transform, mutate, prepare, after, autoTransition, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
     };
 }
