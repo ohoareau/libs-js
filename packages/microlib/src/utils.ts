@@ -98,11 +98,11 @@ export const createHelpers = (model, dir) => {
         const prefetch = async query => hook('@prefetch', query);
         const transform = async query => hook('@transform', query);
         const mutate = async (query, type, config = {}) => hook('@mutate', query, {type, config});
-        const autoTransition = async (result, query) => hook('@auto-transition', [result, query]);
+        const autoTransitions = async (result, query) => hook('@auto-transitions', [result, query]);
         const populate = async (query, prefix = undefined) => hook('@populate', query, {prefix});
         const prepare = async query => hook('@prepare', query);
         const after = async (result, query) => hook('@after', [result, query]);
         const dispatch = async (result, query) => hook('@dispatch', [result, query]);
-        return {validate, populate, prefetch, dispatch, transform, mutate, prepare, after, autoTransition, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
+        return {validate, populate, prefetch, dispatch, transform, mutate, prepare, after, autoTransitions, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
     };
 }
