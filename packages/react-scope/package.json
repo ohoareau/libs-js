@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-scope",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "React Scope",
   "license": "MIT",
   "main": "lib/index.js",
