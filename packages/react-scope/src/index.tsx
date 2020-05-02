@@ -16,7 +16,10 @@ export const applyRules = (rules, x) => rules.reduce((data, r) => mutateRule(r)(
 export const onScopeAction = async (ctx, action, data = {}, extraData = {}) => ({
     ...ctx,
     data: applyRules(
-        (((await getModule(ctx.scope.module)).models || {}).rules || {})[action] || [],
+        [
+            ...(((((await getModule(ctx.scope.module)).models || {})[ctx.scope.name] || {}).rules || {})[action] || []),
+            ...(((await getModule(ctx.scope.module)).rules || {})[`on_${action}_${ctx.scope.name}`] || []),
+        ],
         {...ctx, action, data, extraData}
     ),
     ...extraData,
