@@ -13,18 +13,19 @@ export const mutateRule = def =>
 
 export const applyRules = (rules, x) => rules.reduce((data, r) => mutateRule(r)(x) || data, x.data);
 
-export const onScopeAction = async (ctx, action, data = {}, extraData = {}) => ({
-    ...ctx,
-    data: applyRules(
-        [
-            ...(((((await getModule(ctx.scope.module)).models || {})[ctx.scope.name] || {}).rules || {})[action] || []),
-            ...(((await getModule(ctx.scope.module)).rules || {})[`on_${action}_${ctx.scope.name}`] || []),
-        ],
-        {...ctx, action, data, extraData}
-    ),
-    ...extraData,
-    action,
-});
+export const onScopeAction = async (ctx, action, data = {}, extraData = {}) => {
+    const rootRuleFn = ((await getModule(ctx.scope.module)).rules || {})[`on_${action}_${ctx.scope.name}`] || undefined;
+    const modelRules = ((((await getModule(ctx.scope.module)).models || {})[ctx.scope.name] || {}).rules || {})[action] || [];
+    return ({
+        ...ctx,
+        data: applyRules(
+            [...(rootRuleFn ? [rootRuleFn] : []), ...modelRules],
+            {...ctx, action, data, extraData}
+        ),
+        ...extraData,
+        action,
+    });
+};
 
 export const buildDefinition = async moduleNames =>
     pathize(cloneScope(buildSubScopeTree(await Promise.all(moduleNames.map(async m => ({
