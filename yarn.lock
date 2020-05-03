@@ -1003,6 +1003,40 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@daybrush/drag@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@daybrush/drag/-/drag-0.14.0.tgz#5786afd6950582feef1fee078c5c025c69044d7e"
+  integrity sha512-AVVFLfGOosSR2LrgxyRKg8FRSATaa5sDFZlTQ9YgKy/F5etg2v/IO8kdcpIKD6FDZ74kT5hdjG0JJf+9YcIWfQ==
+  dependencies:
+    "@daybrush/utils" "^0.10.3"
+
+"@daybrush/utils@^0.10.1", "@daybrush/utils@^0.10.3":
+  version "0.10.3"
+  resolved "https://registry.yarnpkg.com/@daybrush/utils/-/utils-0.10.3.tgz#0fd97caba9adb2cfa3be441b549ef5545a871c34"
+  integrity sha512-CwbGNct2loskTaSJ/OSmapOhdNfDHI71cApPQSPs5MXbfUb33u2JHNkL6sUJpv0VVpsO+s+3UPpGDS2KCAyEKQ==
+
+"@egjs/agent@^2.1.5":
+  version "2.1.5"
+  resolved "https://registry.yarnpkg.com/@egjs/agent/-/agent-2.1.5.tgz#692d2c92b1d8b6f36d0ceccc627199490b445698"
+  integrity sha512-PfdMXd+4WiZN9Xcc1MU31w/RSi6GK6hgufuADRKNY60nXvT34dnXaIyEQlTBkviDfYSOZ8kYW66udyiEMcpqVA==
+
+"@egjs/children-differ@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@egjs/children-differ/-/children-differ-1.0.0.tgz#7f74d2aa47e9ae342cdc8e1e50c440391de1ec53"
+  integrity sha512-NxaJx+dzLUVqLb6iPcu7Mt5m2HDH55VqqZUxGKZ74DKAsL1jxbXSv0jeql0ShN6ZuocULLgr+fztz2bsaBBLkQ==
+  dependencies:
+    "@egjs/list-differ" "^1.0.0"
+
+"@egjs/component@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@egjs/component/-/component-2.1.2.tgz#c466a0a6fc6ba2d479814dcbe6ee4643c25a2e5b"
+  integrity sha512-7tnPiqxbSZ0porzlm0+/O3qZdanMj0zOq0sb17wQXuaRG49XKKKJaO+SacGnZDqf308N5hzJ0m9fZ4+j+VBvXA==
+
+"@egjs/list-differ@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@egjs/list-differ/-/list-differ-1.0.0.tgz#2277aff52e3e4bd9318d5c30ffc3ba3b6216f05e"
+  integrity sha512-HsbMKc0ZAQH+EUeCmI/2PvTYSybmkaWwakU8QGDYYgMVIg9BQ5sM0A0Nnombjxo2+JzXHxmH+jw//yGX+y6GYw==
+
 "@emotion/cache@^10.0.27":
   version "10.0.29"
   resolved "https://registry.yarnpkg.com/@emotion/cache/-/cache-10.0.29.tgz#87e7e64f412c060102d589fe7c6dc042e6f9d1e0"
@@ -2116,6 +2150,11 @@
     prop-types "^15.7.2"
     react-is "^16.8.0"
 
+"@moveable/matrix@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@moveable/matrix/-/matrix-0.3.1.tgz#b2a26ea91da4832f0791881975f8d535ea074bc1"
+  integrity sha512-g38XH7RT0SJTZljIeRCM0lI1xRYxyCgQfYEAEnc1IdSlWn1lX5hN9nWRz353hT5remsHn6opgXQxJH1KE7KuTg==
+
 "@mrmlnc/readdir-enhanced@^2.2.1":
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/@mrmlnc/readdir-enhanced/-/readdir-enhanced-2.2.1.tgz#524af240d1a360527b730475ecfa1344aa540dde"
@@ -2360,6 +2399,13 @@
   integrity sha1-8QnqrCRM6xCAEdQDjO5Mx4fLQPM=
   dependencies:
     unicode-trie "^0.3.0"
+
+"@scena/dragscroll@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@scena/dragscroll/-/dragscroll-0.2.1.tgz#fec4afdd4b8c405d1a30ce423f0209464fbe66fe"
+  integrity sha512-8WrABWGvaALt0xMgesVZuA9Utt1q3zmGyqzWT22W1gfeKwVriqHTVldUQZevWIpgpnpIJtIW+/xFVsLtpmMsSA==
+  dependencies:
+    "@egjs/component" "^2.1.2"
 
 "@sinonjs/commons@^1.7.0":
   version "1.7.2"
@@ -5846,6 +5892,14 @@ css-select@^2.0.0:
     domutils "^1.7.0"
     nth-check "^1.0.2"
 
+css-styled@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/css-styled/-/css-styled-0.1.7.tgz#811122c586360a3746c4d4211296c5f028564dbb"
+  integrity sha512-ypbwCHOxYG0N7cbH2IPH6uZrWi8WqFBkUxPWeT/gtYL4uE+3Te7AsQISsnzeQbOR+/DleziQBQCm6zZsbht/Ig==
+  dependencies:
+    "@daybrush/utils" "^0.10.1"
+    string-hash "^1.1.3"
+
 css-tree@1.0.0-alpha.37:
   version "1.0.0-alpha.37"
   resolved "https://registry.yarnpkg.com/css-tree/-/css-tree-1.0.0-alpha.37.tgz#98bebd62c4c1d9f960ec340cf9f7522e30709a22"
@@ -7179,6 +7233,11 @@ fragment-cache@^0.2.1:
   integrity sha1-QpD60n8T6Jvn8zeZxrxaCr//DRk=
   dependencies:
     map-cache "^0.2.2"
+
+framework-utils@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/framework-utils/-/framework-utils-0.3.4.tgz#450e63cca680c2a78047691a32ed9f51a748e3a1"
+  integrity sha512-Psekd+sXiHxtjLvK6aqi7vw6sQpShfBQSYlLkxCyhVzpmeTdxv1lCq8BGx++Mm5yw+MUn5IA4WKNO6LZFtOe2Q==
 
 fresh@0.5.2:
   version "0.5.2"
@@ -11517,6 +11576,14 @@ react-clientside-effect@^1.2.2:
   dependencies:
     "@babel/runtime" "^7.0.0"
 
+react-css-styled@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/react-css-styled/-/react-css-styled-0.1.4.tgz#10be3528f335cc5b114330dc4757fcb36309a34b"
+  integrity sha512-iuRtEu5Vy2jno0Bs+GEi4KOjBuXJsmEUD47Jk18FOIcwwheZQSAu1KFHZrL6cg147eL0p7ycV2E8pAyrnNvI5g==
+  dependencies:
+    css-styled "^0.1.7"
+    framework-utils "^0.3.4"
+
 react-debounce-render@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/react-debounce-render/-/react-debounce-render-6.0.0.tgz#5865d727479126edc9d14b71cfcbfd47d852846e"
@@ -11667,6 +11734,20 @@ react-lifecycles-compat@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
+
+react-moveable@^0.20.3:
+  version "0.20.3"
+  resolved "https://registry.yarnpkg.com/react-moveable/-/react-moveable-0.20.3.tgz#b8ad7dc7315e82b2a566ead9c1ba7350914cb770"
+  integrity sha512-j5ct2tvPh4LbplrlKsqM9yCBMhNv4Ehv0E6RbehMv2fObIUR57OZDcIqwm9k4Fkn8vkRO3SPMmAyoLarvDOBog==
+  dependencies:
+    "@daybrush/drag" "^0.14.0"
+    "@daybrush/utils" "^0.10.3"
+    "@egjs/agent" "^2.1.5"
+    "@egjs/children-differ" "^1.0.0"
+    "@moveable/matrix" "^0.3.1"
+    "@scena/dragscroll" "^0.2.1"
+    framework-utils "^0.3.4"
+    react-css-styled "^0.1.4"
 
 react-pdf@^4.1.0:
   version "4.1.0"
@@ -12974,6 +13055,11 @@ strict-uri-encode@^1.0.0:
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
 
+string-hash@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/string-hash/-/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
+  integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
+
 string-length@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/string-length/-/string-length-3.1.0.tgz#107ef8c23456e187a8abd4a61162ff4ac6e25837"
@@ -13926,6 +14012,13 @@ use-callback-ref@^1.2.1:
   dependencies:
     "@types/react" "^16.9.11"
 
+use-key-hook@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/use-key-hook/-/use-key-hook-1.5.0.tgz#e4d87a33e25ae17d1f715090bd8639920f0dd2f9"
+  integrity sha512-doNvw1vT1GD1egmdDR9wGdbccLRzYd9JFcCkQIEaPiVT4157vWkAWW7X20mh3zOhmjsOq1e8qdnCSunysQmYwQ==
+  dependencies:
+    invariant "^2.2.4"
+
 use-sidecar@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/use-sidecar/-/use-sidecar-1.0.2.tgz#e72f582a75842f7de4ef8becd6235a4720ad8af6"
@@ -14007,6 +14100,11 @@ uuid@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
+
+uuid@^8.0.0:
+  version "8.0.0"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.0.0.tgz#bc6ccf91b5ff0ac07bbcdbf1c7c4e150db4dbb6c"
+  integrity sha512-jOXGuXZAWdsTH7eZLtyXMqUb9EcWMGZNbL9YcGBJl4MH4nrxHmZJhEHvyLFrkxo+28uLb/NYRcStH48fnD0Vzw==
 
 v8-to-istanbul@^4.0.1:
   version "4.1.3"
