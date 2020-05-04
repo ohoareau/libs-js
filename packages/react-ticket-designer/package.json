@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-ticket-designer",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React Ticket Designer",
   "license": "MIT",
   "main": "lib/index.js",
@@ -22,10 +22,10 @@
   },
   "dependencies": {
     "@ohoareau/react-component": "^0.3.0",
-    "@ohoareau/react-modal": "^0.3.5",
+    "@ohoareau/react-modal": "^0.3.6",
     "react-moveable": "^0.20.3",
-    "uuid": "^8.0.0",
-    "use-key-hook": "^1.5.0"
+    "use-key-hook": "^1.5.0",
+    "uuid": "^8.0.0"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.9.10",
