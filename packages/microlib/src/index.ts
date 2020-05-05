@@ -17,7 +17,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             event,
             context,
         };
-        const res: any = {headers: {}, statusCode: 200, body: {}, formatters, bodyOnly: ('undefined' !== event.bodyOnly) ? !!event.bodyOnly : true};
+        const res: any = {headers: {}, statusCode: 200, body: {}, formatters, bodyOnly: ('undefined' !== typeof event.bodyOnly) ? !!event.bodyOnly : true};
         req.res = res;
         res.req = req;
         res.send = res.json = x => { res.body = x; return res; };
