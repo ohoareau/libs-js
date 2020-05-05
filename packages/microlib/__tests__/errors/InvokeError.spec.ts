@@ -15,6 +15,7 @@ describe('InvokeError', () => {
             throw new InvokeError('theType', 'theOperation', 'theDsn', {a: 12}, {b: {c: 'hello'}});
         } catch (e) {
             expect(e.serialize()).toEqual({
+                code: 500,
                 data: {},
                 errorInfo: {
                     dsn: 'theDsn',

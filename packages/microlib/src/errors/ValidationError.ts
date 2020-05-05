@@ -1,22 +1,18 @@
-export default class ValidationError extends Error {
+import AbstractError from './AbstractError';
+
+export default class ValidationError extends AbstractError {
     public readonly errors: any[];
     constructor(errors) {
-        super(ValidationError.buildMessage(errors));
+        super(ValidationError.buildMessage(errors), 412, 'validation');
         this.errors = errors;
+        this.setErrorInfo(this.getErrorMessages());
+        this.setShortMessage('Validation error');
     }
     getErrors() {
         return this.errors;
     }
     getErrorMessages() {
         return ValidationError.buildErrorMessages(this.getErrors());
-    }
-    serialize() {
-        return {
-            errorType: 'validation',
-            data: {},
-            errorInfo: this.getErrorMessages(),
-            message: 'Validation error',
-        };
     }
     static buildErrorMessage(k, v) {
         return `${k}: ${v.message}`;

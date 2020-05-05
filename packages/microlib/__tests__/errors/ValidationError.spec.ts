@@ -15,6 +15,7 @@ describe('ValidationError', () => {
             throw new ValidationError({});
         } catch (e) {
             expect(e.serialize()).toEqual({
+                code: 412,
                 data: {},
                 errorInfo: {},
                 errorType: 'validation',

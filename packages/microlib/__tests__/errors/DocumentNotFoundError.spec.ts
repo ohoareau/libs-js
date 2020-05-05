@@ -23,6 +23,7 @@ describe('DocumentNotFoundError', () => {
             throw new DocumentNotFoundError('theType2', 'theId2');
         } catch (e) {
             expect(e.serialize()).toEqual({
+                code: 404,
                 data: {},
                 errorInfo: {
                     id: 'theId2',
