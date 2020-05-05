@@ -6,7 +6,7 @@ export const apply = async (ms: any[], args) =>
 ;
 
 export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, options: any = {}) =>
-    async (event, context) => {
+    async (event: any = {}, context: any = {}) => {
         const req: any = {
             headers: {},
             body: undefined,
@@ -17,7 +17,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             event,
             context,
         };
-        const res: any = {headers: {}, statusCode: 200, body: {}, formatters, bodyOnly: true};
+        const res: any = {headers: {}, statusCode: 200, body: {}, formatters, bodyOnly: ('undefined' !== event.bodyOnly) ? !!event.bodyOnly : true};
         req.res = res;
         res.req = req;
         res.send = res.json = x => { res.body = x; return res; };
