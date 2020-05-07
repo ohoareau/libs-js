@@ -117,6 +117,7 @@ export default class ApiClientModelBackend {
             case 'boolean' === t: return {b: v};
             case 'undefined' === t: return {n: true};
             case 'number' === t: return Number.isInteger(v) ? {i: v} : {f: v};
+            case null === t: return {n: true};
             case 'object' === t: return {o: Object.entries(v).map(([kk, vv]) => ({k: kk, ...this.marshallValue(vv, kk)}))};
             default: return {s: `${v}`};
         }
