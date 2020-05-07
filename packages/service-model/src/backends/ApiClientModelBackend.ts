@@ -78,7 +78,7 @@ export default class ApiClientModelBackend {
     }
     // noinspection JSMethodCanBeStatic
     private buildPath(change: any): string {
-        let p = buildPath({...change, id: (change.item && change.item.id) ? change.item.id : undefined, path: change.scope.path});
+        let p = buildPath({...change, path: change.scope.path});
         if ('add' === change.modelAction) {
             p = `${p}.${change.data.id}`;
         }
