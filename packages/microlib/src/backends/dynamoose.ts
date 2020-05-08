@@ -12,6 +12,9 @@ function mutateField(def) {
         case 'boolean':
             field.type = Boolean;
             break;
+        case 'object':
+            field.type = Object;
+            break;
         default:
             if (Array.isArray(def.type)) {
                 field.type = 'list';
