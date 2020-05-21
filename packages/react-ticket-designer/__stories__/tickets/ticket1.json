@@ -1,0 +1,60 @@
+{
+  "format": "ticket-format",
+  "version": "1.0",
+  "content": {
+    "objects": {
+      "f356de39-a3d9-4404-b3f5-e27aa38f747b": {
+        "id": "f356de39-a3d9-4404-b3f5-e27aa38f747b",
+        "type": "text",
+        "data": {
+          "text": "test 1"
+        },
+        "x": 19,
+        "y": 17,
+        "width": 277,
+        "height": 159,
+        "transform": ""
+      },
+      "d14b8ced-abff-4934-8cb9-c2cdf674d367": {
+        "id": "d14b8ced-abff-4934-8cb9-c2cdf674d367",
+        "type": "image",
+        "data": {
+          "url": "http://dtu13-3.com/bundles/amotpl/themes/bottom-line/images/logo.png",
+          "color": "orange"
+        },
+        "x": 440,
+        "y": 21,
+        "width": 300,
+        "height": 300,
+        "transform": ""
+      },
+      "854a6b81-14eb-4938-805e-4884c7ce258e": {
+        "id": "854a6b81-14eb-4938-805e-4884c7ce258e",
+        "type": "shape",
+        "data": {
+          "shape": "rectangle",
+          "color": "cyan"
+        },
+        "x": 87,
+        "y": 177,
+        "width": 241,
+        "height": 189,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(-24.2255deg)"
+      },
+      "1f94ca2b-ae98-4b9c-8126-32bf402c9ba1": {
+        "id": "1f94ca2b-ae98-4b9c-8126-32bf402c9ba1",
+        "type": "shape",
+        "data": {
+          "shape": "svg-file",
+          "name": "o0011",
+          "color": "green"
+        },
+        "x": 387,
+        "y": 241,
+        "width": 184,
+        "height": 235,
+        "transform": ""
+      }
+    }
+  }
+}

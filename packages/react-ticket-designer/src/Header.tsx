@@ -3,6 +3,7 @@ import Box from '@material-ui/core/Box';
 import Modal from '@ohoareau/react-modal';
 import component from '@ohoareau/react-component';
 import Customization from './Customization';
+import {model} from './types';
 
 export const Header = component<HeaderProps>({
     root: {
@@ -16,7 +17,7 @@ export const Header = component<HeaderProps>({
         marginLeft: 64,
         display: 'flex',
     }
-}, ({classes = {}, model = {}}: HeaderProps) => {
+}, ({classes = {}, model}: HeaderProps) => {
     const [modal, setModal] = useState(undefined as any);
     const customizations = [
         {id: 'template'},
@@ -28,14 +29,14 @@ export const Header = component<HeaderProps>({
                     name: 'set_background',
                     children: (
                         <div>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'white'}); setModal(undefined);}}>white</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'red'}); setModal(undefined);}}>red</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'blue'}); setModal(undefined);}}>blue</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'green'}); setModal(undefined);}}>green</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'black'}); setModal(undefined);}}>black</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'cyan'}); setModal(undefined);}}>cyan</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'pink'}); setModal(undefined);}}>pink</button>
-                            <button onClick={() => {model.setBackground({type: 'color', color: 'orange'}); setModal(undefined);}}>orange</button>
+                            <button onClick={() => {model.setBackgroundColor('white'); setModal(undefined);}}>white</button>
+                            <button onClick={() => {model.setBackgroundColor('red'); setModal(undefined);}}>red</button>
+                            <button onClick={() => {model.setBackgroundColor('blue'); setModal(undefined);}}>blue</button>
+                            <button onClick={() => {model.setBackgroundColor('green'); setModal(undefined);}}>green</button>
+                            <button onClick={() => {model.setBackgroundColor('black'); setModal(undefined);}}>black</button>
+                            <button onClick={() => {model.setBackgroundColor('cyan'); setModal(undefined);}}>cyan</button>
+                            <button onClick={() => {model.setBackgroundColor('pink'); setModal(undefined);}}>pink</button>
+                            <button onClick={() => {model.setBackgroundColor('orange'); setModal(undefined);}}>orange</button>
                         </div>
                     )
                 });
@@ -56,7 +57,7 @@ export const Header = component<HeaderProps>({
 
 export interface HeaderProps {
     classes?: any,
-    model?: any,
+    model: model,
 }
 
 export default Header

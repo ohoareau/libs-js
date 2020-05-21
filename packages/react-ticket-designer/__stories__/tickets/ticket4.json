@@ -1,0 +1,21 @@
+{
+  "format": "ticket-format",
+  "version": "1.0",
+  "content": {
+    "objects": {
+      "9bc919fc-0f6f-4144-9552-b497eabe798f": {
+        "id": "9bc919fc-0f6f-4144-9552-b497eabe798f",
+        "type": "shape",
+        "data": {
+          "shape": "rectangle",
+          "color": "cyan"
+        },
+        "x": 30,
+        "y": 30,
+        "width": 400,
+        "height": 250,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(-6.59477deg)"
+      }
+    }
+  }
+}

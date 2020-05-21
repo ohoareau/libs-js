@@ -1,0 +1,64 @@
+{
+  "format": "ticket-format",
+  "version": "1.0",
+  "content": {
+    "objects": {
+      "2a8c02c3-4941-4f99-a9d1-3e6d0d34173d": {
+        "id": "2a8c02c3-4941-4f99-a9d1-3e6d0d34173d",
+        "type": "shape",
+        "data": {
+          "shape": "svg-file",
+          "name": "o0001",
+          "color": "green"
+        },
+        "x": 438,
+        "y": 40,
+        "width": 300,
+        "height": 300,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(8.4643deg)"
+      },
+      "1be3d61e-d173-4d2d-85fb-b19be1ebfa9f": {
+        "id": "1be3d61e-d173-4d2d-85fb-b19be1ebfa9f",
+        "type": "shape",
+        "data": {
+          "shape": "svg-file",
+          "name": "o0004",
+          "color": "green"
+        },
+        "x": -1,
+        "y": 31,
+        "width": 694,
+        "height": 296,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(-9.59601deg)"
+      },
+      "eeddd324-f4d4-4dda-ad14-6e9e8b30f1ed": {
+        "id": "eeddd324-f4d4-4dda-ad14-6e9e8b30f1ed",
+        "type": "shape",
+        "data": {
+          "shape": "svg-file",
+          "name": "o0010",
+          "color": "green"
+        },
+        "x": 16,
+        "y": 395,
+        "width": 130,
+        "height": 77,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(-32.55deg)"
+      },
+      "bc1d17d2-7068-4253-bf13-3c4cd59921e4": {
+        "id": "bc1d17d2-7068-4253-bf13-3c4cd59921e4",
+        "type": "shape",
+        "data": {
+          "shape": "svg-file",
+          "name": "o0008",
+          "color": "green"
+        },
+        "x": 178,
+        "y": 297,
+        "width": 160,
+        "height": 158,
+        "transform": "matrix(1, 0, 0, 1, 0, 0) rotate(-32.1012deg)"
+      }
+    }
+  }
+}

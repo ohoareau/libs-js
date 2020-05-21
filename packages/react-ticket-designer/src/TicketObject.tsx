@@ -1,113 +1,77 @@
-import React, {forwardRef, useEffect, useRef, useState, ComponentType} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import ObjectsPrimitives from './ObjectsPrimitives';
-import component from "@ohoareau/react-component";
+import component from '@ohoareau/react-component';
+import * as objectTypes from './objects';
+import {modelObject} from './types';
 
-export const TextObject: ComponentType<TextObjectProps> = forwardRef(({object, ...props}: TextObjectProps, ref: any) => (
-    <div ref={ref} {...props} style={{textAlign: 'center', alignItems: 'center', position: 'absolute', width: 300, height: 300, backgroundColor: object.color || 'yellow'}}>{object.text}</div>
-));
-
-export interface TextObjectProps {
-    object?: any,
-    [key: string]: any,
-}
-
-export const ImageObject: ComponentType<ImageObjectProps> = forwardRef(({object, ...props}: ImageObjectProps, ref: any) => (
-    <img ref={ref} alt={'block'} src={object.url} {...props} style={{borderRadius: '50%', textAlign: 'center', alignItems: 'center', position: 'absolute', width: 300, height: 300}} />
-));
-
-export interface ImageObjectProps {
-    object?: any,
-    [key: string]: any,
-}
-
-export const ShapeObject: ComponentType<ShapeObjectProps> = forwardRef(({object, svgComponent: SvgComp, ...props}: ShapeObjectProps, ref: any) => {
-    switch (object.shape) {
-        case 'rectangle':
-            return (
-                <svg ref={ref} {...props} style={{position: 'absolute', width: 400, height: 250}}>
-                    <rect width="100%" height="100%" style={{fill: 'rgb(0,0,255)', strokeWidth: 3, stroke: 'rgb(0,0,0)'}} />
-                </svg>
-            );
-        case 'square':
-            return (
-                <svg ref={ref} {...props} style={{position: 'absolute', width: 300, height: 300}}>
-                    <rect width="100%" height="100%" style={{fill: 'rgb(0,0,255)', strokeWidth: 3, stroke: 'rgb(0,0,0)'}} />
-                </svg>
-            );
-        case 'circle':
-            return (
-                <svg ref={ref} {...props} style={{position: 'absolute', width: 300, height: 300}}>
-                    <circle cx="50%" cy="50%" r="50%" fill="red" />
-                </svg>
-            );
-        case 'line':
-            return (
-                <svg ref={ref} {...props} style={{position: 'absolute', width: 300, height: 5}}>
-                    <line x1="0" y1="50%" x2="100%" y2="50%" style={{stroke: 'rgb(255,0,0)', strokeWidth: '50%'}} />
-                </svg>
-            );
-        case 'svg-file':
-            return (
-                <div ref={ref} {...props} style={{position: 'absolute', width: 300, height: 300}}>
-                    <SvgComp name={object.name} style={{width: '100%', height: '100%'}} />
-                </div>
-            );
-        default:
-            return null;
-    }
-});
-
-export interface ShapeObjectProps {
-    object?: any,
-    [key: string]: any,
-}
-
-export const FieldObject: ComponentType<FieldObjectProps> = forwardRef(({object, ...props}: FieldObjectProps, ref: any) => (
-    <div ref={ref} {...props} style={{position: 'absolute', width: 300, height: 300, backgroundColor: object.color || 'yellow'}}>FIELD</div>
-));
-
-export interface FieldObjectProps {
-    object?: any,
-    [key: string]: any,
-}
-
-export const UnknownObject: ComponentType<UnknownObjectProps> = forwardRef(({object, ...props}: UnknownObjectProps, ref: any) => (
-    <div ref={ref} {...props} style={{position: 'absolute', width: 300, height: 300, backgroundColor: object.color || 'red'}}>UNKNOWN</div>
-));
-
-export interface UnknownObjectProps {
-    object?: any,
-    [key: string]: any,
-}
-
-const objectTypes = {
-    text: TextObject,
-    image: ImageObject,
-    shape: ShapeObject,
-    field: FieldObject,
-    default: UnknownObject,
-};
-
-export const TicketObject = component<TicketObjectProps>(undefined, ({object, containerNode, onToggleSelect, onToggleFocus, svgComponent}: TicketObjectProps) => {
-    const objectRef = useRef(null as any);
+export const TicketObject = component<TicketObjectProps>(undefined, ({onClick, onMouseEnter, onMouseLeave, onDragStart, onDragEnd, onResizeStart, onResizeEnd, onRotateStart, onRotateEnd, object, containerNode, svgComponent}: TicketObjectProps) => {
+    const id = object.id;
+    const ref = useRef(null as any);
     const [renderMovable, setRenderMovable] = useState(undefined as any);
-    const Component = objectTypes[object.type] || objectTypes.default;
+    const Component = objectTypes[object.type] || null;
+    const handleMouseEnter = useCallback(e => {
+        e.stopPropagation();
+        onMouseEnter(id);
+    }, [id, onMouseEnter]);
+    const handleMouseLeave = useCallback(e => {
+        e.stopPropagation();
+        onMouseLeave(id);
+    }, [id, onMouseLeave]);
+    const handleDragStart = useCallback(() => {
+        onDragStart(id);
+    }, [id, onDragStart]);
+    const handleDragEnd = useCallback(info => {
+        onDragEnd(id, info);
+    }, [id, onDragEnd]);
+    const handleResizeStart = useCallback(() => {
+        onResizeStart(id);
+    }, [id, onResizeStart]);
+    const handleResizeEnd = useCallback(info => {
+        onResizeEnd(id, info);
+    }, [id, onResizeEnd]);
+    const handleRotateStart = useCallback(() => {
+        onRotateStart(id);
+    }, [id, onRotateStart]);
+    const handleRotateEnd = useCallback(info => {
+        onRotateEnd(id, info);
+    }, [id, onRotateEnd]);
+    const handleClick = useCallback(e => {
+        e.stopPropagation();
+        onClick(id);
+    }, [id, onClick]);
     useEffect(() => {
         !object.group && setRenderMovable((object as any).selected ? 'selected' : ((object as any).focused ? 'focused' : undefined));
     }, [object.group, object.selected, object.focused]);
-    return (
+    return Component ? (
         <>
-            <Component svgComponent={svgComponent} onMouseEnter={object.focused ? e => e.stopPropagation() : e => {onToggleFocus(e); e.stopPropagation();}} onMouseLeave={!object.focused ? e => e.stopPropagation() : e => {onToggleFocus(e); e.stopPropagation();}} onClick={object.selected ? e => e.stopPropagation() : onToggleSelect} ref={objectRef} object={object} />
-            {!!renderMovable && <ObjectsPrimitives mode={renderMovable} target={objectRef.current} container={containerNode} />}
+            <Component ref={ref} object={object}
+                       svgComponent={svgComponent}
+                       onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} onClick={handleClick}
+            />
+            {!!renderMovable && (
+                <ObjectsPrimitives target={ref.current} container={containerNode}
+                                   object={object}
+                                   onDragStart={handleDragStart} onDragEnd={handleDragEnd}
+                                   onResizeStart={handleResizeStart} onResizeEnd={handleResizeEnd}
+                                   onRotateStart={handleRotateStart} onRotateEnd={handleRotateEnd}
+                />
+            )}
         </>
-    );
+    ) : null;
 });
 
 export interface TicketObjectProps {
-    object?: any,
+    object: modelObject,
     containerNode?: any,
-    onToggleSelect?: any,
-    onToggleFocus?: any,
+    onClick: any,
+    onMouseEnter: any,
+    onMouseLeave: any,
+    onDragStart: any,
+    onDragEnd: any,
+    onResizeStart: any,
+    onResizeEnd: any,
+    onRotateStart: any,
+    onRotateEnd: any,
     svgComponent: any,
 }
 

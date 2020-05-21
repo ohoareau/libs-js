@@ -1,7 +1,9 @@
-import React, {lazy, memo, Suspense} from 'react';
+import React, {lazy, memo, Suspense, useCallback, useState} from 'react';
 import {TicketDesigner} from '../src';
 
 const caches = {};
+
+const ticketLoader = n => () => require(`./tickets/${n}.json`).content;
 
 const getSvgFileComponent = (name) => {
     if (!caches[name]) {
@@ -26,4 +28,24 @@ export default {
     component: TicketDesigner,
 }
 
-export const basic = () => <TicketDesigner svgComponent={SvgComponent} />;
+export const basic = () => {
+    const [, onChange] = useState();
+    const handleChange = useCallback(v => {
+        console.log(JSON.stringify(v));
+        onChange(v);
+    }, [onChange]);
+    return (
+        <TicketDesigner svgComponent={SvgComponent} onChange={handleChange} />
+    );
+}
+
+const loadTicket = n => () => {
+    const [value, onChange] = useState(ticketLoader(n));
+    return (
+        <TicketDesigner defaultValue={value} svgComponent={SvgComponent} onChange={onChange} />
+    );
+}
+
+export const loadTicket1 = loadTicket('ticket1');
+export const loadTicket4 = loadTicket('ticket4');
+export const loadTicket5 = loadTicket('ticket5');
