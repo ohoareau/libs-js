@@ -1,15 +1,10 @@
 import fetch from 'node-fetch';
 
-const checkStatusMiddleware = res => {
-    if (!res.ok) throw new Error('Bad response status (not 2xx)');
-    return res;
-};
-
-const jsonMiddleware = res => res.json();
-
-const repositoryDispatch = async (org: string, repo: string, type: string, data: any = {}) => {
-    return fetch(
-        `https://api.github.com/repos/${org}/${repo}/dispatches`,
+const repositoryDispatch = async (org: string, repo: string, type: string, data: any = {}, options: any = {}) => {
+    const token = (options || {}).token || process.env.GITHUB_TOKEN;
+    const url = `https://api.github.com/repos/${org}/${repo}/dispatches`;
+    const res = await fetch(
+        url,
         {
             method: 'post',
             body: JSON.stringify({
@@ -18,12 +13,13 @@ const repositoryDispatch = async (org: string, repo: string, type: string, data:
             }),
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/vnd.github.everest-preview+json',
+                'Authorization': `token ${token}`,
             },
         }
-    )
-        .then(checkStatusMiddleware)
-        .then(jsonMiddleware)
-    ;
+    );
+    if (!res.ok) throw new Error('Bad response status (not 2xx)');
+    return {status: 'success', url};
 }
 
 export default {repositoryDispatch}
