@@ -70,6 +70,11 @@ export const tfgen = async (configFile, sourceDir, targetDir) => {
         const env = mergeEnvConfig(config, name);
         await Promise.all(layers.map(async ({name: layer, file, filePath}) => {
             const layerEnv = {...env, env: name, layer: layer};
+            const layerConfig = (config && config.layers && config.layers[layer]) || {};
+            if (layerConfig) {
+                if (layerConfig.only_on_envs && !layerConfig.only_on_envs.includes(name)) return;
+                if (layerConfig.not_on_envs && !!layerConfig.not_on_envs.includes(name)) return;
+            }
             await generateEnvLayerFromFile(filePath, `${targetDir}/${name}/${file.replace(/\.tmpl\.tf$/, '')}/main.tf`, generateLayerVars(layerEnv, layerEnv));
         }));
     }));
