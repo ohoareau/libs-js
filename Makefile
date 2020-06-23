@@ -40,6 +40,9 @@ publish:
 changed:
 	@yarn --silent lerna changed
 
+pr:
+	@hub pull-request -b master
+
 clean: clean-lib clean-modules clean-coverage clean-buildinfo
 
 clean-modules:
@@ -62,4 +65,4 @@ microgen-fixture-gen:
 microgen-fixture-gen-js-lambda:
 	@cd packages/microgen-plugin-js-lambda && yarn --silent gen __fixtures__/$(f).js ../../generated/$(f)
 
-.PHONY: all install install-root install-packages test build publish microgen-example-gen clean-buildinfo clean-modules clean-lib clean-coverage clean package-build package-install package-storybook package-test
+.PHONY: all install install-root install-packages test build publish microgen-example-gen clean-buildinfo clean-modules clean-lib clean-coverage clean package-build package-install package-storybook package-test pr
