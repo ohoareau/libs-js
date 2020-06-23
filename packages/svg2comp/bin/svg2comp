@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const [,, sourceDir, targetDir] = process.argv;
+
+require(`${__dirname}/../lib/index.js`).svg2comp(sourceDir, targetDir).then(() => {}).catch(e => {
+    console.error(e.message);
+    process.exit(1);
+});
