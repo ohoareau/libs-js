@@ -49,6 +49,7 @@ export const getSvgFileContent = async (filePath: string, options: any = {}): Pr
 
 // noinspection JSUnusedLocalSymbols
 export const getSvgFileConfig = async (filePath: string, options: any = {}): Promise<{config: any, state: any}> => {
+    const commonConfigFile = `${path.dirname(filePath)}/.svgr.json`;
     const configFile = `${filePath}r.json`;
     return {
         config: {
@@ -69,6 +70,7 @@ export const getSvgFileConfig = async (filePath: string, options: any = {}): Pro
             titleProp: false,
             runtimeConfig: true,
             plugins: ['@svgr/plugin-svgo', '@svgr/plugin-jsx', '@svgr/plugin-prettier'],
+            ...((fs.existsSync(commonConfigFile) && require(path.resolve(commonConfigFile))) || {}),
             ...((fs.existsSync(configFile) && require(path.resolve(configFile))) || {}),
         },
         state: {
