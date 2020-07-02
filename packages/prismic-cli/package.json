@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/prismic-cli",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,8 +20,8 @@
     "access": "public"
   },
   "dependencies": {
-    "yargs": "^15.3.1",
-    "prismic-javascript": "^3.0.0"
+    "prismic-javascript": "^3.0.0",
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "@types/yargs": "^15.0.5"
