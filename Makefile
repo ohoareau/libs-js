@@ -25,6 +25,11 @@ package-install:
 package-build:
 	@cd packages/$(p) && yarn --silent build
 
+package-execute: package-build package-execute-only
+
+package-execute-only:
+	@cd packages/$(p) && yarn --silent execute $(args)
+
 package-test: package-build
 	@cd packages/$(p) && yarn --silent test --coverage --detectOpenHandles
 

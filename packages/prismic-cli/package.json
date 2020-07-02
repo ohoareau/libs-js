@@ -1,0 +1,34 @@
+{
+  "name": "@ohoareau/prismic-cli",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "bin": "bin",
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib",
+    "bin"
+  ],
+  "bin": {
+    "prismic": "./bin/prismic"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "yargs": "^15.3.1",
+    "prismic-javascript": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/yargs": "^15.0.5"
+  },
+  "scripts": {
+    "execute": "prismic",
+    "build": "tsc",
+    "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
+  }
+}

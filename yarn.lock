@@ -3447,6 +3447,13 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@types/yargs@^15.0.5":
+  version "15.0.5"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-15.0.5.tgz#947e9a6561483bdee9adffc983e91a6902af8b79"
+  integrity sha512-Dk/IDOPtOgubt/IaevIUbTgV7doaKkoorvOyYM2CMwuDyP89bekI7H4xLIwunNYiK9jhCkmc6pUrJk3cj2AB9w==
+  dependencies:
+    "@types/yargs-parser" "*"
+
 "@types/yoga-layout@1.9.1":
   version "1.9.1"
   resolved "https://registry.yarnpkg.com/@types/yoga-layout/-/yoga-layout-1.9.1.tgz#6c00e4a151a9a529397d580e2cf6f3947a42a928"
@@ -11378,6 +11385,13 @@ pretty-hrtime@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/pretty-hrtime/-/pretty-hrtime-1.0.3.tgz#b7e3ea42435a4c9b2759d99e0f201eb195802ee1"
   integrity sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=
+
+prismic-javascript@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/prismic-javascript/-/prismic-javascript-3.0.0.tgz#83a860ebbee8002b72bdf16518d5aa8dcbbf7ebd"
+  integrity sha512-6IKPi9PtqsHyJQQRTkrdySt5W4QP8vu+3cJ4p9KmNzfDAv/hRgWr9ff/tnlTaggo/McsswQaH3xncLq3BHh7wA==
+  dependencies:
+    cross-fetch "^3.0.4"
 
 prismjs@^1.8.4:
   version "1.20.0"
