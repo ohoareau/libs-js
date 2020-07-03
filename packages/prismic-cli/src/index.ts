@@ -26,6 +26,11 @@ export const cli = async () => {
             type: 'string',
             description: 'specify property to use as index',
         })
+        .option('mergeWith', {
+            alias: 'm',
+            type: 'string',
+            description: 'specify doc to use as default values',
+        })
         .option('data', {
             alias: 'd',
             type: 'boolean',
