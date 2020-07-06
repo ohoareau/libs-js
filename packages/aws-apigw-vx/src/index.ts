@@ -43,9 +43,9 @@ export const convertV2ToV1Payload = (payload: any): any => {
         ...splitMultiValueds(payload.headers, 'headers'),
         ...splitMultiValueds(payload.queryStringParameters, 'queryStringParameters'),
         requestContext: rc,
-        pathParameters: payload.pathParameters,
-        stageVariables: payload.stageVariables,
-        body: payload.body,
+        pathParameters: payload.pathParameters || null,
+        stageVariables: payload.stageVariables || null,
+        body: payload.body || null,
         isBase64Encoded: payload.isBase64Encoded,
     };
 }
@@ -56,9 +56,8 @@ export const splitMultiValueds = (values: any, name: string) => {
         const tokens = (<string>v).split(/,/g);
         if (tokens.length > 1) {
             acc[k2][k] = tokens;
-        } else {
-            acc[k1][k] = v;
         }
+        acc[k1][k] = v;
         return acc;
     }, {[k1]: {}, [k2]: {}});
 };

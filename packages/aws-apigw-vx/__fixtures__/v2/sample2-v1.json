@@ -1,0 +1,75 @@
+{
+  "version": "1.0",
+  "resource": "/",
+  "path": "/",
+  "httpMethod": "GET",
+  "headers": {
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    "cache-control": "max-age=0",
+    "content-length": "0",
+    "host": "gql.dev.some.thing",
+    "sec-fetch-dest": "document",
+    "sec-fetch-mode": "navigate",
+    "sec-fetch-site": "none",
+    "sec-fetch-user": "?1",
+    "upgrade-insecure-requests": "1",
+    "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36",
+    "x-amzn-trace-id": "Root=1-5f02f9c3-b39356a03f4a3b88f900a15a",
+    "x-forwarded-for": "10.20.30.40",
+    "x-forwarded-port": "443",
+    "x-forwarded-proto": "https"
+},
+  "multiValueHeaders": {
+    "accept": [
+      "text/html",
+      "application/xhtml+xml",
+      "application/xml;q=0.9",
+      "image/webp",
+      "image/apng",
+      "*/*;q=0.8",
+      "application/signed-exchange;v=b3;q=0.9"
+    ],
+    "accept-encoding": [
+      "gzip",
+      " deflate",
+      " br"
+    ],
+    "accept-language": [
+      "fr-FR",
+      "fr;q=0.9",
+      "en-US;q=0.8",
+      "en;q=0.7"
+    ],
+    "user-agent": [
+      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML",
+      " like Gecko) Chrome/83.0.4103.116 Safari/537.36"
+    ]
+  },
+  "queryStringParameters": {
+  },
+  "multiValueQueryStringParameters": {
+  },
+  "requestContext": {
+    "accountId": "123456789123",
+    "apiId": "xy0xyxyxyx",
+    "domainName": "gql.dev.some.thing",
+    "domainPrefix": "gql",
+    "extendedRequestId": "PPv2ohKniGYEMlw=",
+    "httpMethod": "GET",
+    "identity": null,
+    "path": "/",
+    "protocol": "HTTP/1.1",
+    "requestId": "PPv2ohKniGYEMlw=",
+    "requestTime": "06/Jul/2020:10:15:31 +0000",
+    "requestTimeEpoch": 1594030531916,
+    "resourceId": null,
+    "resourcePath": "/",
+    "stage": "$default"
+  },
+  "pathParameters": null,
+  "stageVariables": null,
+  "body": null,
+  "isBase64Encoded": false
+}

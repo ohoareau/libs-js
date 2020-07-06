@@ -5,6 +5,7 @@ describe('detectVersion', () => {
         ['empty payload return default version', {}, '1.0'],
         ['official v1 sample from AWS', require('../__fixtures__/v1/sample1.json'), '1.0'],
         ['official v2 sample from AWS', require('../__fixtures__/v2/sample1.json'), '2.0'],
+        ['other v2 sample', require('../__fixtures__/v2/sample2.json'), '2.0'],
     ]
         .forEach(
             ([n, a, b]) => it(<string>n, () => {
@@ -20,6 +21,7 @@ describe('convertPayload', () => {
         ['official v1 to v1 (no changes)', '1.0', '1.0', require('../__fixtures__/v1/sample1.json'), require('../__fixtures__/v1/sample1.json')],
         ['official v2 to v2 (no changes)', '2.0', '2.0', require('../__fixtures__/v2/sample1.json'), require('../__fixtures__/v2/sample1.json')],
         ['official v2 to unknown', '2.0', '0.0', require('../__fixtures__/v2/sample1.json'), require('../__fixtures__/v2/sample1.json')],
+        ['other v2 to v1', '2.0', '1.0', require('../__fixtures__/v2/sample2.json'), require('../__fixtures__/v2/sample2-v1.json')],
     ]
         .forEach(
             ([n, a, b, c, d]) => it(<string>n, () => {
@@ -70,7 +72,9 @@ describe('vx', () => {
             headers: {h1: 'a,b', h2: 'c', h3: 'd,e,f'},
         }, {})).resolves.toEqual({
             headers: {
+                h1: 'a,b',
                 h2: 'c',
+                h3: 'd,e,f',
             },
             multiValueHeaders: {
                 h1: ['a', 'b'],

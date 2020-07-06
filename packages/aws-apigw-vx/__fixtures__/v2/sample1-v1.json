@@ -4,7 +4,8 @@
   "path": "/my/path",
   "httpMethod": "POST",
   "headers": {
-    "Header1": "value1"
+    "Header1": "value1",
+    "Header2": "value1,value2"
   },
   "multiValueHeaders": {
     "Header2": [
@@ -13,6 +14,7 @@
     ]
   },
   "queryStringParameters": {
+    "parameter1": "value1,value2",
     "parameter2": "value"
   },
   "multiValueQueryStringParameters": {
