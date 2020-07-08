@@ -1,6 +1,6 @@
 # gatsby-source-graphql-custom
 
-Based on/Forked from hhttps://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-graphql
+Based on/Forked from https://github.com/gatsbyjs/gatsby/tree/master/packages/gatsby-source-graphql
 
 ## Why a fork ?
 
