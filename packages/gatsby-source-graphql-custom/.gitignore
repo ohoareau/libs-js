@@ -1,0 +1,7 @@
+/gatsby-*.js
+/gatsby-*.d.ts
+/gatsby-*.d.ts.map
+/index.js
+/index.d.ts
+/index.d.ts.map
+/utils/

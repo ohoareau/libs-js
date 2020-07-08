@@ -3,14 +3,15 @@
   "description": "Gatsby plugin which adds a third-party GraphQL API to Gatsby GraphQL",
   "version": "0.1.0",
   "license": "MIT",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "directories": {
-    "lib": "lib",
+    "lib": ".",
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "*.js",
+    "utils"
   ],
   "publishConfig": {
     "access": "public"
@@ -39,6 +40,7 @@
     "directory": "packages/gatsby-source-graphql-custom"
   },
   "scripts": {
+    "clean": "rm -f gatsby-*.* && rm -f index.* && rm -rf utils/",
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },

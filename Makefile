@@ -36,6 +36,9 @@ package-test: package-build
 package-clear-test:
 	@cd packages/$(p) && yarn --silent jest --clearCache
 
+package-clean:
+	@cd packages/$(p) && yarn --silent clean
+
 package-storybook:
 	@cd packages/$(p) && yarn --silent story
 

@@ -1,5 +1,5 @@
-import StripNonQueryTransform from './StripNonQueryTransform';
-import NamespaceUnderFieldTransform from './NamespaceUnderFieldTransform';
+import StripNonQueryTransform from './utils/StripNonQueryTransform';
+import NamespaceUnderFieldTransform from './utils/NamespaceUnderFieldTransform';
 import {v4 as uuidv4} from 'uuid';
 import {buildSchema, printSchema} from 'gatsby/graphql';
 import {wrapSchema, introspectSchema, RenameTypes} from '@graphql-tools/wrap';
@@ -7,7 +7,7 @@ import {linkToExecutor} from '@graphql-tools/links';
 import {createHttpLink} from 'apollo-link-http';
 import nodeFetch from 'node-fetch';
 import invariant from 'invariant';
-import {createDataloaderLink} from './batching/dataloader-link';
+import {createDataloaderLink} from './utils/dataloader-link';
 
 export const sourceNodes = async ({actions, createNodeId, cache, createContentDigest}, options) => {
     const { addThirdPartySchema, createNode } = actions

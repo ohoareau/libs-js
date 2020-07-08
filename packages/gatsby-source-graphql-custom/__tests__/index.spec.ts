@@ -1,4 +1,4 @@
-import * as plugin from '..';
+import * as plugin from '../src';
 
 describe('@todo', () => {
     it('@todo', async () => {
