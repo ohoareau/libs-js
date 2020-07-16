@@ -1,4 +1,13 @@
-export const parseEcr = (x: any): {account: string, region: string, registry: string, name: string} => {
+export type parseEcrResult = {
+    account: string,
+    region: string,
+    registry: string,
+    domain: string,
+    name: string,
+    tag: string,
+};
+
+export const parseEcr = (x: any): parseEcrResult => {
     ('string' !== typeof x) && (x = '');
     const r = {
         account: '', domain: '', region: '', registry: '', name: '', tag: '',
