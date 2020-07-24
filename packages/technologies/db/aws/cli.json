@@ -1,0 +1,10 @@
+{
+  "name": "AWS CLI",
+  "link": "https://aws.amazon.com/fr/cli/",
+  "preRequisite": true,
+  "installProcedure": true,
+  "dependencies": [
+    "aws",
+    "aws_profiles"
+  ]
+}

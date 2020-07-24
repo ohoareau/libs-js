@@ -1,0 +1,6 @@
+{
+  "name": "NPM",
+  "link": "https://www.npmjs.com/",
+  "preRequisite": true,
+  "installProcedure": true
+}
