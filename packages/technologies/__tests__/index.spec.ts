@@ -1,4 +1,4 @@
-import getTechnology , {requireTechnologies, sortAndDedupArray} from '../src';
+import getTechnology , {requireTechnologies} from '../src';
 
 describe('getTechnology', () => {
     [
@@ -123,14 +123,17 @@ describe('requireTechnologies', () => {
                 ...getTechnology('jest').installProcedures,
                 ...getTechnology('react_gatsby').installProcedures,
             },
-            dependencies: sortAndDedupArray([
+            dependencies: [
+                'aws',
+                'nvm',
+                'aws_profiles',
+                'node',
                 'aws_cli',
                 'jest',
+                'npm',
+                'react_js',
                 'react_gatsby',
-                ...getTechnology('aws_cli').fullDependencies,
-                ...getTechnology('jest').fullDependencies,
-                ...getTechnology('react_gatsby').fullDependencies,
-            ]),
+            ],
             technologies: {
                 aws_cli: getTechnology('aws_cli'),
                 jest: getTechnology('jest'),

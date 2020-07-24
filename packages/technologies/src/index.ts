@@ -41,8 +41,7 @@ export const computeDependencyWeight = (id, reqs: any, ctx: any): number => {
     ctx[id] = {id, weight: (r.fullDependencies || []).reduce((acc, k) => acc + computeDependencyWeight(k, reqs, ctx), 1)};
     return ctx[id].weight;
 }
-export const computeDependenciesOrder = (deps: string[], reqs: any): string[] => {
-    const ctx = {};
+export const computeDependenciesOrder = (deps: string[], reqs: any, ctx: any = {}): string[] => {
     deps.reduce((acc, d) => {
         acc[d] = {id: d, weight: computeDependencyWeight(d, reqs, acc)};
         return acc;
@@ -57,24 +56,40 @@ export const sortAndDedupArray = (a: any[]) => {
     b.sort();
     return b;
 };
-export const requireTechnologies = (ids: string[]): any => {
+export const requireTechnologies = (rawIds: string[]): any => {
+    const ids = rawIds.filter(x => !!x);
     const context = {fetched: {}};
     const x = ids.map(id => recursiveGetTechnology(id, context));
+    const deps = sortAndDedupArray([
+        ...ids,
+        ...x.reduce((acc, y) => {acc = acc.concat((<any> y).fullDependencies || []); return acc;}, []),
+    ]);
+    const technologies = {
+        ...x.reduce((acc, y) => Object.assign(acc, {[(<any> y).id]: y}), {}),
+        ...x.reduce((acc, y) => Object.assign(acc, (<any> y).requiredTechnologies || {}), {}),
+    };
+    const ctxDeps = {};
+    const dependencies = computeDependenciesOrder(deps, technologies, ctxDeps);
+    let preRequisites = Object.values({
+        ...x.reduce((acc, y) => Object.assign(acc, (<any> y).preRequisites || {}), {}),
+    });
+    let installProcedures = Object.values({
+        ...x.reduce((acc, y) => Object.assign(acc, (<any> y).installProcedures || {}), {}),
+    });
+    const sorter = (a, b) => {
+        const wa = ctxDeps[a.id] ? ctxDeps[a.id].weight : 100000;
+        const wb = ctxDeps[b.id] ? ctxDeps[b.id].weight : 100000;
+        return (wa > wb ? 1 : (wa < wb ? -1 : 0));
+    };
+    preRequisites.sort(sorter)
+    installProcedures.sort(sorter);
+    preRequisites = preRequisites.reduce((acc, item) => Object.assign(acc, {[(<any>item).id]: item}), {}) as any;
+    installProcedures = installProcedures.reduce((acc, item) => Object.assign(acc, {[(<any>item).id]: item}), {}) as any;
     return {
-        dependencies: sortAndDedupArray([
-            ...ids,
-            ...x.reduce((acc, y) => {acc = acc.concat((<any> y).fullDependencies || []); return acc;}, []),
-        ]),
-        technologies: {
-            ...x.reduce((acc, y) => Object.assign(acc, {[(<any> y).id]: y}), {}),
-            ...x.reduce((acc, y) => Object.assign(acc, (<any> y).requiredTechnologies || {}), {}),
-        },
-        preRequisites: {
-            ...x.reduce((acc, y) => Object.assign(acc, (<any> y).preRequisites || {}), {}),
-        },
-        installProcedures: {
-            ...x.reduce((acc, y) => Object.assign(acc, (<any> y).installProcedures || {}), {}),
-        },
+        dependencies,
+        technologies,
+        preRequisites,
+        installProcedures,
     }
 }
 export const getTechnology = (id: string): any => {
