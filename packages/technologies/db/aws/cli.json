@@ -4,7 +4,6 @@
   "preRequisite": true,
   "installProcedure": true,
   "dependencies": [
-    "aws",
-    "aws_profiles"
+    "aws"
   ]
 }

@@ -2,36 +2,35 @@ import getTechnology , {requireTechnologies} from '../src';
 
 describe('getTechnology', () => {
     [
-        ['aws_cli', {
-            id: 'aws_cli',
-            path: 'aws/cli',
-            name: 'AWS CLI',
+        ['aws_profiles', {
+            id: 'aws_profiles',
+            path: 'aws/profiles',
+            name: 'AWS Profiles',
             link: 'https://aws.amazon.com/fr/cli/',
             dependencies: [
-                'aws',
-                'aws_profiles',
+                'aws_cli',
             ],
             fullDependencies: [
                 'aws',
-                'aws_profiles',
+                'aws_cli',
             ],
             orderedFullDependencies: [
                 'aws',
-                'aws_profiles',
+                'aws_cli',
             ],
-            installProcedure: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
+            installProcedure: {id: 'aws_profiles', name: 'AWS Profiles', type: 'template', template: expect.any(String)},
             installProcedures: {
                 aws_cli: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
                 aws_profiles: {id: 'aws_profiles', name: 'AWS Profiles', type: 'template', template: expect.any(String)},
             },
-            preRequisite: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
+            preRequisite: {id: 'aws_profiles', name: 'AWS Profiles', type: 'template', template: expect.any(String)},
             preRequisites: {
                 aws_cli: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
                 aws_profiles: {id: 'aws_profiles', name: 'AWS Profiles', type: 'template', template: expect.any(String)},
             },
             requiredTechnologies: {
                 aws: expect.anything(),
-                aws_profiles: expect.anything(),
+                aws_cli: expect.anything(),
             },
         }],
         ['jest', {
@@ -112,33 +111,33 @@ describe('getTechnology', () => {
 
 describe('requireTechnologies', () => {
     [
-        [['aws_cli', 'jest', 'react_gatsby'], {
+        [['aws_profiles', 'jest', 'react_gatsby'], {
             preRequisites: {
-                ...getTechnology('aws_cli').preRequisites,
+                ...getTechnology('aws_profiles').preRequisites,
                 ...getTechnology('jest').preRequisites,
                 ...getTechnology('react_gatsby').preRequisites,
             },
             installProcedures: {
-                ...getTechnology('aws_cli').installProcedures,
+                ...getTechnology('aws_profiles').installProcedures,
                 ...getTechnology('jest').installProcedures,
                 ...getTechnology('react_gatsby').installProcedures,
             },
             dependencies: [
                 'aws',
                 'nvm',
-                'aws_profiles',
-                'node',
                 'aws_cli',
+                'node',
+                'aws_profiles',
                 'jest',
                 'npm',
                 'react_js',
                 'react_gatsby',
             ],
             technologies: {
-                aws_cli: getTechnology('aws_cli'),
+                aws_profiles: getTechnology('aws_profiles'),
                 jest: getTechnology('jest'),
                 react_gatsby: getTechnology('react_gatsby'),
-                ...getTechnology('aws_cli').requiredTechnologies,
+                ...getTechnology('aws_profiles').requiredTechnologies,
                 ...getTechnology('jest').requiredTechnologies,
                 ...getTechnology('react_gatsby').requiredTechnologies,
             }
