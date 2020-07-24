@@ -28,11 +28,30 @@ export const recursiveGetTechnology = (id: string, context: any): any => {
         t.requiredTechnologies[subT.id] = subT;
         return acc;
     }, t);
+    t.orderedFullDependencies = computeDependenciesOrder(t.fullDependencies, t.requiredTechnologies);
     t.fullDependencies = [...new Set(t.fullDependencies)];
     t.fullDependencies.sort();
     context.fetched[id] = t;
     return t;
 }
+export const computeDependencyWeight = (id, reqs: any, ctx: any): number => {
+    if (ctx[id]) return ctx[id].weight;
+    if (!reqs[id]) return -1;
+    const r = reqs[id];
+    ctx[id] = {id, weight: (r.fullDependencies || []).reduce((acc, k) => acc + computeDependencyWeight(k, reqs, ctx), 1)};
+    return ctx[id].weight;
+}
+export const computeDependenciesOrder = (deps: string[], reqs: any): string[] => {
+    const ctx = {};
+    deps.reduce((acc, d) => {
+        acc[d] = {id: d, weight: computeDependencyWeight(d, reqs, acc)};
+        return acc;
+    }, ctx);
+    const newDeps = Object.values(ctx) as any[];
+    newDeps.sort((a, b) => a.weight > b.weight ? 1 : (a.weight < b.weight ? -1 : 0));
+    return newDeps.map(d => d.id);
+};
+
 export const sortAndDedupArray = (a: any[]) => {
     const b = [...new Set(a)];
     b.sort();

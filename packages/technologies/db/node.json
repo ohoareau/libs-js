@@ -2,5 +2,8 @@
   "name": "Node.js",
   "link": "https://nodejs.org/en/",
   "preRequisite": true,
-  "installProcedure": true
+  "installProcedure": true,
+  "dependencies": [
+    "nvm"
+  ]
 }

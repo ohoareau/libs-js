@@ -15,6 +15,10 @@ describe('getTechnology', () => {
                 'aws',
                 'aws_profiles',
             ],
+            orderedFullDependencies: [
+                'aws',
+                'aws_profiles',
+            ],
             installProcedure: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
             installProcedures: {
                 aws_cli: {id: 'aws_cli', name: 'AWS CLI', type: 'template', template: expect.any(String)},
@@ -43,6 +47,10 @@ describe('getTechnology', () => {
                 'node',
                 'nvm',
             ],
+            orderedFullDependencies: [
+                'nvm',
+                'node',
+            ],
             installProcedures: {
                 node: {id: 'node', name: 'Node.js', type: 'template', template: expect.any(String)},
                 nvm: {id: 'nvm', name: 'NVM', type: 'template', template: expect.any(String)},
@@ -68,6 +76,12 @@ describe('getTechnology', () => {
                 'node',
                 'npm',
                 'nvm',
+                'react_js',
+            ],
+            orderedFullDependencies: [
+                'nvm',
+                'node',
+                'npm',
                 'react_js',
             ],
             installProcedures: {
