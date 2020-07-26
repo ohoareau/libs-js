@@ -6,7 +6,7 @@ describe('getTechnology', () => {
             id: 'aws_profiles',
             path: 'aws/profiles',
             name: 'AWS Profiles',
-            link: 'https://aws.amazon.com/fr/cli/',
+            link: 'https://aws.amazon.com/cli/',
             dependencies: [
                 'aws_cli',
             ],

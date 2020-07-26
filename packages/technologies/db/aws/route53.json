@@ -1,6 +1,6 @@
 {
   "name": "AWS Route53",
-  "link": "https://aws.amazon.com/fr/route53/",
+  "link": "https://aws.amazon.com/route53/",
   "dependencies": [
     "aws"
   ]

@@ -1,10 +1,11 @@
 {
-  "name": "yarn",
+  "name": "Yarn",
   "link": "https://yarnpkg.com/",
   "preRequisite": true,
   "installProcedure": true,
   "dependencies": [
     "node",
-    "nvm"
+    "nvm",
+    "npm"
   ]
 }
