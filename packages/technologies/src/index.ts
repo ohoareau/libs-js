@@ -69,7 +69,7 @@ export const requireTechnologies = (rawIds: string[]): any => {
         ...x.reduce((acc, y) => Object.assign(acc, (<any> y).requiredTechnologies || {}), {}),
     };
     const ctxDeps = {};
-    const dependencies = computeDependenciesOrder(deps, technologies, ctxDeps);
+    const fullDependencies = computeDependenciesOrder(deps, technologies, ctxDeps);
     let preRequisites = Object.values({
         ...x.reduce((acc, y) => Object.assign(acc, (<any> y).preRequisites || {}), {}),
     });
@@ -86,7 +86,7 @@ export const requireTechnologies = (rawIds: string[]): any => {
     preRequisites = preRequisites.reduce((acc, item) => Object.assign(acc, {[(<any>item).id]: item}), {}) as any;
     installProcedures = installProcedures.reduce((acc, item) => Object.assign(acc, {[(<any>item).id]: item}), {}) as any;
     return {
-        dependencies,
+        fullDependencies,
         technologies,
         preRequisites,
         installProcedures,

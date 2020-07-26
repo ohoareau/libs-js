@@ -122,7 +122,7 @@ describe('requireTechnologies', () => {
                 ...getTechnology('jest').installProcedures,
                 ...getTechnology('react_gatsby').installProcedures,
             },
-            dependencies: [
+            fullDependencies: [
                 'aws',
                 'nvm',
                 'aws_cli',
