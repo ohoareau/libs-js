@@ -1,8 +1,0 @@
-{
-  "name": "Terraform Cloud",
-  "link": "https://app.terraform.io/",
-  "dependencies": [
-    "terraform",
-    "terraform_rc_terraformcloud"
-  ]
-}

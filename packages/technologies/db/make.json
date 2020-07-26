@@ -1,6 +1,0 @@
-{
-  "name": "Make / Makefile",
-  "link": "https://www.gnu.org/software/make/manual/make.html",
-  "preRequisite": true,
-  "installProcedure": true
-}

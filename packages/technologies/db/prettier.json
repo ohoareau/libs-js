@@ -1,7 +1,0 @@
-{
-  "name": "Prettier",
-  "link": "https://prettier.io/",
-  "dependencies": [
-    "node"
-  ]
-}

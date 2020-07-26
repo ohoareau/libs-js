@@ -1,7 +1,0 @@
-{
-  "name": "Amazon Cognito",
-  "link": "https://aws.amazon.com/cognito/",
-  "dependencies": [
-    "aws"
-  ]
-}

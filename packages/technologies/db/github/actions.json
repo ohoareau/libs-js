@@ -1,7 +1,0 @@
-{
-  "name": "GitHub Actions",
-  "link": "https://github.com/features/actions",
-  "dependencies": [
-    "github"
-  ]
-}

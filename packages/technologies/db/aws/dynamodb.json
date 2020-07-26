@@ -1,7 +1,0 @@
-{
-  "name": "AWS DynamoDB",
-  "link": "https://aws.amazon.com/dynamodb/",
-  "dependencies": [
-    "aws"
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "name": "Terraform",
-  "link": "https://www.terraform.io/",
-  "preRequisite": true,
-  "installProcedure": true,
-  "dependencies": [
-    "tfenv"
-  ]
-}

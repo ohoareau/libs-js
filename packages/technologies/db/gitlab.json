@@ -1,7 +1,0 @@
-{
-  "name": "Gitlab",
-  "link": "https://gitlab.com/",
-  "dependencies": [
-    "git"
-  ]
-}

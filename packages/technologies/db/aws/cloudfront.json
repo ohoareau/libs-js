@@ -1,7 +1,0 @@
-{
-  "name": "AWS CloudFront",
-  "link": "https://aws.amazon.com/cloudfront/",
-  "dependencies": [
-    "aws"
-  ]
-}

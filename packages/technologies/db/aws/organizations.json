@@ -1,7 +1,0 @@
-{
-  "name": "AWS Organizations",
-  "link": "https://aws.amazon.com/organizations/",
-  "dependencies": [
-    "aws"
-  ]
-}

@@ -1,7 +1,0 @@
-{
-  "name": "AWS CodePipeline",
-  "link": "https://aws.amazon.com/codepipeline/",
-  "dependencies": [
-    "aws"
-  ]
-}

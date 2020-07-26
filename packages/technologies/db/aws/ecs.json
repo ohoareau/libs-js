@@ -1,7 +1,0 @@
-{
-  "name": "AWS Elastic Container Service (ECS)",
-  "link": "https://aws.amazon.com/ecs/",
-  "dependencies": [
-    "aws"
-  ]
-}
