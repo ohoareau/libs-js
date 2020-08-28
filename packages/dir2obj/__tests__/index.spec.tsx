@@ -11,7 +11,8 @@ describe('dir2obj', () => {
 
 a: @badvalue
    ^^^^^^^^^
-`)]
+`)],
+        ['dir7', {plugins: ['plugin1', 'plugin2', 'plugin3', 'plugin4', 'plugin 4']}],
     ]
         .forEach(
             ([a, b]) => it(`${a} => ${JSON.stringify(b)}`, async () => {

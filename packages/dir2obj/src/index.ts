@@ -3,6 +3,7 @@ import YAML from 'yaml';
 
 export const parseTextFile = (path: string) => readFileSync(path, 'utf8');
 export const parseMarkdownFile = (path: string) => parseTextFile(path);
+export const parseListFile = (path: string) => parseTextFile(path).trim().split(/\n/g).map(x => x ? x.trim() : '').filter(x => !!x && 0 < x.length && ('#' !== x.slice(0, 1)));
 export const parseYamlFile = (path: string) => YAML.parse(parseTextFile(path), {prettyErrors: true});
 export const parseJsonFile = (path: string) => JSON.parse(parseTextFile(path));
 export const parseJsFile = (path: string) => require(path);
@@ -14,6 +15,7 @@ export const parserMap = {
     js: parseJsFile,
     json: parseJsonFile,
     md: parseMarkdownFile,
+    lst: parseListFile,
 };
 
 export const dir2obj = (dir: string) => readdirSync(dir, {withFileTypes: true}).reduce(
