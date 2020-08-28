@@ -35,6 +35,7 @@ export const buildVars = (vars, repo) => {
 };
 
 export const generateVarsFromTerraformOutputs = (configFile, repo) => {
+    if (!existsSync(configFile)) return '';
     const config = JSON.parse(readFileSync(configFile, 'utf-8'));
     return buildVars(config, repo);
 };
