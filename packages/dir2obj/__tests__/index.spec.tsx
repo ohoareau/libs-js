@@ -7,10 +7,20 @@ describe('dir2obj', () => {
         ['dir3', {x: {c: 'de', f: 12}, g: {h: {i: true, j: 'world'}}}],
         ['dir4', {x: {c: 'de', f: 12}, g: {h: {i: true, j: 'world'}}}],
         ['dir5', {something: {x: 12, y: {z: {t: false, u: 3.4}}, w: 'hello world'}}],
+        ['dir6', new Error(`${__dirname}/../__fixtures__/dir6/a/b/c.yml: Plain value cannot start with reserved character @ at line 1, column 4:
+
+a: @badvalue
+   ^^^^^^^^^
+`)]
     ]
         .forEach(
-            ([a, b]) => it(`${a} => ${JSON.stringify(b)}`, () => {
-                expect(dir2obj(`${__dirname}/../__fixtures__/${a}`)).toEqual(b);
+            ([a, b]) => it(`${a} => ${JSON.stringify(b)}`, async () => {
+                const f = async () => dir2obj(`${__dirname}/../__fixtures__/${a}`);
+                if (b instanceof Error) {
+                    await expect(f()).rejects.toThrow(b);
+                } else {
+                    await expect(f()).resolves.toEqual(b);
+                }
             })
         )
     ;
