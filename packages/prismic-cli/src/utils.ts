@@ -10,10 +10,17 @@ export const transform = (x: any, {by = undefined, data, mergeWith = undefined, 
         r[k] = {...defaults, ...(<any>v)};
     });
     if (hashify) {
-        const [collectionKey, keyField, valueField] = hashify.split(/,/g);
+        const [keyField, valueField] = hashify.split(/,/g);
         Object.entries(r).reduce((acc, [k, v]) => {
-            acc[k] = ((v as any)[collectionKey] || []).reduce((acc2, item) => {
-                acc2[item[keyField]] = item[valueField];
+            if (!v || 'object' !== typeof v) {
+                delete acc[k];
+                return acc;
+            }
+            acc[k] = Object.entries(v as any).reduce((acc2, [kk, vv]) => {
+                acc2[kk] = (Array.isArray(vv) ? vv : []).reduce((acc3, item) => {
+                    acc3[item[keyField]] = item[valueField];
+                    return acc3;
+                }, {});
                 return acc2;
             }, {});
             return acc;

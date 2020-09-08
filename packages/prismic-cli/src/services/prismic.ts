@@ -31,24 +31,27 @@ export class Prismic {
     }
     async getCollection(name: string): Promise<any> {
         const r = await this.query(
-            PrismicJS.Predicates.at('document.type', name)
+            PrismicJS.Predicates.at('document.type', name),
+            { lang : '*' }
         );
         return r.results;
     }
     async getDocuments(): Promise<any> {
-        const r = await this.query('');
+        const r = await this.query('', { lang : '*' });
         return r.results;
     }
     async getDocument(uid: string): Promise<any> {
         const r = await this.query(
-            PrismicJS.Predicates.at('document.id', uid)
+            PrismicJS.Predicates.at('document.id', uid),
+            { lang : '*' }
         );
         if (!r.results_size || !r.results.length) throw new Error(`Unknown document with uid '${uid}'`);
         return r.results[0];
     }
     async getDocumentsWithTags(tags: string[]): Promise<any> {
         const r = await this.query(
-            PrismicJS.Predicates.at('document.tags', tags)
+            PrismicJS.Predicates.at('document.tags', tags),
+            { lang : '*' }
         );
         return r.results;
     }
@@ -57,7 +60,8 @@ export class Prismic {
     }
     async search(text: string): Promise<any> {
         const r = await this.query(
-            PrismicJS.Predicates.fulltext('document', text)
+            PrismicJS.Predicates.fulltext('document', text),
+            { lang : '*' }
         );
         return r.results;
     }
