@@ -26,6 +26,16 @@ export const cli = async () => {
             type: 'string',
             description: 'specify property to use as index',
         })
+        .option('hashify', {
+            alias: 'x',
+            type: 'string',
+            description: 'specify sub-property to use as key and sub-property to use as value ("keyprop,valueprop")',
+        })
+        .option('idFormatter', {
+            alias: 'z',
+            type: 'string',
+            description: 'name of the formatter to use to format the value of the id/key',
+        })
         .option('mergeWith', {
             alias: 'm',
             type: 'string',

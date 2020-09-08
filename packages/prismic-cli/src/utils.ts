@@ -1,4 +1,4 @@
-export const transform = (x: any, {by = undefined, data, mergeWith = undefined}: {by: string|undefined, data: boolean, mergeWith: string|undefined}): any => {
+export const transform = (x: any, {by = undefined, data, mergeWith = undefined, hashify = undefined, idFormatter = undefined}: {by: string|undefined, data: boolean, mergeWith: string|undefined, hashify: string|undefined, idFormatter: string|undefined}): any => {
     if (!by) return data ? x.data : x;
     if (!Array.isArray(x)) return data ? x.data : x;
     const r = x.reduce((acc, xx) => Object.assign(acc, {[xx[by]]: data ? xx.data : xx}), {});
@@ -9,12 +9,42 @@ export const transform = (x: any, {by = undefined, data, mergeWith = undefined}:
         })
         r[k] = {...defaults, ...(<any>v)};
     });
+    if (hashify) {
+        const [collectionKey, keyField, valueField] = hashify.split(/,/g);
+        Object.entries(r).reduce((acc, [k, v]) => {
+            acc[k] = ((v as any)[collectionKey] || []).reduce((acc2, item) => {
+                acc2[item[keyField]] = item[valueField];
+                return acc2;
+            }, {});
+            return acc;
+        }, r)
+    }
+    if (idFormatter) {
+        Object.entries(r).reduce((acc, [k, v]) => {
+            delete acc[k];
+            acc[formatId(idFormatter, k)] = v;
+            return acc;
+        }, r);
+    }
     return r;
 };
 
-export const out = async (x: any|Promise<any>, {format = 'json', by = undefined, mergeWith = undefined, data = false}: {format?: string, by?: string|undefined, mergeWith?: string|undefined, data?: boolean}) => {
+export const formatId = (type: string, value: string): string => {
+    switch (type) {
+        case 'locale':
+            const [a, b] = value.split('-');
+            return `${a.toLowerCase()}-${b.toUpperCase()}`;
+        case 'upper':
+            return value.toUpperCase();
+        case 'lower':
+            return value.toLowerCase();
+        default:
+            return value;
+    }
+}
+export const out = async (x: any|Promise<any>, {format = 'json', by = undefined, mergeWith = undefined, data = false, hashify = undefined, idFormatter = undefined}: {format?: string, by?: string|undefined, mergeWith?: string|undefined, data?: boolean, hashify?: string|undefined, idFormatter?: string|undefined}) => {
     let z;
-    const y = JSON.stringify(transform(await x, {by, data, mergeWith}), null, 4);
+    const y = JSON.stringify(transform(await x, {by, data, mergeWith, hashify, idFormatter}), null, 4);
     switch (format) {
         case 'js': z = `module.exports = ${y};`; break;
         case 'es6': z = `exports.default = ${y}`; break;
