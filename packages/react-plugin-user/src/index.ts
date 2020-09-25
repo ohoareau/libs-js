@@ -79,8 +79,9 @@ export const triggerRefreshToken = async (refreshToken, client) =>
     })).data['refreshAuthToken']
 ;
 
-export const useLogin = (dispatch, client: any = undefined) => {
-    const [createAuthToken, {loading, error}] = useMutation(GQL_CREATE_USER_TOKEN, {
+export const useLogin = (dispatch, client: any = undefined, options: any = {}) => {
+    const {query = GQL_CREATE_USER_TOKEN, loginView = 'login'} = options;
+    const [createAuthToken, {loading, error}] = useMutation(query, {
         client,
         onCompleted: async ({createAuthToken}) => dispatch(userChangedAction(createAuthToken)),
     });
@@ -91,8 +92,7 @@ export const useLogin = (dispatch, client: any = undefined) => {
         }
     }, [createAuthToken]);
 
-    const view = 'login';
-    return {submit, loading, errors: error ? [{errorInfo: buildFieldError(i18n.t, error)}] : [], view};
+    return {submit, loading, errors: error ? [{errorInfo: buildFieldError(i18n.t, error)}] : [], view: loginView};
 };
 
 export const useChangeLocale = (dispatch) => {
@@ -108,7 +108,11 @@ export const useLogout = (dispatch, targetRoute = undefined) => {
 
 const defaultUserState = {token: undefined, refreshToken: undefined, authenticated: false};
 
-export const reducer = (state: any = undefined, action) => {
+export const isUserMatchingRequiredRole = (user, role) =>
+    !role.length ? true : !!role.find(x => (user.permissions || []).includes(x))
+;
+
+export const reducerFactory = ({requiredRole = []} = {}) => (state: any = undefined, action) => {
     if (undefined === state) state = {...defaultUserState, locale: i18n.languages ? i18n.languages[0] : 'en'};
     switch(action.type) {
         case ACTION_TYPE_USER_CHANGED:
@@ -118,6 +122,7 @@ export const reducer = (state: any = undefined, action) => {
                 ...user,
                 username: user.username || user.email,
                 authenticated: true,
+                matchRequiredRole: isUserMatchingRequiredRole(user, requiredRole),
                 token: action.payload.token,
                 refreshToken: action.payload.refreshToken,
             };
@@ -130,6 +135,8 @@ export const reducer = (state: any = undefined, action) => {
             return state;
     }
 };
+
+export const reducer = reducerFactory();
 
 export const onBeforeLiftCreator = ({store, reducerKey = 'user'}) => () => {
     const state = store.getState();
