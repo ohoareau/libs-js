@@ -10,7 +10,7 @@ const DataTableBodyRowCellAction = component<DataTableBodyRowCellActionProps>({
     button: {
         marginRight: 5,
     },
-}, ({buttonComponent, classes = {}, t = () => {}, tReady = false, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
+}, ({buttonComponent, classes = {}, t = () => {}, icon, tReady = false, expandedLabel, label, expanded, type, onClick, row, confirmable = false}: DataTableBodyRowCellActionProps) => {
     const Button: any = buttonComponent;
     const confirm = useConfirm();
     const handleConfirmableClick = e => {
@@ -27,11 +27,12 @@ const DataTableBodyRowCellAction = component<DataTableBodyRowCellActionProps>({
     };
     const handleNonConfirmableClick = useCallback(e => {e.stopPropagation(); onClick && onClick(row)}, [onClick, row]);
     const handleClick = confirmable ? handleConfirmableClick : handleNonConfirmableClick;
+    const IconComponent = icon || DeleteIcon;
     return (
         <div>
             {('icon' === type) && (
                 <IconButton style={{marginLeft: 5}} color="secondary" size="small" onClick={handleClick}>
-                    <DeleteIcon/>
+                    <IconComponent />
                 </IconButton>
             )}
             {('icon' !== type) && (
@@ -44,6 +45,7 @@ const DataTableBodyRowCellAction = component<DataTableBodyRowCellActionProps>({
 export interface DataTableBodyRowCellActionProps {
     buttonComponent?: Function,
     classes?: {[key: string]: any},
+    icon?: any,
     t?: Function,
     tReady ?: boolean,
     expandedLabel?: string,
