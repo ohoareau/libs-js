@@ -34,10 +34,16 @@ const DataTableToolBar = component<DataTableToolBarProps>((theme: any) => ({
         padding: 30,
         backgroundColor: lighten(theme.palette.secondary.light, 0.85),
     },
-}), ({classes = {}, t = () => {}, tReady = false, buttonComponent, selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
+    actionContainer: {
+        marginLeft: props => props.actions.length > 0 ? 10 : 0,
+    }
+}), ({classes = {}, t = () => {}, tReady = false, actionContainerClassName = undefined, actionContainerComponent = undefined, buttonComponent, actionPosition = 'default', selectionHeader = false, filterPanelComponent: FilterPanelComp, comparable = 0, onCompareClick, filterOpened, title, subTitle, content, selectedCount, count, totalCount, enabled = true, loading = false, onToggleFilterOpened, filters, onFiltersChange, actions = []}: DataTableToolBarProps) => {
     const Button: any = buttonComponent;
     const hasFilters = !!Object.keys(filters || {}).length;
     const filterable = !!FilterPanelComp;
+    const ActionContainer = actionContainerComponent || (({className, children}) => (
+        <div className={className}>{children}</div>
+    ));
     // noinspection PointlessBooleanExpressionJS
     return enabled ? (
         <>
@@ -59,15 +65,22 @@ const DataTableToolBar = component<DataTableToolBarProps>((theme: any) => ({
                 )}
                 {(comparable >= 2) && <Button style={{marginRight: 5, width: 175}} aria-label="compare list" color={'secondary'} onClick={onCompareClick} label={t('table_compare_label', {count: comparable})} />}
                 {!!filterable && <Button aria-label="filter list" color={filterOpened ? 'primary' : (hasFilters ? 'secondary' : 'inherit')} onClick={onToggleFilterOpened} label={t('table_filters_label')} endIcon={(hasFilters && !filterOpened) ? <CheckIcon /> : null} startIcon={filterOpened ? <ExpandLessIcon /> : <ExpandMoreIcon />} />}
-                <div style={{marginLeft: actions.length > 0 ? 10 : 0}}>
-                    {actions.map(({component: Component, onClick}, i) => <Component key={i} onClick={onClick} />)}
-                </div>
+                {('default' === actionPosition) && (
+                    <ActionContainer className={actionContainerClassName || classes.actionContainer}>
+                        {actions.map(({component: Component, onClick}, i) => <Component key={i} onClick={onClick} />)}
+                    </ActionContainer>
+                )}
             </Toolbar>
             {content}
             {filterOpened && FilterPanelComp && (
                 <div className={classes.filterPanel}>
                     <FilterPanelComp filters={filters} onChange={onFiltersChange} onReset={() => onFiltersChange && onFiltersChange({})} />
                 </div>
+            )}
+            {('head' === actionPosition) && (
+                <ActionContainer className={actionContainerClassName || classes.actionContainer}>
+                    {actions.map(({component: Component, onClick}, i) => <Component key={i} onClick={onClick} />)}
+                </ActionContainer>
             )}
         </>
     ) : null;
@@ -95,6 +108,9 @@ export interface DataTableToolBarProps {
     filters?: any,
     onFiltersChange?: Function,
     actions?: any[],
+    actionPosition?: 'default' | 'head',
+    actionContainerClassName?: string,
+    actionContainerComponent?: any,
 }
 
 export default DataTableToolBar;
