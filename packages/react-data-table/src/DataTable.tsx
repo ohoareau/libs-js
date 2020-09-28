@@ -23,7 +23,7 @@ const DataTable = component<DataTableProps>((theme: any) => ({
     tableWrapper: {
         overflowX: 'auto',
     },
-}),({classes = {}, buttonComponent, comparable = 0, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, tReady = false, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
+}),({classes = {}, buttonComponent, comparable = 0, actionPosition = 'default', actionContainerClassName = undefined, actionContainerComponent = undefined, onCompareClick = undefined, forcedSelected, forcedSetSelected, formatRow, globalActions = [], t = () => {}, tReady = false, filterPanelComponent, onFilter, filters = {}, data, totalCount, columns, title, subTitle, toolbarContent, itemActions, expanded = {}, expandedComponent, loading, toolbar = true, size = 'medium', defaultRowsPerPage = 10, defaultOrderBy = undefined, defaultOrder = 'asc', defaultSelected = {}, defaultPage = 0, defaultFilterOpened = false, onClick}: DataTableProps) => {
     const [filterOpened, setFilterOpened] = useState(defaultFilterOpened);
     const [order, setOrder] = useState(defaultOrder);
     const [orderBy, setOrderBy] = useState(defaultOrderBy);
@@ -71,6 +71,7 @@ const DataTable = component<DataTableProps>((theme: any) => ({
                                   filterPanelComponent={filterPanelComponent}
                                   content={toolbarContent}
                                   comparable={comparable} onCompareClick={onCompareClick}
+                                  actionPosition={actionPosition} actionContainerClassName={actionContainerClassName} actionContainerComponent={actionContainerComponent}
                 />
                 <div className={classes.tableWrapper}>
                     <Table className={classes.table} aria-labelledby="tableTitle" size={size} aria-label="table">
@@ -127,6 +128,9 @@ export interface DataTableProps {
     defaultPage?: number,
     defaultFilterOpened?: boolean,
     onClick?: Function,
+    actionContainerClassName?: string,
+    actionContainerComponent?: any,
+    actionPosition?: 'default' | 'head'
 }
 
 export default DataTable
