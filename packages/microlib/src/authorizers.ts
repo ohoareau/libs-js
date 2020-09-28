@@ -10,7 +10,7 @@ const checkUserRole = (user, role, message = undefined) => {
 }
 
 export const permissions = (def) => async (v, {user}) => {
-    return checkUserRole(user, (def && def[v]) ? def[v] : undefined);
+    return checkUserRole(user, (def && def.permissions && def.permissions[v]) ? def.permissions[v] : undefined);
 }
 export const denied = () => async () => {
     throw createDeniedError();
