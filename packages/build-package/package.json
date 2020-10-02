@@ -1,0 +1,26 @@
+{
+  "name": "@ohoareau/build-package",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__",
+    "bin": "bin"
+  },
+  "files": [
+    "bin",
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
+  },
+  "bin": {
+    "build-package": "./bin/build-package"
+  }
+}

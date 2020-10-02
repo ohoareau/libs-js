@@ -6,11 +6,9 @@
     "types": "lib/index.d.ts",
     "directories": {
         "lib": "lib",
-        "test": "__tests__",
-        "bin": "bin"
+        "test": "__tests__"
     },
     "files": [
-        "bin",
         "lib"
     ],
     "publishConfig": {
@@ -22,7 +20,9 @@
     },
     "dependencies": {
         "bcryptjs": "^2.4.3",
-        "uuid": "^7.0.3"
+        "uuid": "^7.0.3",
+        "@ohoareau/build-package": "^0",
+        "@ohoareau/deploy-package": "^0"
     },
     "peerDependencies": {
         "cors": "^2.8.5",
@@ -40,9 +40,5 @@
         "graphql": "^14.6.0",
         "jsonwebtoken": "^8.5.1",
         "node-fetch": "^2.6.0"
-    },
-    "bin": {
-        "build-package": "./bin/build-package",
-        "deploy-package": "./bin/deploy-package"
     }
 }
