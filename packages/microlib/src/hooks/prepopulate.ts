@@ -25,12 +25,21 @@ export default ({model, dir, prefix = undefined}) => async data => {
     Object.entries(model[defaultValuesKey]).forEach(([k, def]) => {
         if (data.data[k]) return;
         v = buildValueGenerator(<any>def, dir)(data);
-        if ('**unchanged**' !== v) data.data[k] = v;
+        if ('**unchanged**' !== v) {
+            data.data[k] = v;
+            data.autoPopulated = data.autoPopulated || {};
+            data.autoPopulated[k] = true;
+        }
     });
     Object.entries(model[cascadeValuesKey]).forEach(([k, def]) => {
         const matchCase = findCascadeMatchingCase(data.data[k], def);
         if (!matchCase) return;
-        Object.assign(data.data, buildCascadeValues(matchCase, data, dir));
+        const values = buildCascadeValues(matchCase, data, dir);
+        Object.assign(data.data, values);
+        Object.keys(values).forEach(kk => {
+            data.autoPopulated = data.autoPopulated || {};
+            data.autoPopulated[kk] = true;
+        });
     });
     return data;
 }

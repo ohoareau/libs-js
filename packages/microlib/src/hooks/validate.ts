@@ -16,7 +16,11 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
     const localCtx = {data: data.contextData || {}};
     const errors = {};
     Object.keys(data.data).forEach(k => {
-        if (!fields[k] || privateFields[k]) delete data.data[k];
+        if (!fields[k] || privateFields[k]) {
+            if (!data.autoPopulated || !data.autoPopulated[k]) {
+                delete data.data[k];
+            }
+        }
     });
     required && Object.keys(requiredFields).forEach(k => {
         if (!data.data.hasOwnProperty(k)) {

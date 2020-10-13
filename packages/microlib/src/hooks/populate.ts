@@ -14,7 +14,11 @@ export default ({model, dir, prefix = undefined}) => async data => {
     let v;
     Object.entries(model[valuesKey]).forEach(([k, def]) => {
         v = buildValueGenerator(<any>def, dir)(data);
-        if ('**unchanged**' !== v) data.data[k] = v;
+        if ('**unchanged**' !== v) {
+            data.data[k] = v;
+            data.autoPopulated = data.autoPopulated || {};
+            data.autoPopulated[k] = true;
+        }
     });
     return data;
 }
