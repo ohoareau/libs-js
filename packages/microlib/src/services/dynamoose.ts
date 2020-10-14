@@ -205,27 +205,47 @@ const convertToQueryDsl = v => {
     }, <string[]>[]).join('&');
 };
 
+const dynamooseVersions = {
+    v1: {
+        update: {removeKeyword: '$DELETE', addKeyword: '$ADD', setKeyword: '$PUT'},
+    },
+    v2: {
+        update: {removeKeyword: '$REMOVE', addKeyword: '$ADD', setKeyword: '$SET'},
+    },
+};
+
+const currentVersion = 'v1'; // @todo be dynamically compatible with both
+
+const dcfg = (op: string, prop: string) => dynamooseVersions[currentVersion][op][prop];
+
 const buildUpdateObject = (data = {}) => {
+    const removeKw = dcfg('update', 'removeKeyword');
+    const addKw = dcfg('update', 'addKeyword');
+    const setKw = dcfg('update', 'setKeyword');
     const x = Object.entries(data).reduce((acc, [k, v]: [string, any]) => {
         if (undefined === v) {
-            acc['$REMOVE'].push(k);
+            acc[removeKw][k] = null;
         } else {
             if ('string' === typeof v) {
                 if ('**clear**' === v) {
-                    acc['$REMOVE'].push(k);
+                    acc[removeKw].push(k);
                 } else if ('**unchanged**' !== v) {
                     // @todo implement detection of increment/add
-                    acc['$SET'][k] = v;
+                    acc[setKw][k] = v;
                 }
             } else {
-                acc['$SET'][k] = v;
+                acc[setKw][k] = v;
             }
         }
         return acc;
-    }, {'$SET': <any>{}, '$REMOVE': <string[]>[], '$ADD': <any>{}});
-    if (!x['$REMOVE'].length) delete x['$REMOVE'];
-    if (!Object.keys(x['$SET']).length) delete x['$SET'];
-    if (!Object.keys(x['$ADD']).length) delete x['$ADD'];
+    }, {
+        [setKw]: <any>{},
+        [removeKw]: <any>{},
+        [addKw]: <any>{},
+    });
+    if (!Object.keys(x[setKw]).length) delete x[setKw];
+    if (!Object.keys(x[removeKw]).length) delete x[removeKw];
+    if (!Object.keys(x[addKw]).length) delete x[addKw];
     return x;
 }
 export default {
