@@ -26,7 +26,11 @@ export default ({model, dir, prefix = undefined}) => async data => {
         if (data.data[k]) return;
         v = buildValueGenerator(<any>def, dir)(data);
         if ('**unchanged**' !== v) {
-            data.data[k] = v;
+            if ('**clear**' === v) {
+                data.data[k] = undefined;
+            } else {
+                data.data[k] = v;
+            }
             data.autoPopulated = data.autoPopulated || {};
             data.autoPopulated[k] = true;
         }
@@ -35,11 +39,15 @@ export default ({model, dir, prefix = undefined}) => async data => {
         const matchCase = findCascadeMatchingCase(data.data[k], def);
         if (!matchCase) return;
         const values = buildCascadeValues(matchCase, data, dir);
-        Object.assign(data.data, values);
-        Object.keys(values).forEach(kk => {
+        Object.entries(values).forEach(([kk, vv]) => {
+            if ('**clear**' === vv) {
+                data.data[kk] = undefined
+            } else {
+                data.data[kk] = vv;
+            }
             data.autoPopulated = data.autoPopulated || {};
             data.autoPopulated[kk] = true;
-        });
+        })
     });
     return data;
 }

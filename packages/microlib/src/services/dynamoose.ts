@@ -205,6 +205,29 @@ const convertToQueryDsl = v => {
     }, <string[]>[]).join('&');
 };
 
+const buildUpdateObject = (data = {}) => {
+    const x = Object.entries(data).reduce((acc, [k, v]: [string, any]) => {
+        if (undefined === v) {
+            acc['$REMOVE'].push(k);
+        } else {
+            if ('string' === typeof v) {
+                if ('**clear**' === v) {
+                    acc['$REMOVE'].push(k);
+                } else if ('**unchanged**' !== v) {
+                    // @todo implement detection of increment/add
+                    acc['$SET'][k] = v;
+                }
+            } else {
+                acc['$SET'][k] = v;
+            }
+        }
+        return acc;
+    }, {'$SET': <any>{}, '$REMOVE': <string[]>[], '$ADD': <any>{}});
+    if (!x['$REMOVE'].length) delete x['$REMOVE'];
+    if (!Object.keys(x['$SET']).length) delete x['$SET'];
+    if (!Object.keys(x['$ADD']).length) delete x['$ADD'];
+    return x;
+}
 export default {
     getDb: ({name, schema = {}, schemaOptions = {}, options = {}}) => {
         const model = dynamoose.model(
@@ -282,9 +305,9 @@ export default {
                 let docs;
                 let ids = [];
                 if ('string' === typeof payload.id) {
-                    doc = {...(await model.update({id: payload.id}, payload.data || {}) || {})};
+                    doc = {...(await model.update({id: payload.id}, buildUpdateObject(payload.data)) || {})};
                 } else if (Array.isArray(payload.id)) {
-                    docs = await Promise.all(payload.id.map(async id => await model.update({id}, payload.data || {}) || {}));
+                    docs = await Promise.all(payload.id.map(async id => await model.update({id}, buildUpdateObject(payload.data)) || {}));
                 } else if ('object' === typeof payload.id) {
                     ids = (await runQuery(model, {
                         criteria: {_: convertToQueryDsl(payload.id)},
@@ -293,7 +316,7 @@ export default {
                         offset: undefined,
                         sort: undefined,
                     }) || []);
-                    docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, payload.data || {}) || {}));
+                    docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, buildUpdateObject(payload.data)) || {}));
                 }
                 if (docs) return [...docs];
                 if (!doc) throw new DocumentNotFoundError(name, payload.id);
