@@ -13,7 +13,13 @@ const findCascadeMatchingCase = (v, map) => (map && map[v]) ? map[v] : undefined
 
 const buildCascadeValues = (def, data, dir) =>
     Object.entries(def || {}).reduce((acc, [k, v]) => {
-        const vv = buildValueGenerator(('string' === typeof v) ? {type: v} : <any>v, dir)(data);
+        const d = ('string' === typeof v) ? {type: v} : <any>v;
+        let vv;
+        if (('**clear**' !== d.type) && ('**unchanged**' !== d.type)) {
+            vv = buildValueGenerator(d, dir)(data);
+        } else {
+            vv = d.type;
+        }
         if ('**unchanged**' !== vv) acc[k] = vv;
         return acc;
     }, {})
@@ -40,13 +46,15 @@ export default ({model, dir, prefix = undefined}) => async data => {
         if (!matchCase) return;
         const values = buildCascadeValues(matchCase, data, dir);
         Object.entries(values).forEach(([kk, vv]) => {
-            if ('**clear**' === vv) {
-                data.data[kk] = undefined
-            } else {
-                data.data[kk] = vv;
+            if ('**unchanged**' !== vv) {
+                if ('**clear**' === vv) {
+                    data.data[kk] = undefined
+                } else {
+                    data.data[kk] = vv;
+                }
+                data.autoPopulated = data.autoPopulated || {};
+                data.autoPopulated[kk] = true;
             }
-            data.autoPopulated = data.autoPopulated || {};
-            data.autoPopulated[kk] = true;
         })
     });
     return data;
