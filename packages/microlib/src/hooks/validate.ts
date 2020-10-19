@@ -13,6 +13,7 @@ const getValidator = (type, dir) => {
 
 export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, validators = {}}, required = true, dir}) => async data => {
     if (!data.data) data.data = {};
+    if ('function' !== typeof data.data.hasOwnProperty) data.data = {...data.data};
     const localCtx = {data: data.contextData || {}};
     const errors = {};
     Object.keys(data.data).forEach(k => {
