@@ -9,7 +9,10 @@ const jwtRefreshSecret = String(process.env.JWT_REFRESH_SECRET || 'the-very-secr
 const defaultPopulate = ({id, username, email, admin = false}) => ({id, username, email, admin, permissions: [...(admin ? ['admin'] : []), 'user']});
 
 const generateTokensForUser = (data, populate: Function|undefined = undefined) => {
-    data = (populate || defaultPopulate)(data) || {};
+    return generateTokens((populate || defaultPopulate)(data) || {});
+};
+
+const generateTokens = (data) => {
     const jwt = require('jsonwebtoken');
     return {
         token: jwt.sign({
@@ -44,4 +47,4 @@ const refreshAuthToken = async ({refreshToken, fetch = undefined, populate = und
     return generateTokensForUser(user, populate);
 };
 
-export default {createAuthToken, refreshAuthToken}
+export default {createAuthToken, refreshAuthToken, generateTokens}
