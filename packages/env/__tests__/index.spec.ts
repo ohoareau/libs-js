@@ -12,7 +12,7 @@ describe('env', () => {
             REACT_APP_C: false,
         }, `
 REACT_APP_XYZ=12
-REACT_APP_UV_WXYZ=hello world
+REACT_APP_UV_WXYZ="hello world"
 REACT_APP_C=
         `
         ],
