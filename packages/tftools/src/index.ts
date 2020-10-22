@@ -6,7 +6,10 @@ import {readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync} from 'f
 Handlebars.registerHelper('slugify', s => s.replace(/[^a-z0-9_]+/, '-'));
 
 export const buildVarKey = k => k.toUpperCase();
-export const buildVarValue = (s, d, ss) => (('_' === s) ? `${d}` : (ss[s] ? (ss[s][d] ? `${ss[s][d]}` : '') : '')).trim();
+export const buildVarValue = (s, d, ss) => {
+    const v = (('_' === s) ? `${d}` : (ss[s] ? (ss[s][d] ? `${ss[s][d]}` : '') : '')).trim();
+    return ((0 <= v.indexOf(' ')) || (0 <= v.indexOf(';'))) ? `"${v}"` : v;
+}
 export const parseLayerVariableDsn = d => (!/^@[^:]+:.+$/.test(d)) ? ['_', d] : d.substr(1).split(/:/).slice(0, 2);
 export const flattenJsonVars = v => Object.keys(v.variables || {}).reduce((acc, k) => Object.assign(acc, {[k]: v.variables[k].value}), {});
 
