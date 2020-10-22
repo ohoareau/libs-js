@@ -10,5 +10,6 @@ const valuify = v => {
     if ('string' !== typeof v) return v;
     if (0 === v.length) return '';
     if ((0 <= v.indexOf(' ')) || (0 <= v.indexOf(';'))) return `"${v}"`;
+
     return v;
 }
