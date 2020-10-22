@@ -6,6 +6,7 @@ describe('env', () => {
         ['REACT_APP_', {
             REACT_APP_XYZ: 12,
             REACT_APP_UV_WXYZ: 'hello world',
+            REACT_APP_UV_WXYZT: 'hello;world',
             ABC: 1,
             X_Y_Z: 'world',
             THIS_IS_REACT_APP_X: 'bye',
@@ -13,6 +14,7 @@ describe('env', () => {
         }, `
 REACT_APP_XYZ=12
 REACT_APP_UV_WXYZ="hello world"
+REACT_APP_UV_WXYZT="hello;world"
 REACT_APP_C=
         `
         ],
