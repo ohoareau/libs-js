@@ -6,7 +6,7 @@ export const register = async (
     configurationFetcher: Function, loaderFactory: Function
 ) => {
     if (!window[key]) window[key] = createManager({
-        document, window, globals,
+        document, window, globals, key,
         loaderFactory, configurationFetcher,
     });
     const manager = window[key] as manager;

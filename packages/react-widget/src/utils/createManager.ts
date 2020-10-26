@@ -3,8 +3,8 @@ import {manager, globals, document, window} from '../types';
 import render from "./render";
 
 export const createManager = (
-    {document, window, globals, loaderFactory, configurationFetcher}:
-    {document: document, window: window, globals: globals, loaderFactory: Function, configurationFetcher: Function}
+    {document, window, globals, key, loaderFactory, configurationFetcher}:
+    {document: document, window: window, globals: globals, key: string, loaderFactory: Function, configurationFetcher: Function}
     ) => {
     const manager = {} as manager
     const widgets = {};
@@ -14,9 +14,9 @@ export const createManager = (
         const data = {};
         for (const k in dataset) {
             // noinspection JSUnfilteredForInLoop
-            if ('maarsw' !== k.slice(0, 6)) continue;
+            if (key !== k.slice(0, key.length)) continue;
             // noinspection JSUnfilteredForInLoop
-            const kk = k.slice(6);
+            const kk = k.slice(key.length);
             // noinspection JSUnfilteredForInLoop
             data[`${kk.slice(0, 1).toLowerCase()}${kk.slice(1)}`] = dataset[k];
         }
@@ -46,9 +46,12 @@ export const createManager = (
         infos.registrations++;
     };
 
+    const getInfos = () => ({...infos});
+
     manager.getWidgets = getWidgets;
     manager.registerWidget = registerWidget;
     manager.register = register;
+    manager.getInfos = getInfos;
 
     return manager;
 };

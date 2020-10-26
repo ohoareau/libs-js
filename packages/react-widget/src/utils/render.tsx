@@ -1,9 +1,9 @@
-export const render = ({document, React, ReactDOM = undefined}) => async (id, App, props) => {
+export const render = ({document, React, ReactDOM}) => async (id, Component, props) => {
     const StrictMode = (React || {}).StrictMode || (() => {});
     // noinspection TypeScriptValidateJSTypes
     ReactDOM && (await (ReactDOM as any).render(
         <StrictMode>
-            <App {...props} elementId={id} />
+            <Component {...props} elementId={id} />
         </StrictMode>,
         document.getElementById(id)
     ));

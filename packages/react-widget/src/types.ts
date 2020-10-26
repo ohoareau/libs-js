@@ -2,6 +2,7 @@ export type manager = {
     getWidgets: Function,
     registerWidget: Function,
     register: Function,
+    getInfos: Function,
 };
 
 export type globals = {
