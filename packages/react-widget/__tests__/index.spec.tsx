@@ -19,14 +19,14 @@ describe('register', () => {
             },
         };
         const theNode = {dataset: {mykeyId: 'xyz'}};
-        const configurationFetch = async () => ({a: 1, b: true, c: 'hello'});
+        const configurationFetcher = async () => ({a: 1, b: true, c: 'hello'});
         let x = {executed: false};
         const loaderFactory = ({render}) => async (id, props) => {
             x.executed = true;
             await render(id, () => {}, props);
         };
         expect(window[key]).toBeUndefined();
-        await register(document, window, key, globals, configurationFetch, loaderFactory);
+        await register(document, window, key, globals, configurationFetcher, loaderFactory);
         expect(window[key]).toBeDefined();
         expect(window[key].getInfos()).toEqual({registrations: 1});
         document.getElementById.mockImplementationOnce(() => theNode);
