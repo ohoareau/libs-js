@@ -29,7 +29,7 @@ export const register = async ({window, ...args} : managerArgs & {window: any}) 
 type managerArgs = {
     document: {getElementById: (id: string) => any},
     key: string,
-    configure: (id: string) => Promise<configuration>,
+    configure: (id: string, context: {[key: string]: any}) => Promise<configuration>,
     component: ComponentType,
     context: {[key: string]: any},
 };
@@ -58,7 +58,7 @@ const createManager = ({document, key, component: Component, configure, context}
         const props = getElementData(id) as any;
         props['id'] = props['id'] || 'default';
         widgets[id].key = props['id'] || undefined;
-        widgets[id].config = {id: props['id'], ...await configure(id)};
+        widgets[id].config = {id: props['id'], ...await configure(id, context)};
         widgets[id].status = 'configured';
         ReactDOM.render(
             <StrictMode>
