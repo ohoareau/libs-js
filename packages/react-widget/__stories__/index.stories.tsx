@@ -1,6 +1,6 @@
 import React from 'react';
 
-import component from '../src';
+import component from '@ohoareau/react-component';
 
 export default {
     component: component({}, () => <div />),
