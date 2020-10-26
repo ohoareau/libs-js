@@ -1,7 +1,7 @@
 export const render = ({document, React = undefined, ReactDOM = undefined}) => async (id, App, props) => {
     // noinspection TypeScriptValidateJSTypes
     ReactDOM && (await (ReactDOM as any).render(
-        React ? (React as any).StrictMode({children: App({...props, elementId: id})}) : () => null,
+        React ? (React as any).StrictMode({children: <App {...props} elementId={id} />}) : <></>,
         document.getElementById(id)
     ));
 };
