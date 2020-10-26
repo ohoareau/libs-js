@@ -1,10 +1,9 @@
-export const render = ({document, react, reactDOM, serviceWorker}) => async (id, App, props) => {
-    reactDOM.render(
-        react.StrictMode({children: App({...props, elementId: id})}),
+export const render = ({document, React = undefined, ReactDOM = undefined}) => async (id, App, props) => {
+    // noinspection TypeScriptValidateJSTypes
+    ReactDOM && (await (ReactDOM as any).render(
+        React ? (React as any).StrictMode({children: App({...props, elementId: id})}) : () => null,
         document.getElementById(id)
-    );
-    // or .register() to enabled PWA (https://bit.ly/CRA-PWA)
-    serviceWorker && serviceWorker.unregister && await serviceWorker.unregister();
+    ));
 };
 
 export default render

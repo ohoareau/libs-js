@@ -1,5 +1,6 @@
 import getWidgetConfiguration from './getWidgetConfiguration';
 import {manager, globals, document, window} from '../types';
+import render from "./render";
 
 export const createManager = (
     {document, window, globals, loaderFactory, configurationFetcher}:
@@ -26,7 +27,7 @@ export const createManager = (
     const renderWidget = loaderFactory({
         document,
         window,
-        ...globals,
+        render: render({document, ...globals}),
         manager,
     });
     const registerWidget = async (id, ...args) => {
