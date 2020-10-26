@@ -1,5 +1,6 @@
 export const uuid = ({w}) => {
-    const crypto = w.crypto || w['msCrypto'] || { // crypto polyfill for IE11 or -
+    // crypto polyfill for IE11 or -
+    const crypto = w.crypto || w['msCrypto'] || {
         getRandomValues: array => {
             for (let i = 0, l = array.length; i < l; i++) {
                 array[i] = Math.floor(Math.random() * 256);
