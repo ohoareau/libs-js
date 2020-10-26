@@ -58,7 +58,7 @@ const createManager = ({document, key, component: Component, configure, context}
         const props = getElementData(id) as any;
         props['id'] = props['id'] || 'default';
         widgets[id].key = props['id'] || undefined;
-        widgets[id].config = {id: props['id'], ...await configure(id, context)};
+        widgets[id].config = {id: props['id'], ...await configure(props['id'], context)};
         widgets[id].status = 'configured';
         ReactDOM.render(
             <StrictMode>
