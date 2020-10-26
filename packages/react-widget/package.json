@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-widget",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "React Widget",
   "license": "MIT",
   "main": "lib/index.js",
