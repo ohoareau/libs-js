@@ -31,6 +31,7 @@ export const load = (response, {d, w, c}) => {
     for (let i = 0; i < els.length; i++) {
         if(els[i].className.indexOf(c.s) >= 0) continue; // already loaded
         map = map || JSON.parse(response) || {}; // lazy loading, first loop that need it, parse it
+        map = (map['files'] ? map['files'] : map) || {};
         if (map[c.j]) {
             const js = d.createElement('script');
             els[i].id = uuid({w});
