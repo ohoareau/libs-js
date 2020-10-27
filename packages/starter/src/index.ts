@@ -28,34 +28,39 @@ export const load = (response, {d, w, c}) => {
     let els = d.getElementsByClassName(c.p);
     if (!(els instanceof HTMLCollection)) els = [els];
     let entrypoints: any = undefined;
-    let len = 0;
     for (let i = 0; i < els.length; i++) {
         if(els[i].className.indexOf(c.s) >= 0) continue; // already loaded
+        els[i].id = uuid({w});
+        els[i].className += " " + c.s;
         entrypoints = entrypoints || ((JSON.parse(response) || {}).entrypoints || []); // lazy loading, first loop that need it, parse it
-        len = entrypoints.length;
-        entrypoints.map((entrypoint, j) => {
+        entrypoints.reduce(async (acc, p) => {
+            await acc;
             const js = d.createElement('script');
-            els[i].id = uuid({w});
-            els[i].className += " " + c.s;
-            (j === (len - 1)) && ((js, fjs) => {
-                if (js.readyState) {  // IE
-                    js.onreadystatechange = () => {
-                        if (('loaded' === js.readyState) || ('complete' === js.readyState)) {
-                            js.onreadystatechange = null;
-                            // noinspection JSUnresolvedFunction
-                            w[c.p].registerWidget(fjs.id).then(() => {});
-                        }
-                    };
-                } else {  // Others
-                    js.onload = () => {
-                        // noinspection JSUnresolvedFunction
-                        w[c.p].registerWidget(fjs.id).then(() => {});
-                    };
-                }
-            })(js, els[i]);
-            js.src = c.u + '/' + entrypoint;
-            els[i].parentNode.insertBefore(js, els[i]);
-        });
+            return new Promise((resolve) => { // @todo handle reject
+                ((js) => {
+                    if (js.readyState) {  // IE
+                        js.onreadystatechange = () => {
+                            if (('loaded' === js.readyState) || ('complete' === js.readyState)) {
+                                js.onreadystatechange = null;
+                                resolve();
+                            }
+                        };
+                    } else {  // Others
+                        js.onload = () => {
+                            resolve();
+                        };
+                    }
+                })(js);
+                js.src = c.u + '/' + p;
+                els[i].parentNode.insertBefore(js, els[i]);
+            });
+        }, Promise.resolve()).then(() => {
+            w[c.p].registerWidget(els[i]).then(() => {}).catch(e => {
+                console.error('register error', e);
+            })
+        }).catch(e => {
+            console.error('entrypoint error', e);
+        })
     }
 };
 export const starter = (d, w, c) => get(c.u + '/' + c.m, t => load(t, {d, w, c}));
