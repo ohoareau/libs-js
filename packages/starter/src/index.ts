@@ -27,7 +27,7 @@ export const get = (url, callback) => {
 export const load = (response, {d, w, c}) => {
     let els = d.getElementsByClassName(c.p);
     if (!(els instanceof HTMLCollection)) els = [els];
-    let entrypoints: any = {};
+    let entrypoints: any = undefined;
     let len = 0;
     for (let i = 0; i < els.length; i++) {
         if(els[i].className.indexOf(c.s) >= 0) continue; // already loaded
