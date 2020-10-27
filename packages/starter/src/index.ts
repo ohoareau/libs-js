@@ -27,16 +27,17 @@ export const get = (url, callback) => {
 export const load = (response, {d, w, c}) => {
     let els = d.getElementsByClassName(c.p);
     if (!(els instanceof HTMLCollection)) els = [els];
-    let map: any = {};
+    let entrypoints: any = {};
+    let len = 0;
     for (let i = 0; i < els.length; i++) {
         if(els[i].className.indexOf(c.s) >= 0) continue; // already loaded
-        map = map || JSON.parse(response) || {}; // lazy loading, first loop that need it, parse it
-        map = (map['files'] ? map['files'] : map) || {};
-        if (map[c.j]) {
+        entrypoints = entrypoints || ((JSON.parse(response) || {}).entrypoints || []); // lazy loading, first loop that need it, parse it
+        len = entrypoints.length;
+        entrypoints.map((entrypoint, j) => {
             const js = d.createElement('script');
             els[i].id = uuid({w});
             els[i].className += " " + c.s;
-            ((js, fjs) => {
+            (j === (len - 1)) && ((js, fjs) => {
                 if (js.readyState) {  // IE
                     js.onreadystatechange = () => {
                         if (('loaded' === js.readyState) || ('complete' === js.readyState)) {
@@ -52,17 +53,9 @@ export const load = (response, {d, w, c}) => {
                     };
                 }
             })(js, els[i]);
-            js.src = c.u + '/' + map[c.j];
+            js.src = c.u + '/' + entrypoint;
             els[i].parentNode.insertBefore(js, els[i]);
-        }
-        if (map[c.c]) {
-            const l = d.createElement('link');
-            l.rel = 'stylesheet';
-            l.type = 'text/css';
-            l.media = 'all';
-            l.href = c.u + '/' + map[c.c];
-            els[i].parentNode.insertBefore(l, els[i]);
-        }
+        });
     }
 };
 export const starter = (d, w, c) => get(c.u + '/' + c.m, t => load(t, {d, w, c}));
