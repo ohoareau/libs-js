@@ -55,7 +55,7 @@ export const load = (response, {d, w, c}) => {
                 els[i].parentNode.insertBefore(js, els[i]);
             });
         }, Promise.resolve()).then(() => {
-            w[c.p].registerWidget(els[i]).then(() => {}).catch(e => {
+            w[c.p].registerWidget(els[i].id).then(() => {}).catch(e => {
                 console.error('register error', e);
             })
         }).catch(e => {
