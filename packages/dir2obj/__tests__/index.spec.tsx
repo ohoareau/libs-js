@@ -16,7 +16,7 @@ a: @badvalue
     ]
         .forEach(
             ([a, b]) => it(`${a} => ${JSON.stringify(b)}`, async () => {
-                const f = async () => dir2obj(`${__dirname}/../__fixtures__/${a}`);
+                const f = async () => dir2obj(`${__dirname}/../__fixtures__/${a}`, {ignoreDots: true});
                 if (b instanceof Error) {
                     await expect(f()).rejects.toThrow(b);
                 } else {

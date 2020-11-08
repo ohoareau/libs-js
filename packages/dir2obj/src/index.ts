@@ -18,11 +18,12 @@ export const parserMap = {
     lst: parseListFile,
 };
 
-export const dir2obj = (dir: string) => readdirSync(dir, {withFileTypes: true}).reduce(
+export const dir2obj = (dir: string, options: any = {}) => readdirSync(dir, {withFileTypes: true}).reduce(
     (acc, e) => {
         const path = `${dir}/${e.name}`;
+        if ('.' === e.name.slice(0, 1) && !!options && !!options.ignoreDots) return acc;
         if (e.isDirectory()) {
-            acc[e.name] = {...(acc[e.name] || {}), ...dir2obj(path)};
+            acc[e.name] = {...(acc[e.name] || {}), ...dir2obj(path, options)};
         } else {
             const ext = e.name.replace(/^(.*)\.([^.]+)$/, '$2').toLowerCase();
             const k = e.name.replace(/\.[^.]+$/, '');
