@@ -63,10 +63,10 @@ const getMigration = async query => getDb().get(query);
 const deleteMigration = async query => getDb().delete(query);
 const createMigration = async query => getDb().create(query);
 
-const migrate = async ({rootDir}) => require('@ohoareau/migrate').default(
-    `${rootDir}/migrations`,
+const migrate = async (ctx) => require('@ohoareau/migrate').default(
+    `${ctx.rootDir}/migrations`,
     (await getMigrations()).items.map(i => i.id),
-    {},
+    {...ctx},
     'up',
     createLogger({
         add: async migration => createMigration({data: {id: migration.name}}),
