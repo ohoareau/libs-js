@@ -7,7 +7,7 @@ export const populateFromV1 = (req, res) => {
         ...(req.pathParameters || {}),
     };
     Object.assign(req, JSON.parse(req.body || '{}'));
-    res.type('application/json');
+    res.type('application/json; charset=UTF-8');
     res.bodyOnly = false;
 };
 
@@ -20,7 +20,7 @@ export const populateFromV2 = (req, res) => {
         ...(req.pathParameters || {}),
     };
     Object.assign(req, JSON.parse(req.body || '{}'));
-    res.type('application/json');
+    res.type('application/json; charset=UTF-8');
     res.bodyOnly = false;
 };
 
