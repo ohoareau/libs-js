@@ -69,7 +69,7 @@ describe('micro + apigateway', () => {
         ['basic',
             {body: '{"number": 12}'},
             {},
-            {statusCode: 200, body: "54", headers: {'Content-Type': 'application/json'}},
+            {statusCode: 200, body: "54", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
             q => parseInt(q.number) + 42,
             [
                 apigateway(),
@@ -79,7 +79,7 @@ describe('micro + apigateway', () => {
         ['basic 2',
             {body: '{"number": 13}'},
             {},
-            {statusCode: 200, body: "53", headers: {'Content-Type': 'application/json'}},
+            {statusCode: 200, body: "53", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
             q => parseInt(q.number) + 40,
             [
                 apigateway(),
@@ -89,7 +89,7 @@ describe('micro + apigateway', () => {
         ['one middleware',
             {body: '{"number": 13}'},
             {},
-            {statusCode: 200, body: "65", headers: {'Content-Type': 'application/json'}},
+            {statusCode: 200, body: "65", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
             q => parseInt(q.number) + 40,
             [
                 apigateway(),
@@ -100,7 +100,7 @@ describe('micro + apigateway', () => {
         ['two middlewares',
             {body: '{"number": 13}'},
             {},
-            {statusCode: 200, body: "51", headers: {'Content-Type': 'application/json'}},
+            {statusCode: 200, body: "51", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
             q => parseInt(q.number) + 40,
             [
                 apigateway(),
@@ -112,7 +112,7 @@ describe('micro + apigateway', () => {
         ['two middlewares 2',
             {body: '{"number": 13}'},
             {},
-            {statusCode: 200, body: "42", headers: {'Content-Type': 'application/json'}},
+            {statusCode: 200, body: "42", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
             q => parseInt(q.number) + 40,
             [
                 apigateway(),
@@ -136,7 +136,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 12}'},
             {},
             {statusCode: 200, body: "54", headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
             q => parseInt(q.number) + 42,
@@ -150,7 +150,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "53", headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
             q => parseInt(q.number) + 40,
@@ -164,7 +164,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "65", headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
             q => parseInt(q.number) + 40,
@@ -179,7 +179,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "51", headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
             q => parseInt(q.number) + 40,
@@ -195,7 +195,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "42", headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
             q => parseInt(q.number) + 40,
@@ -211,7 +211,7 @@ describe('micro + apigateway + cors', () => {
             {body: '{"number": 12}', headers: {'origin': 'https://example.com'}},
             {},
             {statusCode: 200, body: "54", headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
                     'Access-Control-Allow-Origin': '*',
                 }},
             q => parseInt(q.number) + 42,
@@ -225,7 +225,7 @@ describe('micro + apigateway + cors', () => {
             {httpMethod: 'GET', body: '{"number": 12}', headers: {'origin': 'https://example.com'}},
             {},
             {statusCode: 200, body: "54", headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
                     'Access-Control-Allow-Origin': '*',
                 }},
             q => parseInt(q.number) + 42,
@@ -243,7 +243,7 @@ describe('micro + apigateway + cors', () => {
             }},
             {},
             {statusCode: 204, body: "{}", headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json; charset=UTF-8',
                     'Access-Control-Allow-Origin': '*',
                     'Access-Control-Allow-Methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
                     'Access-Control-Allow-Headers': 'Content-Type',
