@@ -48,5 +48,5 @@ export const reference = ({type, localField, idField, fetchedFields = [], dir}) 
         message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
     });
 };
-export const dynaform = () => ({check: require('@ohoareau/dynaform').default.validate})
-export const dynaformString = () => ({check: v => require('@ohoareau/dynaform').default.validate(JSON.parse(v))})
+export const dynaform = () => ({check: require('@ohoareau/dynaform').validate})
+export const dynaformString = () => ({check: v => require('@ohoareau/dynaform').validate(JSON.parse(v))})
