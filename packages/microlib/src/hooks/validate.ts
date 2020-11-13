@@ -32,10 +32,28 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
     await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (!validators[k]) return;
         await Promise.all(validators[k].map(async ({type, config = {}}) => {
-            const validator: {test: Function, message: Function} = getValidator(type, dir)({...config, dir});
-            if (!(await validator.test(v, localCtx))) {
-                if (!errors[k]) errors[k] = [];
-                errors[k].push(new Error(await validator.message(v, localCtx)));
+            const validator: {test?: Function, message?: Function, check?: Function} = getValidator(type, dir)({...config, dir});
+            if (validator.test) {
+                if (!(await validator.test(v, localCtx))) {
+                    if (!errors[k]) errors[k] = [];
+                    errors[k].push(new Error((validator.message && (await validator.message(v, localCtx))) || 'Validation error'));
+                }
+            }
+            if (validator.check) {
+                try {
+                    await validator.check(v, localCtx);
+                } catch (e) {
+                    if (!errors[k]) errors[k] = [];
+                    if (e) {
+                        if (e.getErrors) {
+                            e.getErrors().forEach(ee => errors[k].push(ee));
+                        } else {
+                            errors[k].push(new Error(e.message || 'Validation error'));
+                        }
+                    } else {
+                        errors[k].push(new Error('Validation error'));
+                    }
+                }
             }
         }));
     }));

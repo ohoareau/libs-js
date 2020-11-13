@@ -18,6 +18,7 @@ export const uuid = () => match({pattern: '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}
 export const url = () => match({pattern: '^http[s]?://.+$', flags: 'i', message: `Not a valid URL`});
 export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', message: `Not a valid AWS ARN`});
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
+export const jsonString = () => ({check: v => JSON.parse(v)});
 export const reference = ({type, localField, idField, fetchedFields = [], dir}) => {
     // @todo fix problem with c.fetchReference :(
     const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
@@ -47,3 +48,5 @@ export const reference = ({type, localField, idField, fetchedFields = [], dir}) 
         message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
     });
 };
+export const dynaform = () => ({check: require('@ohoareau/dynaform').default.validate})
+export const dynaformString = () => ({check: v => require('@ohoareau/dynaform').default.validate(JSON.parse(v))})

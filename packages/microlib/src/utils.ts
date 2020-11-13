@@ -100,13 +100,15 @@ export const createHelpers = (model, dir) => {
         const authorize = async (query) => hook('@authorize', query);
         const prefetch = async query => hook('@prefetch', query);
         const transform = async query => hook('@transform', query);
+        const pretransform = async query => hook('@pretransform', query);
         const mutate = async (query, type, config = {}) => hook('@mutate', query, {type, config});
         const autoTransitions = async (result, query) => hook('@auto-transitions', [result, query]);
         const populate = async (query, prefix = undefined) => hook('@populate', query, {prefix});
         const prepopulate = async (query, prefix = undefined) => hook('@prepopulate', query, {prefix});
         const prepare = async query => hook('@prepare', query);
         const after = async (result, query) => hook('@after', [result, query]);
+        const convert = async (result, query) => hook('@convert', [result, query]);
         const dispatch = async (result, query) => hook('@dispatch', [result, query]);
-        return {authorize, validate, prepopulate, populate, prefetch, dispatch, transform, mutate, prepare, after, autoTransitions, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
+        return {authorize, validate, prepopulate, populate, prefetch, dispatch, pretransform, convert, transform, mutate, prepare, after, autoTransitions, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
     };
 }
