@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.9.16",
+    "version": "0.9.17",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -21,8 +21,8 @@
     "dependencies": {
         "@ohoareau/build-package": "^0.1.0",
         "@ohoareau/deploy-package": "^0.1.0",
-        "currency-codes": "^2.1.0",
         "bcryptjs": "^2.4.3",
+        "currency-codes": "^2.1.0",
         "uuid": "^7.0.3"
     },
     "peerDependencies": {
