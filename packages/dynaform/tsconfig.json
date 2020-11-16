@@ -3,7 +3,11 @@
   "compilerOptions": {
     "rootDir": "./src",
     "outDir": "./lib",
-    "composite": true
+    "composite": true,
+    "resolveJsonModule": true
   },
+  "files": [
+    "src/formats/schema-1.0.json"
+  ],
   "include": ["./src"]
 }

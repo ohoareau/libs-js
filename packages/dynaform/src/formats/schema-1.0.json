@@ -1,0 +1,254 @@
+{
+  "schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://maars.cc/schemas/schema-1.0.json",
+  "title": "Dynaform definition",
+  "description": "Draft of dynaform definition schema",
+  "type": "object",
+  "properties": {
+    "format": {
+      "const": "1.0"
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "$ref": "#/definitions/otherModelType"
+          },
+          {
+            "$ref": "#/definitions/choiceModelType"
+          }
+        ]
+      }
+    },
+    "versions": {
+      "type": "object",
+      "properties": {
+        "default": {
+          "$ref": "#/definitions/version"
+        }
+      },
+      "additionalProperties": {
+        "$ref": "#/definitions/version"
+      },
+      "required": [
+        "default"
+      ]
+    },
+    "translations": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "required": [
+    "format",
+    "models",
+    "versions"
+  ],
+  "additionalProperties": false,
+  "definitions": {
+    "choiceModelType": {
+      "type": "object",
+      "description": "Type choice",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "choice"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "choices": {
+          "type": [
+            "object",
+            "array"
+          ]
+        },
+        "config": {
+          "type": "object"
+        },
+        "validators": {
+          "type": "object"
+        },
+        "rules": {
+          "type": "object"
+        },
+        "features": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "label"
+      ]
+    },
+    "otherModelType": {
+      "type": "object",
+      "description": "Other type",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "text",
+            "cursor",
+            "feeling"
+          ]
+        },
+        "label": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object"
+        },
+        "validators": {
+          "type": "object"
+        },
+        "rules": {
+          "type": "object"
+        },
+        "features": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "label"
+      ]
+    },
+    "version": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/configContent"
+        },
+        "steps": {
+          "$ref": "#/definitions/steps"
+        }
+      },
+      "additionalProperties": false
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/step"
+      }
+    },
+    "step": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "$ref": "#/definitions/informativeContent"
+              },
+              {
+                "$ref": "#/definitions/queryContent"
+              }
+            ]
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "configContent": {
+      "type": "object",
+      "properties": {
+        "picture": {
+          "type": "string"
+        },
+        "template": {
+          "type": "string"
+        },
+        "discard": {
+          "type": "object",
+          "properties": {
+            "caption": {
+              "type": "string"
+            },
+            "yes": {
+              "type": "string"
+            },
+            "no": {
+              "type": "string"
+            }
+          }
+        },
+        "browsing": {
+          "type": "object",
+          "properties": {
+            "next": {
+              "type": "string"
+            },
+            "previous": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "informativeContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "informative"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "caption": {
+          "type": "string"
+        },
+        "info": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/configContent"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false
+    },
+    "queryContent": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "query"
+          ]
+        },
+        "model-property": {
+          "type": "string"
+        },
+        "config": {
+          "$ref": "#/definitions/configContent"
+        }
+      },
+      "required": [
+        "type",
+        "model-property"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
