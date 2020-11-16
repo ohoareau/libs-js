@@ -81,10 +81,10 @@ export const cssFgColor = (theme: any, type: string|string[]|any, fg: any = unde
     return {};
 }
 export const cssFont = (theme: any, typo: string, type: string, align: string|Function|undefined = undefined) => cleanCss({
-    fontStyle: theme.typos_common_font_style || undefined,
-    lineHeight: theme.typos_common_line_height || undefined,
+    fontStyle: tget(theme, `typos_${typo}_${type}_font_style`) || theme.typos_common_font_style || undefined,
+    lineHeight: tget(theme, `typos_${typo}_${type}_line_height`) || theme.typos_common_line_height || undefined,
     fontWeight: tget(theme, `typos_${typo}_${type}_font_weight`) || theme.typos_common_font_weight || undefined,
-    fontFamily: tget(theme, `typos_${typo}_common_font_family`) || undefined,
+    fontFamily: tget(theme, `typos_${typo}_${type}_font_family`) || tget(theme, `typos_${typo}_common_font_family`) || undefined,
     letterSpacing: tget(theme, `typos_${typo}_${type}_letter_spacing`) || tget(theme, `typos_${typo}_common_letter_spacing`) || undefined,
     fontSize: tget(theme, `typos_${typo}_${type}_font_size`) || undefined,
     textTransform: tget(theme, `typos_${typo}_${type}_text_transform`) || 'unset',
