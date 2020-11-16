@@ -1,7 +1,6 @@
 
 import AbstractFormat from "./AbstractFormat";
 import Ajv from "ajv";
-import * as schema from "./schema-1.0.json";
 import ValidationError from "../errors/ValidationError";
 import {violation} from "../types";
 
@@ -10,7 +9,7 @@ export class Format1_0 extends AbstractFormat {
 
     constructor() {
         super();
-        this.setValidator(new Ajv().compile(schema));
+        this.setValidator(new Ajv().compile(require('../../assets/schema-1.0.json')));
     }
 
     setValidator(v): void {
