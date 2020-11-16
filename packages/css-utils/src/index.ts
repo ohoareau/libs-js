@@ -14,6 +14,9 @@ export const cssActivableClickBox = (theme: any, textType: string, boxType: stri
         ...cssFgColor(theme, fgVariant(theme, 'disabled', 'active', 'default', true, textType) as any),
     },
 });
+export const cssBg = (theme: any, bg: any = undefined) => cleanCss({
+    background: bg ? tget(theme, `background_${bg}`) : undefined,
+});
 export const cssBgColor = (theme: any, bg: any = undefined) => cleanCss({
     backgroundColor: bg ? (('function' === typeof bg) ? bg : tget(theme, `background_color_${bg}`)) : undefined,
 });
@@ -23,6 +26,7 @@ export const cssBorder = (theme: any, type: string|undefined = undefined) => cle
     boxSizing: 'border-box',
 });
 export const cssBox = (theme: any, type: string|undefined = undefined, bg: string|Function|undefined = undefined, shadow: string|Function|undefined = undefined) => ({
+    ...cssBg(theme, bg),
     ...cssBgColor(theme, bg),
     ...cssBorder(theme, type),
     ...cssShadow(theme, shadow)
@@ -85,6 +89,7 @@ export const cssFont = (theme: any, typo: string, type: string, align: string|Fu
     fontSize: tget(theme, `typos_${typo}_${type}_font_size`) || undefined,
     textTransform: tget(theme, `typos_${typo}_${type}_text_transform`) || 'unset',
     textAlign: align,
+    opacity: tget(theme, `typos_${typo}_${type}_opacity`) || undefined,
 });
 export const cssMargin = (theme: any, typo: string, type: string) => cleanCss({
     margin: tget(theme, `typos_${typo}_${type}_margin`) || undefined,
