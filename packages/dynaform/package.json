@@ -14,6 +14,9 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "ajv": "6.12.6"
+  },
   "scripts": {
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
