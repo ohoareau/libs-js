@@ -56,6 +56,7 @@ const createManager = ({document, key, component: Component, configure, context}
         widgets[id] = widgets[id] || {};
         widgets[id].status = 'created';
         const props = getElementData(id) as any;
+        (Object.assign as any)(context, props);
         props['id'] = props['id'] || 'default';
         widgets[id].key = props['id'] || undefined;
         widgets[id].config = {id: props['id'], ...await configure(props['id'], context)};
