@@ -68,8 +68,8 @@ export const reference = ({type, localField, idField, targetIdField, fetchedFiel
             }
         },
         message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
-        postValidate: async (k, v, data, localCtx) => {
-            targetIdField && (data[k] = localCtx.data[k][targetIdField]);
+        postValidate: async (k, value, data, localCtx) => {
+            targetIdField && (data[k] = localCtx.data[`${type}.${value}`][targetIdField]);
         }
     });
 };
