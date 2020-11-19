@@ -23,7 +23,7 @@ export const unknown = () => ({test: () => false, message: () => `Unknown valida
 export const jsonString = () => ({check: v => JSON.parse(v)});
 export const reference = ({type, localField, idField, targetIdField, fetchedFields = [], dir}) => {
     const caller = require('./services/caller').default;
-    const idFields = Array.isArray(idField) ? idField : [idField];
+    const idFields = Array.isArray(idField) ? [...idField] : [idField];
     const fetchReference = async (value) => {
         let r;
         const errors: Error[] = [];
@@ -69,7 +69,10 @@ export const reference = ({type, localField, idField, targetIdField, fetchedFiel
         },
         message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
         postValidate: async (k, value, data, localCtx) => {
-            targetIdField && (data[k] = localCtx.data[`${type}.${value}`][targetIdField]);
+            if (targetIdField) {
+                data[k] = localCtx.data[`${type}.${value}`][targetIdField];
+                localCtx.data[`${type}.${localCtx.data[`${type}.${value}`][targetIdField]}`] = localCtx.data[`${type}.${value}`];
+            }
         }
     });
 };
