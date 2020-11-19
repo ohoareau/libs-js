@@ -32,7 +32,7 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
     await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (!validators[k]) return;
         await Promise.all(validators[k].map(async ({type, config = {}}) => {
-            const validator: {test?: Function, message?: Function, check?: Function} = getValidator(type, dir)({...config, dir});
+            const validator: {test?: Function, message?: Function, check?: Function, postValidate?: Function} = getValidator(type, dir)({...config, dir});
             if (validator.test) {
                 if (!(await validator.test(v, localCtx))) {
                     if (!errors[k]) errors[k] = [];
@@ -52,6 +52,22 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
                         }
                     } else {
                         errors[k].push(new Error('Validation error'));
+                    }
+                }
+            }
+            if (validator.postValidate) {
+                try {
+                    await validator.postValidate(k, v, data.data, localCtx, data);
+                } catch (e) {
+                    if (!errors[k]) errors[k] = [];
+                    if (e) {
+                        if (e.getErrors) {
+                            e.getErrors().forEach(ee => errors[k].push(ee));
+                        } else {
+                            errors[k].push(new Error(e.message || 'Post Validation error'));
+                        }
+                    } else {
+                        errors[k].push(new Error('Post Validation error'));
                     }
                 }
             }

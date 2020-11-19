@@ -22,7 +22,29 @@ export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', mes
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
 export const jsonString = () => ({check: v => JSON.parse(v)});
 export const reference = ({type, localField, idField, targetIdField, fetchedFields = [], dir}) => {
-    const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {...(targetIdField ? {index: targetIdField} : {}), [targetIdField || idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
+    const caller = require('./services/caller').default;
+    const idFields = Array.isArray(idField) ? idField : [idField];
+    const fetchReference = async (value) => {
+        let r;
+        const errors: Error[] = [];
+        do {
+            const idf = idFields.shift();
+            try {
+                r = await caller.execute(`${type}_get`, {
+                    ...(('id' !== idf) ? {index: idf} : {}),
+                    [idf]: value,
+                    fields: fetchedFields
+                }, `${dir}/services/crud`);
+            } catch (ee) {
+                errors.push(ee);
+            }
+        } while (!r && !!idFields.length);
+        if (!r) {
+            if (errors.length) throw errors.shift();
+            throw new Error(`Unable to fetch reference for ${type}`);
+        }
+        return r;
+    }
     return ({
         test: async (value, localCtx) => {
             if (undefined === value) return true;
@@ -47,6 +69,9 @@ export const reference = ({type, localField, idField, targetIdField, fetchedFiel
             }
         },
         message: (value) => `Unknown ${type} reference ${value} for ${localField}`,
+        postValidate: async (k, v, data, localCtx) => {
+            targetIdField && (data[k] = localCtx.data[k][targetIdField]);
+        }
     });
 };
 export const dynaform = () => ({check: require('@ohoareau/dynaform').validate})
