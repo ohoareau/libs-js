@@ -30,8 +30,7 @@ export const reference = ({type, localField, idField, targetIdField, fetchedFiel
         do {
             const idf = idFields.shift();
             try {
-                r = await caller.execute(`${type}_get`, {
-                    ...(('id' !== idf) ? {index: idf} : {}),
+                r = await caller.execute(`${type}_get${(idf !== 'id') ? `By${idf.slice(0, 1).toUpperCase()}${idf.slice(1)}` : ''}`, {
                     [idf]: value,
                     fields: fetchedFields
                 }, `${dir}/services/crud`);
