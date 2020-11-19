@@ -21,9 +21,8 @@ export const url = () => match({pattern: '^http[s]?://.+$', flags: 'i', message:
 export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', message: `Not a valid AWS ARN`});
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
 export const jsonString = () => ({check: v => JSON.parse(v)});
-export const reference = ({type, localField, idField, fetchedFields = [], dir}) => {
-    // @todo fix problem with c.fetchReference :(
-    const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {[idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
+export const reference = ({type, localField, idField, targetIdField, fetchedFields = [], dir}) => {
+    const fetchReference = async (value) => require('./services/caller').default.execute(`${type}_get`, {...(targetIdField ? {index: targetIdField} : {}), [targetIdField || idField]: value, fields: fetchedFields}, `${dir}/services/crud`);
     return ({
         test: async (value, localCtx) => {
             if (undefined === value) return true;
