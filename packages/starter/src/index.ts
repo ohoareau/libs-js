@@ -24,6 +24,26 @@ export const get = (url, callback) => {
     xhr.open('GET', url, true);
     xhr.send(null);
 };
+const buildElementLoadPromise = async (el, src, nextEl, srcAttributeName = 'src') =>
+    new Promise((resolve) => { // @todo handle reject
+        ((x) => {
+            if (x.readyState) {  // IE
+                x.onreadystatechange = () => {
+                    if (('loaded' === x.readyState) || ('complete' === x.readyState)) {
+                        x.onreadystatechange = null;
+                        resolve();
+                    }
+                };
+            } else {  // Others
+                x.onload = () => {
+                    resolve();
+                };
+            }
+        })(el);
+        el[srcAttributeName] = src;
+        nextEl.parentNode.insertBefore(el, nextEl);
+    })
+;
 export const load = (response, {d, w, c}) => {
     let els = d.getElementsByClassName(c.p);
     if (!(els instanceof HTMLCollection)) els = [els];
@@ -35,25 +55,15 @@ export const load = (response, {d, w, c}) => {
         entrypoints = entrypoints || ((JSON.parse(response) || {}).entrypoints || []); // lazy loading, first loop that need it, parse it
         entrypoints.reduce(async (acc, p) => {
             await acc;
-            const js = d.createElement('script');
-            return new Promise((resolve) => { // @todo handle reject
-                ((js) => {
-                    if (js.readyState) {  // IE
-                        js.onreadystatechange = () => {
-                            if (('loaded' === js.readyState) || ('complete' === js.readyState)) {
-                                js.onreadystatechange = null;
-                                resolve();
-                            }
-                        };
-                    } else {  // Others
-                        js.onload = () => {
-                            resolve();
-                        };
-                    }
-                })(js);
-                js.src = c.u + '/' + p;
-                els[i].parentNode.insertBefore(js, els[i]);
-            });
+            const isJs = '.js' === ((p || '').slice(-3) || '').toLowerCase();
+            const isCss = '.css' === ((p || '').slice(-4) || '').toLowerCase();
+            if (isJs) return buildElementLoadPromise(d.createElement('script'), c.u + '/' + p, els[i]);
+            if (isCss) {
+                const css = d.createElement('link');
+                css.rel = 'stylesheet';
+                return buildElementLoadPromise(css, c.u + '/' + p, els[i], 'href');
+            }
+            // other file than .css and .js are ignored.
         }, Promise.resolve()).then(() => {
             w[c.p].registerWidget(els[i].id).then(() => {}).catch(e => {
                 console.error('register error', e);
