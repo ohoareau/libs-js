@@ -15,9 +15,6 @@ const DataTableBodyRowCell: ComponentType<DataTableBodyRowCellProps> = ({buttonC
         extraProps.component = 'th';
         extraProps.scope = 'row';
     }
-
-    let content = undefined;
-    
     if (column.component) {
         const Component = column.component;
         content = <Component>{row[column.id]}</Component>;
