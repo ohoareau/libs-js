@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-data-table",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "React Data Table",
   "license": "MIT",
   "main": "lib/index.js",
