@@ -15,6 +15,14 @@ const DataTableBodyRowCell: ComponentType<DataTableBodyRowCellProps> = ({buttonC
         extraProps.component = 'th';
         extraProps.scope = 'row';
     }
+
+    const RootComponent = TableCell;
+
+    if (column.component) {
+        const Component = column.component;
+        return <RootComponent {...extraProps}><Component>{row[column.id]}</Component></RootComponent>;
+    }
+
     switch (column.type || column.id) {
         case 'status':
             extraProps.padding = 'checkbox';
@@ -79,7 +87,7 @@ const DataTableBodyRowCell: ComponentType<DataTableBodyRowCellProps> = ({buttonC
             content = column.format ? column.format(row[column.id], row) : row[column.id];
             break;
     }
-    return <TableCell {...extraProps}>{content}</TableCell>;
+    return <RootComponent {...extraProps}>{content}</RootComponent>;
 };
 
 export interface DataTableBodyRowCellProps {
