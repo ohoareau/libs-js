@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.10.5",
+    "version": "0.11.0",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -19,10 +19,10 @@
         "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
     },
     "dependencies": {
-        "@ohoareau/errors": "^0",
-        "@ohoareau/aws": "^0",
+        "@ohoareau/aws": "^0.1.0",
         "@ohoareau/build-package": "^0.1.0",
         "@ohoareau/deploy-package": "^0.1.0",
+        "@ohoareau/errors": "^0.1.0",
         "bcryptjs": "^2.4.3",
         "currency-codes": "^2.1.0",
         "uuid": "^7.0.3"
