@@ -1,7 +1,7 @@
 jest.mock('aws-sdk/clients/dynamodb', () => ({DocumentClient: jest.fn()}));
 
 const docClientMock = require('aws-sdk/clients/dynamodb').DocumentClient;
-import dynamodb from '../../../src/services/aws/dynamodb';
+import dynamodb from '../../src/services/dynamodb';
 
 beforeAll(() => {
     jest.resetAllMocks();

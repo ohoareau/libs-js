@@ -19,6 +19,8 @@
         "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
     },
     "dependencies": {
+        "@ohoareau/errors": "^0",
+        "@ohoareau/aws": "^0",
         "@ohoareau/build-package": "^0.1.0",
         "@ohoareau/deploy-package": "^0.1.0",
         "bcryptjs": "^2.4.3",
