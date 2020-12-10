@@ -76,7 +76,7 @@ export const triggerRefreshToken = async (refreshToken, client) =>
     (await client.mutate({
         mutation: GQL_REFRESH_USER_TOKEN,
         variables: {data: {refreshToken}}
-    })).data['refreshAuthToken']
+    })).data
 ;
 
 export const useLogin = (dispatch, client: any = undefined, options: any = {}) => {
@@ -163,7 +163,12 @@ export const createClient = ({store, uri, timeout = 5000, reducerKey = 'user'}) 
                     await store.dispatch(new Error(`No refresh-token available`));
                     return;
                 }
-                await store.dispatch(userChangedAction(await triggerRefreshToken(refreshToken, authClient)));
+                const tokenData = await triggerRefreshToken(refreshToken, authClient);
+                if (!tokenData || !tokenData.refreshToken || !tokenData.token) {
+                    // noinspection ExceptionCaughtLocallyJS
+                    throw new Error(`Unable to refresh the token (jwt expired ?)`);
+                }
+                await store.dispatch(userChangedAction(tokenData));
                 token = store.getState()[reducerKey].token;
             } catch (e) {
                 await store.dispatch(logoutAction);
