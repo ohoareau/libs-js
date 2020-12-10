@@ -152,7 +152,7 @@ export const createClient = ({store, uri, timeout = 5000, reducerKey = 'user'}) 
     const authLink = setContext(async (_, { headers }) => {
         let {token, refreshToken} = store.getState()[reducerKey];
         if (!token) {
-            await store.dispatch(logoutAction);
+            await store.dispatch(logoutAction());
             return;
         }
         const decodedToken = decodeJwt(token);
@@ -171,7 +171,7 @@ export const createClient = ({store, uri, timeout = 5000, reducerKey = 'user'}) 
                 await store.dispatch(userChangedAction(tokenData));
                 token = store.getState()[reducerKey].token;
             } catch (e) {
-                await store.dispatch(logoutAction);
+                await store.dispatch(logoutAction());
                 throw e;
             }
         }
