@@ -15,7 +15,7 @@ const deleteFile = async ({bucket, key}) =>
 
 const deleteDirectory = async ({bucket, key}) => {
     const files = await awss3.listObjects({Bucket: bucket, Prefix: `${key}/`}).promise();
-    if (!files || !files.Contents || !!files.Contents.length) return [];
+    if (!files || !files.Contents || !files.Contents.length) return [];
     const objects: {Key: string}[] = files.Contents.map(f => ({Key: f.Key}));
     await awss3.deleteObjects({Bucket: bucket, Delete: {Objects: objects}}).promise();
     return [...objects, ...(await deleteDirectory({bucket, key}))];
