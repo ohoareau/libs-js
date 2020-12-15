@@ -13,6 +13,14 @@ const deleteFile = async ({bucket, key}) =>
     awss3.deleteObject({Bucket: bucket, Key: key}).promise()
 ;
 
+const deleteDirectory = async ({bucket, key}) => {
+    const files = await awss3.listObjects({Bucket: bucket, Prefix: `${key}/`}).promise();
+    if (!files || !files.Contents || !!files.Contents.length) return [];
+    const objects: {Key: string}[] = files.Contents.map(f => f.push({Key: f.Key}));
+    await awss3.deleteObjects({Bucket: bucket, Delete: {Objects: objects}}).promise();
+    return [...objects, ...(await deleteDirectory({bucket, key}))];
+};
+
 const getFileContent = async query => (await getFile(query)).body;
 const setFileContent = setFile;
 
@@ -68,6 +76,7 @@ const getFileViewUrl = async ({bucket, key, contentType}) => {
 
 export const s3 = {
     deleteFile,
+    deleteDirectory,
     getFile,
     getFileContent,
     getFileUploadUrl,
