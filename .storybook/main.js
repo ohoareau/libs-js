@@ -1,5 +1,22 @@
 module.exports = {
-    stories: [`${process.cwd()}/__stories__/*.stories.tsx`],
+    addons: [
+        '@storybook/addon-viewport/register',
+        {
+            name: '@storybook/addon-storysource',
+            options: {
+                rule: {
+                    test: [/\.stories\.tsx?$/],
+                    include: [`${process.cwd()}/__stories__`],
+                },
+                loaderOptions: {
+                    parser: 'typescript',
+                },
+            },
+        },
+        '@storybook/addon-knobs/register',
+        '@storybook/addon-actions/register',
+    ],
+    stories: [`${process.cwd()}/__stories__/**/*.stories.tsx`],
     webpackFinal: async config => {
         config.module.rules.push({
             test: /\.(ts|tsx)$/,

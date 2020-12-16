@@ -1,0 +1,10 @@
+type: monorepo-js-libs
+
+vars:
+  generator_package: true
+  storybooks: true
+  svg_components: true
+  makefile:
+    generate_target: true
+  readme:
+    name: libs-js

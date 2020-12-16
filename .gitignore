@@ -1,4 +1,4 @@
-/.idea/
+.idea/
 node_modules/
 lerna-debug.log
 npm-debug.log
@@ -7,4 +7,8 @@ npm-debug.log
 coverage/
 *.log
 *.tsbuildinfo
-/generated/
+/packages/*/public/
+.DS_Store
+public/
+generated/
+

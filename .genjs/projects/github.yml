@@ -1,0 +1,10 @@
+type: cicd-github
+
+name: .github
+description: CI/CD pipeline scripts
+
+vars:
+  github:
+    workflows:
+      push-to-master: true
+      push-to-feature-branch: true
