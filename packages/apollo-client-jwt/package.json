@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/apollo-client-jwt",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Apollo Client JWT",
   "license": "MIT",
   "main": "lib/index.js",
@@ -20,9 +20,9 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "jwt-decode": "^3.1.2",
     "@apollo/client": "^3.3.6",
     "apollo-link-timeout": "^3.0.0",
-    "graphql": "^15.4.0"
+    "graphql": "^15.4.0",
+    "jwt-decode": "^3.1.2"
   }
 }
