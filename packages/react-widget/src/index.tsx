@@ -56,15 +56,16 @@ const createManager = ({document, key, component: Component, configure, context}
         widgets[id] = widgets[id] || {};
         widgets[id].status = 'created';
         const props = getElementData(id) as any;
-        (Object.assign as any)(context, props);
+        const widgetContext = {...context};
+        (Object.assign as any)(widgetContext, props);
         props['id'] = props['id'] || 'default';
         widgets[id].key = props['id'] || undefined;
-        widgets[id].config = {id: props['id'], ...await configure(props['id'], context)};
+        widgets[id].config = {id: props['id'], ...await configure(props['id'], widgetContext)};
         widgets[id].status = 'configured';
         ReactDOM.render(
             <StrictMode>
-                <ContextProvider value={context}>
-                    <Component {...props} config={widgets[id].config} elementId={id} context={context} />
+                <ContextProvider value={widgetContext}>
+                    <Component {...props} config={widgets[id].config} elementId={id} context={widgetContext} />
                 </ContextProvider>
             </StrictMode>,
             document.getElementById(id)
