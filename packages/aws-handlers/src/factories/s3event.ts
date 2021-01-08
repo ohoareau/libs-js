@@ -1,5 +1,3 @@
-import {s3} from '@ohoareau/aws';
-
 const consumeS3 = ({rules}) => async record => {
     if (!/^ObjectCreated:/.test(record.eventName)) return;
     if ('/' === record.s3.object.key.charAt(record.s3.object.key.length - 1)) return;
@@ -10,7 +8,6 @@ const consumeS3 = ({rules}) => async record => {
     }, []);
     await Promise.all(hits.map(async hit => hit.rule.function(record.s3.bucket.name, hit.match)));
     !hits.length && console.log(`incoming ${record.s3.bucket.name}:${record.s3.object.key} => IGNORED`);
-    await s3.deleteFile({bucket: record.s3.bucket.name, key: record.s3.object.key});
 };
 
 const consumerFactories = config => ({
