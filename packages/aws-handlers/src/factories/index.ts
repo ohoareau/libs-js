@@ -1,0 +1,1 @@
+export {default as s3event} from './s3event';
