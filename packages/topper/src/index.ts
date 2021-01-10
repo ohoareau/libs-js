@@ -20,4 +20,25 @@ export const createTopper = ({info, log}: {info?: string, log?: Function} = {}):
     }
 };
 
+export const createRunner = (topper: topper) => async (x, tryCallback, catchCallback, finallyCallback) => {
+    x = Array.isArray(x) ? x : [x];
+    let result;
+    try {
+        topper.start(...(x as [any, ...any[]]));
+        result = await tryCallback();
+        topper.stop(x[0]);
+    } catch (e) {
+        if (catchCallback) {
+            await catchCallback(e);
+        } else {
+            throw e;
+        }
+    } finally {
+        topper.stop(x[0]);
+        finallyCallback && (await finallyCallback());
+    }
+    return result;
+};
+
+
 export default createTopper
