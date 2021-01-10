@@ -5,10 +5,10 @@ const plugin = (source, {plugins, targetBucket = undefined, processedDir = 'arch
     targetBucket = targetBucket || bucket;
     let p = plugins[source];
     ('function' === typeof p) && (p = {
-        init: async x => ({...x}),
-        load: async () => {},
+        init: <Function>(async x => ({...x})),
+        load: <Function>(async () => {}),
         execute: p,
-        clean: async () => {},
+        clean: <Function>(async () => {}),
     });
     const run = createRunner();
     const getData = async () => s3.getFileContent({bucket, key, raw: true});
@@ -42,7 +42,7 @@ const plugin = (source, {plugins, targetBucket = undefined, processedDir = 'arch
     );
 };
 
-const consumeS3 = ({eventType = 'ObjectCreated', plugins = undefined, rules, ...rest}) => async record => {
+const consumeS3 = ({eventType = 'ObjectCreated', plugins = undefined, rules = [], ...rest}: {eventType?: string, plugins?: any, rules?: any[]}) => async record => {
     const bucket = record.s3.bucket['name'];
     const key = record.s3.object.key;
     const isHandledEventRecord = new RegExp(`^${eventType}`).test(record.eventName);
@@ -52,8 +52,11 @@ const consumeS3 = ({eventType = 'ObjectCreated', plugins = undefined, rules, ...
         return;
     }
     const hits = rules.reduce((acc, rule) => {
-        const match = key.match(rule.pattern);
-        match && acc.push({rule, match});
+        const patterns = rule.match ? (Array.isArray(rule.match) ? rule.match : [rule.match]) : [];
+        const ignorePatterns = rule.ignore ? (Array.isArray(rule.ignore) ? rule.ignore : [rule.ignore]) : [];
+        const foundPatternMatch = patterns.find(p => key.match(p));
+        const foundIgnorePatternMatch = ignorePatterns.find(p => key.match(p));
+        foundPatternMatch && !foundIgnorePatternMatch && acc.push({rule, match: foundPatternMatch});
         return acc;
     }, []);
     await Promise.all(hits.map(async hit => {
