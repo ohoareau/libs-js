@@ -8,7 +8,7 @@ export const getDb = async (options = {}) => {
     const {type = 'default'} = options as any;
     // re-use the sequelize instance across invocations to improve performance
     if (!dbs[type]) {
-        dbs[type] = await require(`./loaders/${type}`)(options) as Sequelize
+        dbs[type] = await require(`./loaders/${type}`).default(options) as Sequelize
     } else {
         // restore `getConnection()` if it has been overwritten by `close()`
         if (dbs[type].connectionManager.hasOwnProperty('getConnection')) {
