@@ -14,6 +14,10 @@
   "publishConfig": {
     "access": "public"
   },
+  "dependencies": {
+    "@ohoareau/topper": "^0.1.2",
+    "@ohoareau/aws": "^0.1.3"
+  },
   "scripts": {
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
