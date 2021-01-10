@@ -1,7 +1,7 @@
-const consumeS3 = ({rules}) => async record => {
+const consumeS3 = ({eventType = 'ObjectCreated', rules}) => async record => {
     const bucket = record.s3.bucket['name'];
     const key = record.s3.object.key;
-    const isHandledEventRecord = /^ObjectCreated:/.test(record.eventName);
+    const isHandledEventRecord = new RegExp(`^${eventType}`).test(record.eventName);
     const isDirectory = ('/' === key.charAt(key.length - 1));
     if (!isHandledEventRecord || isDirectory) {
         console.log(`Ignoring non-handled object '${key}' from bucket '${bucket}'.`)
