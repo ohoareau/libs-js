@@ -27,7 +27,7 @@ const plugin = (source, {run, ruleName, plugins, targetBucket = undefined, proce
     await run(
         ['process', `rule: ${ruleName}, file: ${originalPath}`],
         async () => {
-            p.load && (await run('load', async () => p.load({...defaults}, ctx)));
+            p.load && (await run(['load', `file: ${originalPath}`], async () => p.load({...defaults}, ctx)));
             p.execute && (await run('execute', async () => p.execute({...defaults}, ctx)));
             await run(['archive', processedTargetPath], copyFileFactory(processedDir));
         },
