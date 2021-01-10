@@ -8,6 +8,6 @@ export const createHandler = (type, config = {}) => {
     return fn(config);
 }
 
-export const s3eventHandler = createHandler('s3event', {});
+export const createS3eventHandler = config => createHandler('s3event', config);
 
 export default createHandler

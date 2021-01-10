@@ -1,4 +1,4 @@
-import createHandler, {s3eventHandler} from '..';
+import createHandler, {createS3eventHandler} from '..';
 
 describe('createHandler', () => {
     it('throw an error if unknown handler type', () => {
@@ -9,8 +9,8 @@ describe('createHandler', () => {
     });
 });
 
-describe('s3eventHandler', () => {
-    it('is a function', () => {
-        expect(typeof s3eventHandler).toEqual('function');
+describe('createS3eventHandler', () => {
+    it('return a function', () => {
+        expect(typeof createS3eventHandler({})).toEqual('function');
     });
 });
