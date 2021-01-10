@@ -20,7 +20,8 @@ export const createTopper = ({info, log}: {info?: string, log?: Function} = {}):
     }
 };
 
-export const createRunner = (topper: topper) => async (x, tryCallback, catchCallback, finallyCallback) => {
+export const createRunner = (topper?: topper) => async (x, tryCallback, catchCallback, finallyCallback) => {
+    topper = topper || createTopper({log: console.log});
     x = Array.isArray(x) ? x : [x];
     let result;
     try {
