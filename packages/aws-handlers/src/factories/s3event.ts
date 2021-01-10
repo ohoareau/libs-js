@@ -1,13 +1,19 @@
 const consumeS3 = ({rules}) => async record => {
-    if (!/^ObjectCreated:/.test(record.eventName)) return;
-    if ('/' === record.s3.object.key.charAt(record.s3.object.key.length - 1)) return;
+    const bucket = record.s3.bucket['name'];
+    const key = record.s3.object.key;
+    const isHandledEventRecord = /^ObjectCreated:/.test(record.eventName);
+    const isDirectory = ('/' === key.charAt(key.length - 1));
+    if (!isHandledEventRecord || isDirectory) {
+        console.log(`Ignoring non-handled object '${key}' from bucket '${bucket}'.`)
+        return;
+    }
     const hits = rules.reduce((acc, rule) => {
-        const match = record.s3.object.key.match(rule.pattern);
+        const match = key.match(rule.pattern);
         match && acc.push({rule, match});
         return acc;
     }, []);
-    await Promise.all(hits.map(async hit => hit.rule.function(record.s3.bucket.name, hit.match)));
-    !hits.length && console.log(`incoming ${record.s3.bucket.name}:${record.s3.object.key} => IGNORED`);
+    await Promise.all(hits.map(async hit => (hit.rule.function as any)(bucket, hit.match)));
+    !hits.length && console.log(`incoming ${bucket}:${key} => IGNORED`);
 };
 
 const consumerFactories = config => ({
