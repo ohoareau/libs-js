@@ -57,7 +57,7 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, plugins = undefin
         const ignorePatterns = rule.ignore ? (Array.isArray(rule.ignore) ? rule.ignore : [rule.ignore]) : [];
         const foundPatternMatch = patterns.find(p => key.match(p));
         const foundIgnorePatternMatch = ignorePatterns.find(p => key.match(p));
-        foundPatternMatch && !foundIgnorePatternMatch && acc.push({rule, match: foundPatternMatch});
+        foundPatternMatch && !foundIgnorePatternMatch && acc.push({rule, bucket, key});
         return acc;
     }, []);
     let error = undefined;
@@ -73,7 +73,7 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, plugins = undefin
                 }
                 fn = plugin(pName, {...rest, run, ruleName: hit.rule.name, plugins: localPlugins})
             }
-            return (fn as any)(bucket, hit.match);
+            return (fn as any)(hit.bucket, hit.key);
         }));
     } catch (e) {
         error = e;
