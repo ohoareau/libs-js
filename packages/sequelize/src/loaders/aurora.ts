@@ -33,7 +33,6 @@ export default async ({
             }
         }
     );
-    // or `sequelize.sync()`
     await sequelize.authenticate();
 
     return sequelize;
