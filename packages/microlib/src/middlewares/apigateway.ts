@@ -1,3 +1,10 @@
+const injectData = req => {
+    const x = JSON.parse(req.body || '{}');
+    if (x) {
+        if (x && x.data && (1 === (Object.keys(x).length))) Object.assign(req.params, x.data);
+        else Object.assign(req.params, x)
+    }
+}
 export const populateFromV1 = (req, res) => {
     req.method = req.httpMethod;
     req.path = req.resource;
@@ -6,7 +13,7 @@ export const populateFromV1 = (req, res) => {
         ...(req.queryStringParameters || {}),
         ...(req.pathParameters || {}),
     };
-    Object.assign(req, JSON.parse(req.body || '{}'));
+    injectData(req);
     res.type('application/json; charset=UTF-8');
     res.bodyOnly = false;
 };
@@ -19,7 +26,7 @@ export const populateFromV2 = (req, res) => {
         ...(req.queryStringParameters || {}),
         ...(req.pathParameters || {}),
     };
-    Object.assign(req, JSON.parse(req.body || '{}'));
+    injectData(req);
     res.type('application/json; charset=UTF-8');
     res.bodyOnly = false;
 };
