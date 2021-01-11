@@ -5,6 +5,7 @@ describe('createTopper', () => {
         expect(createTopper()).toEqual({
             start: expect.any(Function),
             stop: expect.any(Function),
+            fail: expect.any(Function),
             duration: expect.any(Function),
         })
     });
