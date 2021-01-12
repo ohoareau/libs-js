@@ -1,4 +1,5 @@
 export default ({mapping = {}}) => async (e, req, res) => {
+    process.env.MICROSERVICE_DEBUG && console.error(e);
     res.statusCode = ('number' === typeof e.code) ? e.code : 500;
     res.body = e.serialize ? e.serialize(): {
         errorType: 'error',
