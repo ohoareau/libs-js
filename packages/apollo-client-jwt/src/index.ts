@@ -2,12 +2,13 @@ import decodeJwt from 'jwt-decode';
 import ApolloLinkTimeout from 'apollo-link-timeout';
 import {onError} from '@apollo/client/link/error';
 import {setContext} from '@apollo/client/link/context';
-import {ApolloClient, InMemoryCache, createHttpLink, gql as baseGql, useMutation as baseUseMutation, useQuery as baseUseQuery} from '@apollo/client';
+import {ApolloProvider as BaseApolloProvider, ApolloClient, InMemoryCache, createHttpLink, gql as baseGql, useMutation as baseUseMutation, useQuery as baseUseQuery} from '@apollo/client';
 
 // noinspection JSUnusedGlobalSymbols
 export const gql = baseGql;
 export const useQuery = baseUseQuery;
 export const useMutation = baseUseMutation;
+export const ApolloProvider = BaseApolloProvider;
 
 export const createClient = ({getCurrentTokens, setCurrentTokens, refreshTokens, onLogout, onAuthError, uri, timeout = 5000}) => {
     const authClient = new ApolloClient({
