@@ -9,6 +9,7 @@ export const gql = baseGql;
 export const useQuery = baseUseQuery;
 export const useMutation = baseUseMutation;
 export const ApolloProvider = BaseApolloProvider;
+export const jwtDecode = decodeJwt;
 
 export const createClient = ({getCurrentTokens, setCurrentTokens, refreshTokens, onLogout, onAuthError, uri, timeout = 5000}) => {
     const authClient = new ApolloClient({
