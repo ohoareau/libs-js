@@ -70,7 +70,7 @@ describe('micro + apigateway', () => {
             {body: '{"number": 12}'},
             {},
             {statusCode: 200, body: "54", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
-            q => parseInt(q.number) + 42,
+            q => parseInt(q.data.number) + 42,
             [
                 apigateway(),
             ],
@@ -80,7 +80,7 @@ describe('micro + apigateway', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "53", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
             ],
@@ -90,10 +90,10 @@ describe('micro + apigateway', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "65", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
-                (req, res, next) => { req.number+= 12; return next(); },
+                (req, res, next) => { req.data.number+= 12; return next(); },
             ],
             [],
         ],
@@ -101,11 +101,11 @@ describe('micro + apigateway', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "51", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
-                (req, res, next) => { req.number/= 10; return next(); },
-                (req, res, next) => { req.number+= 10; return next(); },
+                (req, res, next) => { req.data.number/= 10; return next(); },
+                (req, res, next) => { req.data.number+= 10; return next(); },
             ],
             [],
         ],
@@ -113,18 +113,18 @@ describe('micro + apigateway', () => {
             {body: '{"number": 13}'},
             {},
             {statusCode: 200, body: "42", headers: {'Content-Type': 'application/json; charset=UTF-8'}},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
-                (req, res, next) => { req.number+= 10; return next(); },
-                (req, res, next) => { req.number/= 10; return next(); },
+                (req, res, next) => { req.data.number+= 10; return next(); },
+                (req, res, next) => { req.data.number/= 10; return next(); },
             ],
             [],
         ],
     ]
         .forEach(
             ([_, event, context, response, fn, ms, ems]) => it(_ as string, async () => {
-                expect(await micro(ms as any[], ems as any[], fn as Function)(event, context)).toEqual(response);
+                expect(await micro(ms as any[], ems as any[], fn as Function, {params: true})(event, context)).toEqual(response);
             })
         )
     ;
@@ -139,7 +139,7 @@ describe('micro + apigateway + cors', () => {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
-            q => parseInt(q.number) + 42,
+            q => parseInt(q.data.number) + 42,
             [
                 apigateway(),
                 cors(),
@@ -153,7 +153,7 @@ describe('micro + apigateway + cors', () => {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
                 cors(),
@@ -167,11 +167,11 @@ describe('micro + apigateway + cors', () => {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
                 cors(),
-                (req, res, next) => { req.number+= 12; return next(); },
+                (req, res, next) => { req.data.number+= 12; return next(); },
             ],
             [],
         ],
@@ -182,12 +182,12 @@ describe('micro + apigateway + cors', () => {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
                 cors(),
-                (req, res, next) => { req.number/= 10; return next(); },
-                (req, res, next) => { req.number+= 10; return next(); },
+                (req, res, next) => { req.data.number/= 10; return next(); },
+                (req, res, next) => { req.data.number+= 10; return next(); },
             ],
             [],
         ],
@@ -198,12 +198,12 @@ describe('micro + apigateway + cors', () => {
                 'Content-Type': 'application/json; charset=UTF-8',
                 'Access-Control-Allow-Origin': '*',
             }},
-            q => parseInt(q.number) + 40,
+            q => parseInt(q.data.number) + 40,
             [
                 apigateway(),
                 cors(),
-                (req, res, next) => { req.number+= 10; return next(); },
-                (req, res, next) => { req.number/= 10; return next(); },
+                (req, res, next) => { req.data.number+= 10; return next(); },
+                (req, res, next) => { req.data.number/= 10; return next(); },
             ],
             [],
         ],
@@ -214,7 +214,7 @@ describe('micro + apigateway + cors', () => {
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Access-Control-Allow-Origin': '*',
                 }},
-            q => parseInt(q.number) + 42,
+            q => parseInt(q.data.number) + 42,
             [
                 apigateway(),
                 cors(),
@@ -228,7 +228,7 @@ describe('micro + apigateway + cors', () => {
                     'Content-Type': 'application/json; charset=UTF-8',
                     'Access-Control-Allow-Origin': '*',
                 }},
-            q => parseInt(q.number) + 42,
+            q => parseInt(q.data.number) + 42,
             [
                 apigateway(),
                 cors(),
@@ -250,7 +250,7 @@ describe('micro + apigateway + cors', () => {
                     'Content-Length': '0',
                     'Vary': 'Access-Control-Request-Headers',
                 }},
-            q => parseInt(q.number) + 42,
+            q => parseInt(q.data.number) + 42,
             [
                 apigateway(),
                 cors(),
@@ -260,7 +260,7 @@ describe('micro + apigateway + cors', () => {
     ]
         .forEach(
             ([_, event, context, response, fn, ms, ems]) => it(_ as string, async () => {
-                expect(await micro(ms as any[], ems as any[], fn as Function)(event, context)).toEqual(response);
+                expect(await micro(ms as any[], ems as any[], fn as Function, {params: true})(event, context)).toEqual(response);
             })
         )
     ;

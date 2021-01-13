@@ -1,8 +1,19 @@
 const injectData = req => {
+    req.params = req.params || {};
+    const z = req.params;
     const x = JSON.parse(req.body || '{}');
     if (x) {
-        if (x && x.data && (1 === (Object.keys(x).length))) Object.assign(req.params, x.data);
-        else Object.assign(req.params, x)
+        z.data = z.data || {};
+        if (x.data) {
+            if (1 >= (Object.keys(x).length)) {
+                Object.assign(z.data, x.data);
+            } else {
+                Object.assign(z.data, x);
+            }
+        } else Object.assign(z.data, x)
+    }
+    if (req.options && req.options.params) {
+        Object.assign(req, req.params || {});
     }
 }
 export const populateFromV1 = (req, res) => {

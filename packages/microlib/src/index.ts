@@ -16,6 +16,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             requestId: (context || {})['awsRequestId'],
             event,
             context,
+            options,
         };
         const res: any = {headers: {}, statusCode: 200, body: {}, formatters, bodyOnly: ('undefined' !== typeof event.bodyOnly) ? !!event.bodyOnly : true};
         req.res = res;
