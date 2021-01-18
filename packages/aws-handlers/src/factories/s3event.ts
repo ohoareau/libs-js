@@ -1,7 +1,7 @@
 import {s3} from '@ohoareau/aws';
 import {createRunner} from '@ohoareau/topper';
 
-const plugin = (source, {run, ruleName, plugins, targetBucket = undefined, processedDir = 'archived/processed/:rule', errorsDir = 'archived/errors/:rule'}) => async (bucket, key) => {
+const plugin = (source, {archive = true, run, ruleName, plugins, targetBucket = undefined, processedDir = 'archived/processed/:rule', errorsDir = 'archived/errors/:rule'}) => async (bucket, key) => {
     ruleName = ruleName || 'unknown-rule';
     targetBucket = targetBucket || bucket;
     let p = plugins[source];
@@ -29,11 +29,11 @@ const plugin = (source, {run, ruleName, plugins, targetBucket = undefined, proce
         async () => {
             p.load && (await run(['load', `file: ${originalPath}`], async () => p.load({...defaults}, ctx)));
             p.execute && (await run('execute', async () => p.execute({...defaults}, ctx)));
-            await run(['archive', processedTargetPath], copyFileFactory(processedDir));
+            archive && await run(['archive', processedTargetPath], copyFileFactory(processedDir));
         },
         async e => {
             p.fail && (await run('fail', async () => p.fail({...defaults, error: e}, ctx)));
-            await run(['archive', errorsTargetPath], copyFileFactory(errorsDir));
+            archive && await run(['archive', errorsTargetPath], copyFileFactory(errorsDir));
             ctx.error(`File '${originalPath}' failed to be imported: ${e.message}`)
         },
         async () => {
@@ -42,7 +42,7 @@ const plugin = (source, {run, ruleName, plugins, targetBucket = undefined, proce
     );
 };
 
-const consumeS3 = ({eventType = 'ObjectCreated', clean = true, plugins = undefined, rules = [], ...rest}: {clean?: boolean, eventType?: string, plugins?: any, rules?: any[]}) => async record => {
+const consumeS3 = ({eventType = 'ObjectCreated', clean = true, archive = true, plugins = undefined, rules = [], ...rest}: {clean?: boolean, eventType?: string, plugins?: any, rules?: any[], archive?: boolean}) => async record => {
     const bucket = record.s3.bucket['name'];
     const key = record.s3.object.key;
     const isHandledEventRecord = new RegExp(`^${eventType}`).test(record.eventName);
@@ -71,7 +71,7 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, plugins = undefin
                     localPlugins = {default: pName};
                     pName = 'default';
                 }
-                fn = plugin(pName, {...rest, run, ruleName: hit.rule.name, plugins: localPlugins})
+                fn = plugin(pName, {...rest, run, ruleName: hit.rule.name, plugins: localPlugins, archive})
             }
             return (fn as any)(hit.bucket, hit.key);
         }));
