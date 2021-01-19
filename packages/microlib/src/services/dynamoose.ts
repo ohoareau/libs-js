@@ -188,7 +188,10 @@ const runQuery = async (m, {index = undefined, hashKey = undefined, rangeKey = u
     if (sort) applyQuerySort(q.sort, sort);
     if (options) {
         if (options['consistent']) q.consistent();
-        if (options['all'] && q.all) q.all();
+        if (options['all'] && q.all) q.all(
+            'undefined' !== typeof options['delay'] ? options['delay'] : 100,
+            'undefined' !== typeof options['max'] ? options['max'] : 0,
+        );
     }
     return q.exec();
 };
@@ -248,6 +251,11 @@ const buildUpdateObject = (data = {}) => {
     if (!Object.keys(x[addKw]).length) delete x[addKw];
     return x;
 }
+const buildPage = (r = []) => {
+    const cursor = (r && r['lastKey']) ? (new Buffer(JSON.stringify(r['lastKey']))).toString('base64') : undefined;
+    return {items: r.map(d => ({...(d || {})})), cursor, count: r['count'] || r.length};
+};
+
 export default {
     getDb: ({name, schema = {}, schemaOptions = {}, options = {}}) => {
         const model = dynamoose.model(
@@ -257,7 +265,7 @@ export default {
         );
         return {
             find: async (payload) => {
-                return {items: (await runQuery(model, payload) || []).map(d => ({...(d || {})}))};
+                return buildPage(await runQuery(model, payload));
             },
             get: async (payload) => {
                 let doc;
