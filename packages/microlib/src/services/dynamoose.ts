@@ -256,6 +256,11 @@ const buildPage = (r = []) => {
     return {items: r.map(d => ({...(d || {})})), cursor, count: r['count'] || r.length};
 };
 
+const decodePayload = (payload) => {
+    payload = {...payload};
+    payload.offset && (payload.offset = JSON.parse((new Buffer(payload.offset, 'base64')).toString('ascii')));
+    return payload;
+}
 export default {
     getDb: ({name, schema = {}, schemaOptions = {}, options = {}}) => {
         const model = dynamoose.model(
@@ -265,7 +270,7 @@ export default {
         );
         return {
             find: async (payload) => {
-                return buildPage(await runQuery(model, payload));
+                return buildPage(await runQuery(model, decodePayload(payload)));
             },
             get: async (payload) => {
                 let doc;
