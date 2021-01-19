@@ -9,7 +9,7 @@ export default ({userRoleKey = 'role', permissions = {}}: {userRoleKey?: string,
     };
     const test = isOperationAllowedForRole;
     const check = async (query: any, operation: string) => {
-        const role = (query && query.user && query[userRoleKey]) || undefined;
+        const role = (query && query.user && query.user[userRoleKey]) || undefined;
         if (!!query && !!query.private && (!role || !await test(role, operation))) throw new UnauthorizedError();
     };
     return {

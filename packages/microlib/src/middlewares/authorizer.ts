@@ -1,35 +1,22 @@
-function staticAuth({authorized, status}) {
-    return async () => ({authorized, status});
-}
-
-function lambdaAuth({arn, ttl = -1}) {
-    const lambda = require('../services/aws/lambda').default;
-    return async ({req}: any) => {
-        let result;
-        try {
-            result = await lambda.execute(arn, {params: {...req.authorization, ttl}});
-        } catch (e) {
-            return {status: 'error', error: e, authorized: false};
-        }
-        if (!result || !result.status) return {status: 'no-status', authorized: false};
-        switch (result.status) {
-            case 'allowed': return {...(result.metadata || {}), status: 'allowed', authorized: true};
-            case 'forbidden': return {status: 'forbidden' || undefined, ...(result.metadata || {}), authorized: false};
-            default: return {status: 'unknown', reason: result.status, ...(result.metadata || {}), authorized: false};
-        }
-    };
-}
-
-function createAuthorizer({type, ...config}) {
-    switch (type) {
-        case 'lambda': return lambdaAuth(<any>config);
-        case 'allowed': return staticAuth({...config, authorized: true, status: 'allowed'});
-        default: return staticAuth({...config, authorized: false, status: 'unknown'});
+const createAuthorizer = ({type, dir, ...config }) => {
+    let a;
+    if ('@' === type.substr(0, 1)) {
+        a = require('../middleware-authorizers');
+        type = type.substr(1);
+    } else {
+        a = require(`${dir}/middleware-authorizers`);
     }
-}
+    return (a[type.replace(/-/g, '_')] || a.unknown)(config, {dir, type});
+};
 
-export default ({o}) => {
-    const authorizer = createAuthorizer({type: 'allowed'}); // @todo not hardcoded
+function buildAuthorizerConfig({authorization = undefined, z}) {
+    let config: any = authorization || '@allowed';
+    if ('string' === typeof config) config = {type: config};
+    return {...config, dir: z};
+}
+export default (cfg) => {
+    const {o} = cfg;
+    const authorizer = createAuthorizer(buildAuthorizerConfig(cfg));
     return async (req, res, next) => {
         req.authorization = {
             authorized: false,
