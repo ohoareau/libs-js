@@ -42,7 +42,7 @@ const plugin = (source, {archive = true, run, ruleName, plugins, targetBucket = 
     );
 };
 
-const consumeS3 = ({eventType = 'ObjectCreated', clean = true, archive = true, plugins = undefined, rules = [], ...rest}: {clean?: boolean, eventType?: string, plugins?: any, rules?: any[], archive?: boolean}) => async record => {
+const consumeS3 = ({eventType = 'ObjectCreated', plugins = undefined, rules = [], ...rest}: {eventType?: string, plugins?: any, rules?: any[]}) => async record => {
     const bucket = record.s3.bucket['name'];
     const key = record.s3.object.key;
     const isHandledEventRecord = new RegExp(`^${eventType}`).test(record.eventName);
@@ -53,6 +53,7 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, archive = true, p
     }
     const run = createRunner();
     const hits = rules.reduce((acc, rule) => {
+        rule = {clean: true, archive: true, ...rule};
         const patterns = rule.match ? (Array.isArray(rule.match) ? rule.match : [rule.match]) : [];
         const ignorePatterns = rule.ignore ? (Array.isArray(rule.ignore) ? rule.ignore : [rule.ignore]) : [];
         const foundPatternMatch = patterns.find(p => key.match(p));
@@ -61,6 +62,10 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, archive = true, p
         return acc;
     }, []);
     let error = undefined;
+    const {clean} = hits.reduce((acc, item) => {
+        !item.clean && (acc.clean = false);
+        return acc;
+    }, {clean: true})
     try {
         await Promise.all(hits.map(async hit => {
             let fn = hit.rule.function;
@@ -71,7 +76,7 @@ const consumeS3 = ({eventType = 'ObjectCreated', clean = true, archive = true, p
                     localPlugins = {default: pName};
                     pName = 'default';
                 }
-                fn = plugin(pName, {...rest, run, ruleName: hit.rule.name, plugins: localPlugins, archive})
+                fn = plugin(pName, {...rest, run, ruleName: hit.rule.name, plugins: localPlugins, archive: !!hit.rule.archive})
             }
             return (fn as any)(hit.bucket, hit.key);
         }));
