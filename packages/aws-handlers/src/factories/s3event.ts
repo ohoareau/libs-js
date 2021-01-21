@@ -6,17 +6,15 @@ const plugin = (source, {archive = true, run, ruleName, plugins, targetBucket = 
     targetBucket = targetBucket || bucket;
     let p = plugins[source];
     ('function' === typeof p) && (p = {
-        init: <Function>(async x => ({...x})),
-        load: <Function>(async () => {}),
         execute: p,
-        clean: <Function>(async () => {}),
     });
+    const defaultInit = <Function>(async x => ({...x}));
     processedDir = processedDir.replace(':rule', ruleName);
     errorsDir = errorsDir.replace(':rule', ruleName);
     const getData = async () => s3.getFileContent({bucket, key, raw: true});
     const getTargetObject = to => ({bucket: targetBucket, key: `${to ? to : ''}${to ? '/' : ''}${key}`});
     const copyFileFactory = to => async () => s3.setFileContent(getTargetObject(to), await getData());
-    const ctx = await p.init({source, run, log: console.log, error: console.error});
+    const ctx = await (p.init || defaultInit)({source, run, log: console.log, error: console.error});
     const processedTargetObject = getTargetObject(processedDir);
     const errorsTargetObject = getTargetObject(errorsDir);
     const formatObjectPath = o => `s3://${o.bucket}/${o.key}`;
