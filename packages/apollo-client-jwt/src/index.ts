@@ -12,9 +12,9 @@ export const useMutation = baseUseMutation;
 export const ApolloProvider = BaseApolloProvider;
 export const jwtDecode = decodeJwt;
 
-export const createClient = ({getCurrentTokens, setCurrentTokens, refreshTokens, onLogout, onAuthError, uri, timeout = 5000}) => {
+export const createClient = ({fetch = undefined, fetchOptions = undefined, getCurrentTokens, setCurrentTokens, refreshTokens, onLogout, onAuthError, uri, timeout = 5000}: any) => {
     const authClient = new ApolloClient({
-        link: onError(() => {}).concat(new ApolloLinkTimeout(timeout).concat(createHttpLink({uri}))),
+        link: onError(() => {}).concat(new ApolloLinkTimeout(timeout).concat(createHttpLink({uri, fetch, fetchOptions}))),
         cache: new InMemoryCache(),
         defaultOptions: {query: {fetchPolicy: 'no-cache'}},
     });
@@ -48,7 +48,7 @@ export const createClient = ({getCurrentTokens, setCurrentTokens, refreshTokens,
     });
     return new ApolloClient({
         link: onError(() => {}).concat(authLink.concat(new ApolloLinkTimeout(timeout)
-            .concat(createHttpLink({uri})))),
+            .concat(createHttpLink({uri, fetch, fetchOptions})))),
         cache: new InMemoryCache({}),
     });
 };
