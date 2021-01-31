@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/apollo-client-jwt",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Apollo Client JWT",
   "license": "MIT",
   "main": "lib/index.js",
