@@ -75,16 +75,14 @@ const buildQueryDefinitionFromCriteria = (index, hashKey, rangeKey, criteria) =>
     let modifiers = <any[]>[];
     let query:any = {};
     if (index) {
+            modifiers.push({type: 'index', name: index});
         if (hashKey) {
             if (index === hashKey[0]) {
                 query[hashKey[0]] = {eq: hashKey[1]};
             } else {
-                modifiers.push({type: 'index', name: index});
                 modifiers.push({type: 'where', name: hashKey[0]});
                 modifiers.push({type: 'eq', value: hashKey[1]});
             }
-        } else {
-            modifiers.push({type: 'index', name: index});
         }
         if (rangeKey) {
             modifiers.push({type: 'where', name: rangeKey[0]});
@@ -157,21 +155,21 @@ const applyModifiers = (q, modifiers) => modifiers.reduce((qq, m) => {
     }
 }, q);
 
-export const applyQuerySort = (sort: Function, direction: any): void => {
+export const applyQuerySort = (q: {ascending: Function, descending: Function}, direction: any): void => {
     if ('string' === typeof direction) {
         if (('descending' === direction) || ('ascending' === direction)) {
-            sort(<string>direction);
+            q[<string>direction]();
         } else {
             throw new Error(`Unsupported sort value: ${direction} (allowed: ascending,descending`);
         }
     } else if ('number' === typeof direction) {
-        sort((direction === -1) ? 'descending' : 'ascending' )
+        q[(direction === -1) ? 'descending' : 'ascending']();
     } else if ('object' === typeof direction) {
         const k = Object.keys(direction).pop();
         if (!k) throw new Error(
             'Unsupported format for sort (allowed: ascending,descending,-1,1 or an object with one attribute with one of these values as value)'
         );
-        applyQuerySort(sort, direction[k]);
+        applyQuerySort(q, direction[k]);
     } else {
         throw new Error('Unsupported format for sort (allowed: ascending,descending,-1,1 or an object with one attribute with one of these values as value)');
     }
@@ -185,7 +183,7 @@ const runQuery = async (m, {index = undefined, hashKey = undefined, rangeKey = u
     if (limit) q.limit(limit);
     if (fields && fields.length) q.attributes(fields);
     if (offset) q.startAt(offset);
-    if (sort) applyQuerySort(q.sort, sort);
+    if (sort) applyQuerySort(q, sort);
     if (options) {
         if (options['consistent']) q.consistent();
         if (options['all'] && q.all) q.all(
