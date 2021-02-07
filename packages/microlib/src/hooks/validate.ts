@@ -23,14 +23,23 @@ export default ({model: {fields = {}, privateFields = {}, requiredFields = {}, v
             }
         }
     });
+    // this first test is enabled only for create operations
     required && Object.keys(requiredFields).forEach(k => {
         if (!data.data.hasOwnProperty(k)) {
             if (!errors[k]) errors[k] = [];
             errors[k].push(new Error('Field is required'));
         }
     });
+    // this second test is always enabled and check if the field has an empty value and is required
+    Object.keys(requiredFields).forEach(k => {
+        if (data.data.hasOwnProperty(k) && ((undefined === data.data[k]) || (null === data.data[k]))) {
+            if (!errors[k]) errors[k] = [];
+            errors[k].push(new Error('Field is required'));
+        }
+    });
     await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (!validators[k]) return;
+        if ((undefined === v) || (null === v)) return; // value is empty no need to validate with special validators
         await Promise.all(validators[k].map(async ({type, config = {}}) => {
             const validator: {test?: Function, message?: Function, check?: Function, postValidate?: Function} = getValidator(type, dir)({...config, dir});
             let isInError = false;

@@ -22,10 +22,10 @@ describe('applyQuerySort', () => {
         [{t: -1}, 'descending'],
     ]
         .forEach(([direction, expected]) => it(`sort(${JSON.stringify(direction)}) => ${<any>expected instanceof Error ? `Error: ${(<any>expected).message}` : expected}`, () => {
-            const sort = jest.fn();
+            const q = {ascending: jest.fn(), descending: jest.fn()};
             let error;
             try {
-                applyQuerySort(sort, direction);
+                applyQuerySort(q, direction);
             } catch (e) {
                 error = e;
             }
@@ -33,7 +33,7 @@ describe('applyQuerySort', () => {
                 expect(error).toBeInstanceOf(Error);
                 expect(error.message).toEqual((<any>expected).message);
             } else {
-                expect(sort).toHaveBeenCalledWith(expected);
+                expect(q[expected as string]).toHaveBeenCalled();
             }
         }))
     ;
