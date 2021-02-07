@@ -42,6 +42,7 @@
         "dynamoose": "^1.11.1",
         "graphql": "^14.6.0",
         "jsonwebtoken": "^8.5.1",
-        "node-fetch": "^2.6.0"
+        "node-fetch": "^2.6.0",
+        "isbn-util": "^1.1.2"
     }
 }

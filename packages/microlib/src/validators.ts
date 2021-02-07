@@ -20,7 +20,15 @@ export const uuid = () => match({pattern: '^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}
 export const url = () => match({pattern: '^http[s]?://.+$', flags: 'i', message: `Not a valid URL`});
 export const arn = () => match({pattern: '^arn:[^:]*:[^:]*:[^:]*:[^:]*:.+$', message: `Not a valid AWS ARN`});
 export const unknown = () => ({test: () => false, message: () => `Unknown validator`});
+export const isbn = () => ({test: v => require('isbn-util').validate(v), message: 'ISBN is not valid'});
+export const visaNumber = () => ({test: v => /^[0-9]+$/.test(v), message: 'Visa number is not valid'});
 export const jsonString = () => ({check: v => JSON.parse(v)});
+export const unique = ({type, hashKey, index}) => ({check: async v => {
+    const caller = require('./services/caller').default;
+    const r = await caller.execute(`${type}_find`, {index, hashKey: [hashKey || index, v], limit: 1, fields: [hashKey || index]});
+    if (!r || !r.items || !r.items.length) return; // does not exist yet, everything is ok
+    throw new Error(`${type} already exist for ${hashKey || index} is equal to ${v}, restricted due to uniqueness constraint`);
+}});
 export const reference = ({type, localField, idField, targetIdField, fetchedFields = [], dir}) => {
     const caller = require('./services/caller').default;
     const idFields = Array.isArray(idField) ? [...idField] : [idField];
