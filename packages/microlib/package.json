@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.12.4",
+    "version": "0.12.5",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -41,8 +41,8 @@
         "cors": "^2.8.5",
         "dynamoose": "^1.11.1",
         "graphql": "^14.6.0",
+        "isbn-util": "^1.1.2",
         "jsonwebtoken": "^8.5.1",
-        "node-fetch": "^2.6.0",
-        "isbn-util": "^1.1.2"
+        "node-fetch": "^2.6.0"
     }
 }
