@@ -3,6 +3,6 @@
 process.stdout.write(
     require(`${__dirname}/../lib/index.js`).generateVarsFromTerraformOutputs(
         process.argv[3],
-        `../outputs/${process.argv[2]}`
+        (process.argv[2].indexOf('/') >= 0) ? process.argv[2] : `../outputs/${process.argv[2]}`
     )
 );
