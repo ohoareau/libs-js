@@ -46,7 +46,7 @@ function replaceVars(pattern, data = {}) {
         pattern = process.env[envVarMatch[1]] || '';
     }
 
-    const r = new RegExp('\{\{([^\}]+)\}\}');
+    const r = new RegExp('\{\{([^\}]+)\}\}', 'g');
     const matches = [...pattern.matchAll(r)];
     const getValue = k => ('undefined' === typeof data[k]) ? '' : data[k];
 
