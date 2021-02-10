@@ -11,14 +11,14 @@ export const s3url_dl = ({s3url_dl, s3url = undefined}) => async data => {
     bucket = replaceVars(bucket, data);
     key = replaceVars(key, data);
     name = name ? replaceVars(name, data) : undefined;
-    return require('@ohoareau/aws').s3.getFileDownloadUrl({bucket, key, name});
+    return (await require('@ohoareau/aws').s3.getFileDownloadUrl({bucket, key, name})).downloadUrl;
 }
 export const s3url_view = ({s3url_view, s3url = undefined}) => async data => {
     let [bucket, key, contentType = undefined] = (s3url_view || s3url || '').split(':');
     bucket = replaceVars(bucket, data);
     key = replaceVars(key, data);
     contentType = contentType ? replaceVars(contentType, data) : undefined;
-    return require('@ohoareau/aws').s3.getFileViewUrl({bucket, key, contentType});
+    return (await require('@ohoareau/aws').s3.getFileViewUrl({bucket, key, contentType})).viewUrl;
 }
 export const s3url = s3url_view;
 export const s3url_ul = ({s3url_ul, s3url = undefined}) => async data => {
@@ -31,7 +31,7 @@ export const s3url_ul = ({s3url_ul, s3url = undefined}) => async data => {
     } else {
         expires = parseInt(expires);
     }
-    return require('@ohoareau/aws').s3.getFileUploadUrl({bucket, key, expires});
+    return (await require('@ohoareau/aws').s3.getFileUploadUrl({bucket, key, expires})).uploadUrl;
 }
 export const pattern = ({pattern}) => data => replaceVars(pattern, data);
 export const url = ({url}) => data => replaceVars(url, data);
