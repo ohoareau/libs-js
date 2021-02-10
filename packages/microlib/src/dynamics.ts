@@ -5,7 +5,7 @@ export const http = ({http}) => async data => {
     body = body ? replaceVars(body, data) : undefined;
     headers = headers ? JSON.parse(replaceVars(headers, data)) : undefined;
     options = options ? JSON.parse(replaceVars(options, data)) : undefined;
-    const res = await require('./services/http').request(url, method, body, headers, options);
+    const res = await require('./services/http').default.request(url, method, body, headers, options);
     if (!res.ok) throw new Error(`Unable to fetch ${url}`);
     return res.json();
 }
