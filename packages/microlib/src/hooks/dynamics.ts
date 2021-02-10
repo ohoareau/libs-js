@@ -6,7 +6,7 @@ const buildValueGenerator = ({type, config = {}}, dir) => {
     } else {
         g = require(`${dir}/dynamics`);
     }
-    return (g[type.replace(/-/g, '_')] || g.empty)(config);
+    return (g[type.replace(/-/g, '_')] || g.empty)({...config, dir});
 };
 
 export default ({model, dir}) => async (result, query) => {
