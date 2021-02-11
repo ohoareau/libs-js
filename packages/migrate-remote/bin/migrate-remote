@@ -1,0 +1,11 @@
+#!/usr/bin/env node
+
+require(`${__dirname}/../lib/index.js`).default(process.argv[2], process.argv[3]).then(v => {
+    v && console.log(v);
+}).catch(e => {
+    if (process.env.MIGRATE_DEBUG) {
+        console.error(e);
+    } else {
+        console.error(e.message);
+    }
+})
