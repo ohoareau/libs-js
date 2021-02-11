@@ -47,8 +47,9 @@ async function graphql(endpoint: string, options: any = {}): Promise<any> {
         const detail = r.errors.map(e => `  - ${e.message}`).join("\n")
         throw new Error(`[migrate ${endpoint}] Error#1012(migrate): Multiple errors\n\n${detail}`);
     }
-    if (!r.data) throw new Error(`[migrate ${endpoint}] Error#1012(migrate): No data`)
-    return r;
+    if (!r.data || !r.data.migrate) throw new Error(`[migrate ${endpoint}] Error#1012(migrate): No data`)
+    options['debug'] && console.log(`[migrate ${endpoint}] Migration completed: ${JSON.stringify(r.data.migrate)}`)
+    return undefined;
 }
 
 export default graphql
