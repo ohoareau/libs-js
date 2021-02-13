@@ -10,12 +10,15 @@ const getPretransformer = (type, dir) => {
 };
 
 export default ({model: {pretransformers = {}}, dir}) => async data => {
-    Object.entries(data.data).forEach(([k, v]) => {
+    data.originalData = data.originalData || {};
+    await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (pretransformers[k]) {
-            data.originalData = data.originalData || {};
             data.originalData[k] = v;
-            data.data[k] = pretransformers[k].reduce((acc, {type, config}) => getPretransformer(type, dir)(config)(acc), v);
+            data.data[k] = await pretransformers[k].reduce(async (acc, {type, config}) => {
+                acc = await acc;
+                return getPretransformer(type, dir)(config)(acc);
+            }, Promise.resolve(v));
         }
-    });
+    }));
     return data;
 }

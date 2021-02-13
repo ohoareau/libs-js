@@ -10,10 +10,13 @@ const getConverter = (type, dir) => {
 };
 
 export default ({model: {converters = {}}, dir}) => async data => {
-    Object.entries(data).forEach(([k, v]) => {
+    await Promise.all(Object.entries(data).map(async ([k, v]) => {
         if (converters[k]) {
-            data[k] = converters[k].reduce((acc, {type, config}) => getConverter(type, dir)(config)(acc), v);
+            data[k] = await converters[k].reduce(async (acc, {type, config}) => {
+                acc = await acc;
+                return getConverter(type, dir)(config)(acc);
+            }, Promise.resolve(v));
         }
-    });
+    }));
     return data;
 }

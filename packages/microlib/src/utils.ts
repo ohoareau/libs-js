@@ -96,6 +96,7 @@ export const createHelpers = (model, dir) => {
                 console.error('Delete references FAILED', {name, key, value}, e);
             }
         };
+        const requires = async (query) => hook('@requires', query);
         const dynamics = async (result, query) => hook('@dynamics', [result, query]);
         const validate = async (query, required = true) => hook('@validate', query, {required});
         const authorize = async (query) => hook('@authorize', query);
@@ -110,6 +111,24 @@ export const createHelpers = (model, dir) => {
         const after = async (result, query) => hook('@after', [result, query]);
         const convert = async (result, query) => hook('@convert', [result, query]);
         const dispatch = async (result, query) => hook('@dispatch', [result, query]);
-        return {dynamics, authorize, validate, prepopulate, populate, prefetch, dispatch, pretransform, convert, transform, mutate, prepare, after, autoTransitions, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
+        return {requires, dynamics, authorize, validate, prepopulate, populate, prefetch, dispatch, pretransform, convert, transform, mutate, prepare, after, autoTransitions, isTransition, isEqualTo, isNotEqualTo, isNotDefined, isDefined, isLessThan, isLessOrEqualThan, isGreaterThan, isGreaterOrEqualThan, isModulo, hook, updateRefs, deleteRefs, call, lambdaEvent, snsPublish};
     };
+}
+
+export function replaceVars(pattern, data = {}) {
+    const envVarMatch = pattern.match(/^\[\[process.env.([^\]]+)]]$/);
+    if (envVarMatch) {
+        pattern = process.env[envVarMatch[1]] || '';
+    }
+
+    const r = new RegExp('\{\{([^\}]+)\}\}', 'g');
+    const matches = [...pattern.matchAll(r)];
+    const getValue = k => ('undefined' === typeof data[k]) ? '' : data[k];
+
+    return matches.reduce((acc, m) => {
+        for (let i = 0; i < (m.length - 1); i++) {
+            acc = acc.replace(m[0], getValue(m[i + 1]));
+        }
+        return acc;
+    }, pattern);
 }

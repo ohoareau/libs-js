@@ -11,40 +11,41 @@ const buildValueGenerator = ({type, config = {}}, dir) => {
 
 const findCascadeMatchingCase = (v, map) => (map && map[v]) ? map[v] : undefined;
 
-const buildCascadeValues = (def, data, dir) =>
-    Object.entries(def || {}).reduce((acc, [k, v]) => {
+const buildCascadeValues = async (def, data, dir) =>
+    Object.entries(def || {}).reduce(async (acc, [k, v]) => {
+        acc = (await acc) as any;
         const d = ('string' === typeof v) ? {type: v} : <any>v;
         let vv;
         if (('**clear**' !== d.type) && ('**unchanged**' !== d.type)) {
-            vv = buildValueGenerator(d, dir)(data);
+            vv = await buildValueGenerator(d, dir)(data);
         } else {
             vv = d.type;
         }
         if ('**unchanged**' !== vv) acc[k] = vv;
-        return acc;
-    }, {})
+        return acc as Promise<any>;
+    }, Promise.resolve({}))
 ;
 export default ({model, dir, prefix = undefined}) => async data => {
     const defaultValuesKey = prefix ? `${prefix}DefaultValues` : 'defaultValues';
     const cascadeValuesKey = 'cascadeValues';
     let v;
-    Object.entries(model[defaultValuesKey]).forEach(([k, def]) => {
+    data.autoPopulated = data.autoPopulated || {};
+    await Promise.all(Object.entries(model[defaultValuesKey]).map(async ([k, def]) => {
         if (data.data[k]) return;
-        v = buildValueGenerator(<any>def, dir)(data);
+        v = await buildValueGenerator(<any>def, dir)(data);
         if ('**unchanged**' !== v) {
             if ('**clear**' === v) {
                 data.data[k] = undefined;
             } else {
                 data.data[k] = v;
             }
-            data.autoPopulated = data.autoPopulated || {};
             data.autoPopulated[k] = true;
         }
-    });
-    Object.entries(model[cascadeValuesKey]).forEach(([k, def]) => {
+    }));
+    await Promise.all(Object.entries(model[cascadeValuesKey]).map(async ([k, def]) => {
         const matchCase = findCascadeMatchingCase(data.data[k], def);
         if (!matchCase) return;
-        const values = buildCascadeValues(matchCase, data, dir);
+        const values = await buildCascadeValues(matchCase, data, dir);
         Object.entries(values).forEach(([kk, vv]) => {
             if ('**unchanged**' !== vv) {
                 if ('**clear**' === vv) {
@@ -52,10 +53,9 @@ export default ({model, dir, prefix = undefined}) => async data => {
                 } else {
                     data.data[kk] = vv;
                 }
-                data.autoPopulated = data.autoPopulated || {};
                 data.autoPopulated[kk] = true;
             }
         })
-    });
+    }));
     return data;
 }

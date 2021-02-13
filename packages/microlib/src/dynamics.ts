@@ -1,3 +1,5 @@
+import {replaceVars} from "./utils";
+
 export const empty = () => () => '';
 export const http = ({http}) => async data => {
     let [url, method = 'get', body = undefined, headers = undefined, options = undefined] = http.split(/::/g);
@@ -83,22 +85,4 @@ export const url = ({url}) => data => replaceVars(url, data);
 export const operation = ({operation, dir}) => async (data, query) => {
     operation = replaceVars(operation, data);
     return require('./services/caller').default.execute(operation, [{...query, ...data}], `${dir}/services/crud`);
-}
-
-function replaceVars(pattern, data = {}) {
-    const envVarMatch = pattern.match(/^\[\[process.env.([^\]]+)]]$/);
-    if (envVarMatch) {
-        pattern = process.env[envVarMatch[1]] || '';
-    }
-
-    const r = new RegExp('\{\{([^\}]+)\}\}', 'g');
-    const matches = [...pattern.matchAll(r)];
-    const getValue = k => ('undefined' === typeof data[k]) ? '' : data[k];
-
-    return matches.reduce((acc, m) => {
-        for (let i = 0; i < (m.length - 1); i++) {
-            acc = acc.replace(m[0], getValue(m[i + 1]));
-        }
-        return acc;
-    }, pattern);
 }

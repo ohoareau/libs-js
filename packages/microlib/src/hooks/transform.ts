@@ -10,12 +10,15 @@ const getTransformer = (type, dir) => {
 };
 
 export default ({model: {transformers = {}}, dir}) => async data => {
-    Object.entries(data.data).forEach(([k, v]) => {
+    data.originalData = data.originalData || {};
+    await Promise.all(Object.entries(data.data).map(async ([k, v]) => {
         if (transformers[k]) {
-            data.originalData = data.originalData || {};
             data.originalData[k] = v;
-            data.data[k] = transformers[k].reduce((acc, {type, config}) => getTransformer(type, dir)(config)(acc), v);
+            data.data[k] = await transformers[k].reduce(async (acc, {type, config}) => {
+                acc = await acc;
+                return getTransformer(type, dir)(config)(acc, data);
+            }, Promise.resolve(v));
         }
-    });
+    }));
     return data;
 }

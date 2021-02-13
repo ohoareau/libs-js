@@ -12,17 +12,17 @@ const buildValueGenerator = ({type, config = {}}, dir) => {
 export default ({model, dir, prefix = undefined}) => async data => {
     const valuesKey = prefix ? `${prefix}Values` : 'values';
     let v;
-    Object.entries(model[valuesKey]).forEach(([k, def]) => {
-        v = buildValueGenerator(<any>def, dir)(data);
+    data.autoPopulated = data.autoPopulated || {};
+    await Promise.all(Object.entries(model[valuesKey]).map(async ([k, def]) => {
+        v = await buildValueGenerator(<any>def, dir)(data);
         if ('**unchanged**' !== v) {
             if ('**clear**' === v) {
                 data.data[k] = undefined;
             } else {
                 data.data[k] = v;
             }
-            data.autoPopulated = data.autoPopulated || {};
             data.autoPopulated[k] = true;
         }
-    });
+    }));
     return data;
 }
