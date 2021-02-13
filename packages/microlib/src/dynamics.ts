@@ -9,22 +9,15 @@ export const http = ({http}) => async data => {
     if (!res.ok) throw new Error(`Unable to fetch ${url}`);
     return res.json();
 }
+export const from = ({name}) => data => (data && name) ? data[name] : undefined
 export const uuid = ({uuid = 'v4'}) => () => require('uuid')[uuid]();
 export const value = ({value}) => data => {
     return 'string' === typeof value ? replaceVars(value, data) : value;
 }
-export const md5 = ({md5}) => data => {
-    return require('crypto').createHash('md5').update(replaceVars(md5 || '', data)).digest("hex");
-}
-export const sha1 = ({sha1}) => data => {
-    return require('crypto').createHash('sha1').update(replaceVars(sha1 || '', data)).digest("hex");
-}
-export const sha256 = ({sha256}) => data => {
-    return require('crypto').createHash('sha256').update(replaceVars(sha256 || '', data)).digest("hex");
-}
-export const sha512 = ({sha512}) => data => {
-    return require('crypto').createHash('sha512').update(replaceVars(sha512 || '', data)).digest("hex");
-}
+export const md5 = ({md5}) => data => require('./services/crypto').default.hash(replaceVars(md5 || '', data), 'md5');
+export const sha1 = ({sha1}) => data => require('./services/crypto').default.hash(replaceVars(sha1 || '', data), 'sha1');
+export const sha256 = ({sha256}) => data => require('./services/crypto').default.hash(replaceVars(sha256 || '', data), 'sha256');
+export const sha512 = ({sha512}) => data => require('./services/crypto').default.hash(replaceVars(sha512 || '', data), 'sha512');
 export const s3 = ({s3}) => async data => {
     let [bucket, key] = s3.split(':');
     bucket = replaceVars(bucket, data);

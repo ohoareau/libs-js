@@ -1,3 +1,14 @@
 export const upper = () => v => `${v}`.toUpperCase();
 export const lower = () => v => `${v}`.toLowerCase();
 export const jsonParse = () => v => v ? JSON.parse(v) : undefined;
+export const s3file_content = () => async v => v ? require('@ohoareau/aws').s3.getFileContent(v) : undefined;
+export const s3file_hash = ({algorithm = 'md5'}) => async v => v ? require('./services/crypto').default.hash(await require('@ohoareau/aws').s3.getFileContent(v), algorithm) : undefined;
+export const s3file_fingerprint = ({algorithm = 'sha256'}) => async v => v ? require('./services/crypto').default.hash(await require('@ohoareau/aws').s3.getFileContent(v), algorithm) : undefined;
+export const s3file_url = () => async v => v ? (await require('@ohoareau/aws').s3.getFileViewUrl(v)).viewUrl : undefined;
+export const s3file_url_infos = () => async v => v ? require('@ohoareau/aws').s3.getFileViewUrl(v) : undefined;
+export const s3file_url_view = () => async v => v ? (await require('@ohoareau/aws').s3.getFileViewUrl(v)).viewUrl : undefined;
+export const s3file_url_view_infos = () => async v => v ? require('@ohoareau/aws').s3.getFileViewUrl(v) : undefined;
+export const s3file_url_dl = () => async v => v ? (await require('@ohoareau/aws').s3.getFileDownloadUrl(v)).downloadUrl : undefined;
+export const s3file_url_dl_infos = () => async v => v ? require('@ohoareau/aws').s3.getFileDownloadUrl(v) : undefined;
+export const s3file_url_ul = () => async v => v ? (await require('@ohoareau/aws').s3.getFileUploadUrl(v)).uploadUrl : undefined;
+export const s3file_url_ul_infos = () => async v => v ? require('@ohoareau/aws').s3.getFileUploadUrl(v) : undefined;
