@@ -13,7 +13,7 @@ export default ({model, dir, prefix = undefined}) => async data => {
     const valuesKey = prefix ? `${prefix}Values` : 'values';
     let v;
     data.autoPopulated = data.autoPopulated || {};
-    await Promise.all(Object.entries(model[valuesKey]).map(async ([k, def]) => {
+    await Promise.all(Object.entries(model[valuesKey] || {}).map(async ([k, def]) => {
         v = await buildValueGenerator(<any>def, dir)(data);
         if ('**unchanged**' !== v) {
             if ('**clear**' === v) {

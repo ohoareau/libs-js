@@ -30,7 +30,7 @@ export default ({model, dir, prefix = undefined}) => async data => {
     const cascadeValuesKey = 'cascadeValues';
     let v;
     data.autoPopulated = data.autoPopulated || {};
-    await Promise.all(Object.entries(model[defaultValuesKey]).map(async ([k, def]) => {
+    await Promise.all(Object.entries(model[defaultValuesKey] || {}).map(async ([k, def]) => {
         if (data.data[k]) return;
         v = await buildValueGenerator(<any>def, dir)(data);
         if ('**unchanged**' !== v) {
@@ -42,7 +42,7 @@ export default ({model, dir, prefix = undefined}) => async data => {
             data.autoPopulated[k] = true;
         }
     }));
-    await Promise.all(Object.entries(model[cascadeValuesKey]).map(async ([k, def]) => {
+    await Promise.all(Object.entries(model[cascadeValuesKey] || {}).map(async ([k, def]) => {
         const matchCase = findCascadeMatchingCase(data.data[k], def);
         if (!matchCase) return;
         const values = await buildCascadeValues(matchCase, data, dir);
