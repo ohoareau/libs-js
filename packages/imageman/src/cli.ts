@@ -1,19 +1,13 @@
-import sharp from 'sharp';
-import fs from 'fs';
+import build from './index';
 
 async function main(argv) {
-    if (!argv[2]) throw new Error('Syntax: imageman <inputFile> <outputFile>');
-    if (!argv[3]) throw new Error('Syntax: imageman <inputFile> <outputFile>');
-    const inputFile = argv[2];
-    const outputFile = argv[3];
+    if (!argv[4]) throw new Error('Syntax: imageman <inputFile> <operationsFile> <outputFile>');
 
-    const roundedCorners = Buffer.from(
-        fs.readFileSync(inputFile, 'utf8'));
-
-    await sharp(roundedCorners)
-        .png()
-        .toFile(outputFile)
-    ;
+    return build({
+        input: argv[2],
+        operations: require(argv[3]),
+        output: argv[4],
+    })
 }
 
 export default main
