@@ -9,12 +9,17 @@ export type resize_operation = {
 
 export type round_corner_operation = {
     type: 'round-corner',
-    'radius-x': bigint,
-    'radius-y': bigint,
+    rx: bigint,
+    ry: bigint,
 }
 
 export type grayscale_operation = {
     type: 'grayscale',
+}
+
+export type flip_operation = {
+    type: 'flip',
+    direction: 'vertical' | 'horizontal',
 }
 
 export type noop_operation = {
