@@ -4,17 +4,21 @@ import sharp from 'sharp';
 import * as availableOperations from './operations'
 
 async function build({input, operations = [], output}: {input: input, operations?: operations, output: output}) {
-    const img = sharp(Buffer.from(fs.readFileSync(input)), {sequentialRead: true});
-    const format = output.split('.').pop();
-    const metadata = await img.metadata();
+    return (await operations.reduce(async (acc, operation) => {
+        acc = (await acc) || acc;
+        try{
+            if (!availableOperations[operation.type]) {
+                // noinspection ExceptionCaughtLocallyJS
+                throw new Error(`Unknown operation: ${operation.type}`);
+            }
+            return (await availableOperations[operation.type](acc, operation)) || acc ;
+        } catch (e) {
+            console.warn(`Warning: ${e.message}`);
+            return acc;
+        }
 
-    operations.forEach(operation => {
-         availableOperations[operation.type](img, operation, metadata);
-    });
+    }, Promise.resolve(sharp(Buffer.from(fs.readFileSync(input)), {sequentialRead: true})))).toFormat(output.split('.').pop()).toFile(output);
 
-    return img
-        .toFormat(format)
-        .toFile(output);
 }
 
 export default build

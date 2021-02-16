@@ -1,7 +1,7 @@
 [
   {
     "type": "round_corner",
-    "radius-x": 50,
-    "radius-y": 50
+    "rx": 50,
+    "ry": 50
   }
 ]

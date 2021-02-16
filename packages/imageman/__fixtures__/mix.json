@@ -1,5 +1,14 @@
 [
   {
+    "type": "flip",
+    "direction": "vertical"
+  },
+  {
+    "type": "round_corner",
+    "rx": 50,
+    "ry": 50
+  },
+  {
     "type": "resize",
     "width": 150,
     "height": 150

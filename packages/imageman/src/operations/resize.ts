@@ -1,7 +1,6 @@
 import {resize_operation} from '../types';
+import sharp from 'sharp';
 
-const operate = async function operate(img, config: resize_operation) {
-    return img.resize({width: config.width, height: config.height});
+export default async function operate(img, config: resize_operation) {
+    return sharp(await sharp(await img.toBuffer()).resize({width: config.width, height: config.height}).toBuffer());
 }
-
-export default operate
