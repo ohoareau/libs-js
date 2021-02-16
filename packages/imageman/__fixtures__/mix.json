@@ -1,0 +1,10 @@
+[
+  {
+    "type": "resize",
+    "width": 150,
+    "height": 150
+  },
+  {
+    "type": "grayscale"
+  }
+]
