@@ -10,4 +10,4 @@ export async function buffer({buffer, contentType, headers = {}, statusCode = 20
     }
 }
 
-export default staticFile
+export default buffer
