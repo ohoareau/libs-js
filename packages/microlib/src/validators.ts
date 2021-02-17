@@ -23,9 +23,9 @@ export const unknown = () => ({test: () => false, message: () => `Unknown valida
 export const isbn = () => ({test: v => require('isbn-util').validate(v), message: () => 'ISBN is not valid'});
 export const visaNumber = () => ({test: v => /^[0-9]+$/.test(v), message: () => 'Visa number is not valid'});
 export const jsonString = () => ({check: v => JSON.parse(v)});
-export const unique = ({type, hashKey, index}) => ({check: async v => {
+export const unique = ({type, hashKey, index, dir}) => ({check: async v => {
     const caller = require('./services/caller').default;
-    const r = await caller.execute(`${type}_find`, {index, hashKey: [hashKey || index, v], limit: 1, fields: [hashKey || index]});
+    const r = await caller.execute(`${type}_find`, {index, hashKey: [hashKey || index, v], limit: 1, fields: [hashKey || index]}, `${dir}/services/crud`);
     if (!r || !r.items || !r.items.length) return; // does not exist yet, everything is ok
     throw new Error(`${type} already exist for ${hashKey || index} is equal to ${v}, restricted due to uniqueness constraint`);
 }});
