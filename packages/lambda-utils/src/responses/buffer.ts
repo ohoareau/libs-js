@@ -9,5 +9,4 @@ export async function buffer({buffer, contentType, headers = {}, statusCode = 20
         }
     }
 }
-
 export default buffer
