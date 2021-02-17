@@ -1,6 +1,6 @@
 import httpError from "./httpError";
 
-export async function httpNotFound({headers = {}}) {
+export async function httpNotFound({headers = {}} = {}) {
     return httpError({headers, statusCode: 404});
 }
 
