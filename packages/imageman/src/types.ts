@@ -29,3 +29,15 @@ export type noop_operation = {
 export type operation = resize_operation | round_corner_operation | grayscale_operation | noop_operation;
 
 export type operations = operation[];
+
+export type source_type = (config?: any) => Buffer|ReadableStream
+export type target_type = (img: any, config?: any) => Buffer|ReadableStream
+
+export type imageman_args = {
+    input: input,
+    operations?: operations,
+    output: output,
+    sourceTypes?: {[key: string]: source_type},
+    targetTypes?: {[key: string]: target_type},
+};
+
