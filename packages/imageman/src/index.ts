@@ -28,7 +28,7 @@ async function build({input, operations = [], output, sourceTypes = {}, targetTy
 
 async function describeTarget(output) {
     if (!output) throw new Error(`Output is empty`);
-    if ('buffer' === output) output = 'buffer://';
+    if ('buffer' === output) output = 'buffer://buffer';
     if ('string' === typeof output) {
         if (-1 === output.indexOf('://')) {
             output = `file://${output}`;
