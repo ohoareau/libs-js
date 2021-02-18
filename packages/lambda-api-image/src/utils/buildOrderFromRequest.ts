@@ -20,13 +20,13 @@ export async function buildOrderFromRequest(request: request, config: any): Prom
 
     // we now have a request, the microservice config, we need to convert the request to part of the order
 
-    const {input = undefined, operations = [], options = undefined} = await convertRequestToOrder(request, config);
+    const {input = undefined, operations = [], options = undefined, format} = await convertRequestToOrder(request, config);
 
     // depending on the found rule, we need to potentially extract params from the uri (and queryString)
 
     const params = extractRuleParams(found, request);
 
-    found = {...found, params};
+    found = {...found, params: {...(found.params || {}), ...(params || {})}};
 
     // we are now ready to process the rule in order the complete the creation of the order that will contain
     // the list of operations to send to imageman.
@@ -37,6 +37,7 @@ export async function buildOrderFromRequest(request: request, config: any): Prom
 
     return {
         ...order,
+        ...(format ? {format} : {}),
         ...(input ? {input}: {}),
         operations: [
             ...(order?.operations || []),

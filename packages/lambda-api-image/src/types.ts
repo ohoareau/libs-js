@@ -23,6 +23,7 @@ export type rule = {
     name: string,
     uri?: RegExp,
     type: string,
+    cache?: string,
     params?: rule_params,
 }
 
