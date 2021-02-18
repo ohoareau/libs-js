@@ -3,7 +3,7 @@ import * as modifiers from '../modifiers';
 
 export async function convertRequestToOrder(request: request, config: any) {
     const modifierNames = [
-        'preset', 'size', 'flip', 'format', 'radius', 'filter',
+        'preset', 'size', 'trim', 'flip', 'format', 'radius', 'filter',
         'rotation', 'theme', 'color', 'quality',
     ];
 

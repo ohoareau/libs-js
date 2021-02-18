@@ -35,7 +35,7 @@ export async function describeTarget(output, format: any = undefined) {
         output = parseDsn(output);
     }
     const detectedFormatName = detectFormatFromFileName(output.location);
-    return {format: format || (detectedFormatName ? {type: detectedFormatName} : output.format), target: {...output}};
+    return {format: format ? ('string' === typeof format ? {type: format} : format) : (detectedFormatName ? {type: detectedFormatName} : output.format), target: {...output}};
 }
 
 export async function save(img, target, targetTypes = {}) {

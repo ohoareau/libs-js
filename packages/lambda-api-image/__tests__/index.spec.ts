@@ -37,13 +37,13 @@ describe('createHandler', () => {
             statusCode: 200,
         });
     })
-    it('GET /test/test2/test3/image.gif', async () => {
+    it('GET /test/test2/test3/image.tiff', async () => {
         const handler = createHandler();
-        await expect(handler({requestContext: {http: {path: '/test/test2/test3/image.gif'}}}, {})).resolves.toEqual({
+        await expect(handler({requestContext: {http: {path: '/test/test2/test3/image.tiff'}}}, {})).resolves.toEqual({
             body: expect.any(String),
             headers: {
                 'Cache-Control': 'public, max-age=120, s-max-age=60',
-                'Content-Type': 'image/gif',
+                'Content-Type': 'image/tiff',
             },
             isBase64Encoded: true,
             statusCode: 200,

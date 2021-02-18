@@ -26,7 +26,12 @@ export type noop_operation = {
     type: 'noop',
 }
 
-export type operation = resize_operation | round_corner_operation | grayscale_operation | noop_operation;
+export type trim_operation = {
+    type: 'trim',
+    threshold?: number,
+}
+
+export type operation = resize_operation | round_corner_operation | grayscale_operation | noop_operation | trim_operation
 
 export type operations = operation[];
 

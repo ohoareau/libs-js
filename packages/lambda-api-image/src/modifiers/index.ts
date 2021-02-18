@@ -8,3 +8,4 @@ export * from './rotation';
 export * from './theme';
 export * from './color';
 export * from './quality';
+export * from './trim';
