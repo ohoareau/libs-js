@@ -1,3 +1,3 @@
 export async function stdout(img) {
-    console.log(await img.toBuffer());
+    process.stdout.write(await img.toBuffer());
 }

@@ -16,11 +16,22 @@ describe('createHandler', () => {
     it('GET /', async () => {
         const handler = createHandler();
         await expect(handler({requestContext: {http: {path: '/'}}}, {})).resolves.toEqual({
-            body: JSON.stringify({message: 'not yet implemented'}),
+            body: expect.any(String),
+            headers: {
+                'Content-Type': 'image/jpeg',
+            },
+            isBase64Encoded: true,
+            statusCode: 200,
+        });
+    })
+    it('GET /something.ext', async () => {
+        const handler = createHandler();
+        await expect(handler({requestContext: {http: {path: '/something.ext'}}}, {})).resolves.toEqual({
+            body: require('fs').readFileSync(`${__dirname}/../__fixtures__/lambda-root/statics/something.json`, null).toString('base64'),
             headers: {
                 'Content-Type': 'application/json',
             },
-            isBase64Encoded: false,
+            isBase64Encoded: true,
             statusCode: 200,
         });
     })

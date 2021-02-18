@@ -33,10 +33,15 @@ export type operations = operation[];
 export type source_type = (config?: any) => Buffer|ReadableStream
 export type target_type = (img: any, config?: any) => Buffer|ReadableStream
 
+export type format = {
+    type?: 'gif' | 'jpeg' | 'png' | 'webp' | 'avif' | 'tiff' | 'heif' | 'raw',
+    options?: any,
+}
 export type imageman_args = {
     input: input,
     operations?: operations,
     output: output,
+    format?: format,
     sourceTypes?: {[key: string]: source_type},
     targetTypes?: {[key: string]: target_type},
 };
