@@ -3,7 +3,7 @@ import Handlebars from 'handlebars';
 import {dirname, resolve} from 'path';
 import {readFileSync, writeFileSync, existsSync, readdirSync, mkdirSync} from 'fs';
 
-Handlebars.registerHelper('slugify', s => s.replace(/[^a-z0-9_]+/, '-'));
+Handlebars.registerHelper('slugify', s => s.replace(/[^a-z0-9_]+/g, '-'));
 
 export const buildVarKey = k => k.toUpperCase();
 export const buildVarValue = (s, d, ss) => {
