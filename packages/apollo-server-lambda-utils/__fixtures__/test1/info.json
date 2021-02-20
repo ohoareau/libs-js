@@ -1,0 +1,306 @@
+{
+  "fieldName": "findStickers",
+  "fieldNodes": [
+    {
+      "kind": "Field",
+      "name": {
+        "kind": "Name",
+        "value": "findStickers",
+        "loc": {
+          "start": 4,
+          "end": 16
+        }
+      },
+      "arguments": [],
+      "directives": [],
+      "selectionSet": {
+        "kind": "SelectionSet",
+        "selections": [
+          {
+            "kind": "Field",
+            "name": {
+              "kind": "Name",
+              "value": "items",
+              "loc": {
+                "start": 23,
+                "end": 28
+              }
+            },
+            "arguments": [],
+            "directives": [],
+            "selectionSet": {
+              "kind": "SelectionSet",
+              "selections": [
+                {
+                  "kind": "Field",
+                  "name": {
+                    "kind": "Name",
+                    "value": "id",
+                    "loc": {
+                      "start": 37,
+                      "end": 39
+                    }
+                  },
+                  "arguments": [],
+                  "directives": [],
+                  "loc": {
+                    "start": 37,
+                    "end": 39
+                  }
+                }
+              ],
+              "loc": {
+                "start": 29,
+                "end": 45
+              }
+            },
+            "loc": {
+              "start": 23,
+              "end": 45
+            }
+          }
+        ],
+        "loc": {
+          "start": 17,
+          "end": 49
+        }
+      },
+      "loc": {
+        "start": 4,
+        "end": 49
+      }
+    }
+  ],
+  "returnType": "StickerPage",
+  "parentType": "Query",
+  "path": {
+    "key": "findStickers"
+  },
+  "schema": {
+    "__validationErrors": [],
+    "astNode": {
+      "kind": "SchemaDefinition",
+      "directives": [],
+      "operationTypes": [
+        {
+          "kind": "OperationTypeDefinition",
+          "operation": "query",
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "Query",
+              "loc": {
+                "start": 18,
+                "end": 23
+              }
+            },
+            "loc": {
+              "start": 18,
+              "end": 23
+            }
+          },
+          "loc": {
+            "start": 11,
+            "end": 23
+          }
+        },
+        {
+          "kind": "OperationTypeDefinition",
+          "operation": "mutation",
+          "type": {
+            "kind": "NamedType",
+            "name": {
+              "kind": "Name",
+              "value": "Mutation",
+              "loc": {
+                "start": 36,
+                "end": 44
+              }
+            },
+            "loc": {
+              "start": 36,
+              "end": 44
+            }
+          },
+          "loc": {
+            "start": 26,
+            "end": 44
+          }
+        }
+      ],
+      "loc": {
+        "start": 0,
+        "end": 46
+      }
+    },
+    "__allowedLegacyNames": [],
+    "_queryType": "Query",
+    "_mutationType": "Mutation",
+    "_subscriptionType": null,
+    "_directives": [
+      "@cacheControl",
+      "@skip",
+      "@include",
+      "@deprecated"
+    ],
+    "_typeMap": {
+      "Query": "Query",
+      "ID": "ID",
+      "Game": "Game",
+      "String": "String",
+      "Boolean": "Boolean",
+      "Int": "Int",
+      "Float": "Float",
+      "User": "User",
+      "Organization": "Organization",
+      "Sticker": "Sticker",
+      "Background": "Background",
+      "ColorTheme": "ColorTheme",
+      "Design": "Design",
+      "Invitation": "Invitation",
+      "UserPage": "UserPage",
+      "GamePage": "GamePage",
+      "OrganizationPage": "OrganizationPage",
+      "StickerPage": "StickerPage",
+      "BackgroundPage": "BackgroundPage",
+      "ColorThemePage": "ColorThemePage",
+      "DesignPage": "DesignPage",
+      "Mutation": "Mutation",
+      "MigrateResponse": "MigrateResponse",
+      "CreateAuthTokenInput": "CreateAuthTokenInput",
+      "AuthTokenResponse": "AuthTokenResponse",
+      "RefreshAuthTokenInput": "RefreshAuthTokenInput",
+      "CreateGameInput": "CreateGameInput",
+      "UpdateGameInput": "UpdateGameInput",
+      "DeleteResponse": "DeleteResponse",
+      "CreateUserInput": "CreateUserInput",
+      "UpdateUserInput": "UpdateUserInput",
+      "CreateOrganizationInput": "CreateOrganizationInput",
+      "CreateCurrentUserOrganizationInput": "CreateCurrentUserOrganizationInput",
+      "UpdateOrganizationInput": "UpdateOrganizationInput",
+      "CreateStickerInput": "CreateStickerInput",
+      "UpdateStickerInput": "UpdateStickerInput",
+      "CreateBackgroundInput": "CreateBackgroundInput",
+      "UpdateBackgroundInput": "UpdateBackgroundInput",
+      "CreateColorThemeInput": "CreateColorThemeInput",
+      "UpdateColorThemeInput": "UpdateColorThemeInput",
+      "CreateDesignInput": "CreateDesignInput",
+      "UpdateDesignInput": "UpdateDesignInput",
+      "RegisterInput": "RegisterInput",
+      "RegisteredUser": "RegisteredUser",
+      "CreateInvitationInput": "CreateInvitationInput",
+      "AcceptInvitationInput": "AcceptInvitationInput",
+      "ChangeCurrentUserPasswordInput": "ChangeCurrentUserPasswordInput",
+      "UpdateCurrentUserInput": "UpdateCurrentUserInput",
+      "__Schema": "__Schema",
+      "__Type": "__Type",
+      "__TypeKind": "__TypeKind",
+      "__Field": "__Field",
+      "__InputValue": "__InputValue",
+      "__EnumValue": "__EnumValue",
+      "__Directive": "__Directive",
+      "__DirectiveLocation": "__DirectiveLocation",
+      "CacheControlScope": "CacheControlScope",
+      "Upload": "Upload"
+    },
+    "_possibleTypeMap": {},
+    "_implementations": {},
+    "_extensionsEnabled": true
+  },
+  "fragments": {},
+  "operation": {
+    "kind": "OperationDefinition",
+    "operation": "query",
+    "variableDefinitions": [],
+    "directives": [],
+    "selectionSet": {
+      "kind": "SelectionSet",
+      "selections": [
+        {
+          "kind": "Field",
+          "name": {
+            "kind": "Name",
+            "value": "findStickers",
+            "loc": {
+              "start": 4,
+              "end": 16
+            }
+          },
+          "arguments": [],
+          "directives": [],
+          "selectionSet": {
+            "kind": "SelectionSet",
+            "selections": [
+              {
+                "kind": "Field",
+                "name": {
+                  "kind": "Name",
+                  "value": "items",
+                  "loc": {
+                    "start": 23,
+                    "end": 28
+                  }
+                },
+                "arguments": [],
+                "directives": [],
+                "selectionSet": {
+                  "kind": "SelectionSet",
+                  "selections": [
+                    {
+                      "kind": "Field",
+                      "name": {
+                        "kind": "Name",
+                        "value": "id",
+                        "loc": {
+                          "start": 37,
+                          "end": 39
+                        }
+                      },
+                      "arguments": [],
+                      "directives": [],
+                      "loc": {
+                        "start": 37,
+                        "end": 39
+                      }
+                    }
+                  ],
+                  "loc": {
+                    "start": 29,
+                    "end": 45
+                  }
+                },
+                "loc": {
+                  "start": 23,
+                  "end": 45
+                }
+              }
+            ],
+            "loc": {
+              "start": 17,
+              "end": 49
+            }
+          },
+          "loc": {
+            "start": 4,
+            "end": 49
+          }
+        }
+      ],
+      "loc": {
+        "start": 0,
+        "end": 51
+      }
+    },
+    "loc": {
+      "start": 0,
+      "end": 51
+    }
+  },
+  "variableValues": {},
+  "cacheControl": {
+    "cacheHint": {
+      "maxAge": 0
+    }
+  }
+}

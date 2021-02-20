@@ -1,0 +1,12 @@
+{
+  "operation": "findStickers",
+  "type": "query",
+  "arguments": {},
+  "attributes": {
+    "items": {
+      "attributes": {
+        "id": true
+      }
+    }
+  }
+}

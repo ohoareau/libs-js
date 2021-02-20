@@ -1,0 +1,28 @@
+{
+  "name": "@ohoareau/apollo-server-lambda-utils",
+  "version": "0.0.0",
+  "description": "Apollo Server Lambda utils",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "directories": {
+    "lib": "lib",
+    "test": "__tests__"
+  },
+  "files": [
+    "lib"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
+  },
+  "peerDependencies": {
+    "apollo-server-lambda": "^2"
+  },
+  "devDependencies": {
+    "apollo-server-lambda": "^2.21.0"
+  }
+}
