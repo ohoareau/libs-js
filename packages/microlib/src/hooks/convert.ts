@@ -9,12 +9,12 @@ const getConverter = (type, dir) => {
     return t[type] || (() => x => x);
 };
 
-export default ({model: {converters = {}}, dir}) => async data => {
+export default ({model: {converters = {}}, dir}) => async (data, query) => {
     await Promise.all(Object.entries(data).map(async ([k, v]) => {
         if (converters[k]) {
             data[k] = await converters[k].reduce(async (acc, {type, config}) => {
                 acc = await acc;
-                return getConverter(type, dir)(config)(acc);
+                return getConverter(type, dir)({...config, attribute: k})(acc, data, query);
             }, Promise.resolve(v));
         }
     }));

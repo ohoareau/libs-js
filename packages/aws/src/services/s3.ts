@@ -21,6 +21,15 @@ const deleteDirectory = async ({bucket, key}) => {
     return [...objects, ...(await deleteDirectory({bucket, key}))];
 };
 
+const getFileMetadata = async ({bucket, key, original = false}: {bucket: string, key: string, original?: boolean}) => {
+    const m = await awss3.headObject({Bucket: bucket, Key: key}).promise();
+    return original ? {...m} : {
+        contentLength: m.ContentLength,
+        contentType: m.ContentType,
+        eTag: m.ETag,
+        lastModified: m.LastModified,
+    }
+};
 const getFileContent = async query => (await getFile(query)).body;
 const setFileContent = setFile;
 
@@ -86,6 +95,7 @@ export const s3 = {
     toJsonFile,
     setFile,
     setFileContent,
+    getFileMetadata,
 }
 
 export default s3
