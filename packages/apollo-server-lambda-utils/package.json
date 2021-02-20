@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/apollo-server-lambda-utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Apollo Server Lambda utils",
   "license": "MIT",
   "main": "lib/index.js",
