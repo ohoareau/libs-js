@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-event",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@ohoareau/aws": "^0.1.4",
-    "@ohoareau/lambda-utils": "^0.1.6"
+    "@ohoareau/lambda-utils": "^0.1.7"
   },
   "peerDependencies": {
     "aws-sdk": "^2"
