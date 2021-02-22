@@ -5,7 +5,6 @@ import orderService from './services/order';
 export default function() {
 
     // this lambda handler will handle completely the http event coming from an API Gateway api
-    // features are (not exhaustive): resizing of source images, flipping, conversion (svg => png, ...)
 
     return createRouterHandler(
 
