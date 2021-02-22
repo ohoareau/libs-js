@@ -16,7 +16,6 @@ export function createRouterHandler(processHandler: (ctx: ctx, event, context) =
             // we do the `await` here because we need to catch error here
             return await processHandler(ctx, event, context);
         } catch (e) {
-            console.error(e);
             return responses.httpError({statusCode: 500});
         }
     }
