@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-image",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -22,7 +22,7 @@
   "dependencies": {
     "@ohoareau/aws": "^0.1.4",
     "@ohoareau/imageman": "^0.1.1",
-    "@ohoareau/lambda-utils": "^0.1.7"
+    "@ohoareau/lambda-utils": "^0.1.8"
   },
   "peerDependencies": {
     "aws-sdk": "^2"
