@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-utils",
-  "version": "0.1.8",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@ohoareau/aws": "^0.1.4",
-    "path-parser": "^6.1.0",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "path-parser": "^6.1.0"
   },
   "peerDependencies": {
     "aws-sdk": "^2"
