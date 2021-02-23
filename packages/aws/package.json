@@ -22,8 +22,10 @@
     "@ohoareau/errors": "^0.1.0",
     "uuid": "^8.3.1"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2"
+  "peerDependenciesMeta": {
+    "aws-sdk": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "aws-sdk": "^2.804.0"
