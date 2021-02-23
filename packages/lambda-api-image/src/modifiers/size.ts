@@ -1,5 +1,5 @@
-import {order, request} from '../types';
-import filterValues from "../utils/filterValues";
+import {order} from '../types';
+import {filterValues, http_request} from "@ohoareau/lambda-utils";
 
 const mapping = {
     icon: '16x16',
@@ -28,22 +28,22 @@ const mapping = {
     'pi-pin-size': '236x',
 };
 
-export async function size(order: order, request: request) {
-    let size = request.params?.size;
+export async function size(order: order, request: http_request) {
+    let size = request.qsParams?.size;
     if (!size) return;
     if (Array.isArray(size)) size = size[0];
     if (!size) return;
     size = mapping[size] || size;
     if (!size) return;
     const [width = undefined, height = undefined] = (size as string).split('x');
-    const fit = filterValues(request.params.size_fit as any, ['cover', 'contain', 'fill', 'inside', 'outside']);
-    const position = filterValues(request.params.size_position as any, ['top', 'right-top', 'right', 'right-bottom', 'bottom', 'left-bottom', 'left', 'left-top'], 'space');
-    const gravity = filterValues(request.params.size_gravity as any, ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest', 'center', 'centre']);
-    const strategy = filterValues(request.params.size_strategy as any, ['entropy', 'attention']);
-    const background = request.params.size_background as any;
-    const kernel = filterValues(request.params.size_kernel as any, ['nearest', 'cubic', 'mitchell', 'lanczos2', 'lanczos3']);
-    const withoutEnlargement = filterValues(request.params.size_enlargement as any, ['0', '1', 'false', 'true', 'none', 'no', 'yes'], 'boolean');
-    const fastShrinkOnLoad = filterValues(request.params.size_fastshrink as any, ['0', '1', 'false', 'true', 'none', 'no', 'yes'], 'boolean');
+    const fit = filterValues(request.qsParams?.size_fit as any, ['cover', 'contain', 'fill', 'inside', 'outside']);
+    const position = filterValues(request.qsParams?.size_position as any, ['top', 'right-top', 'right', 'right-bottom', 'bottom', 'left-bottom', 'left', 'left-top'], 'space');
+    const gravity = filterValues(request.qsParams?.size_gravity as any, ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest', 'center', 'centre']);
+    const strategy = filterValues(request.qsParams?.size_strategy as any, ['entropy', 'attention']);
+    const background = request.qsParams?.size_background as any;
+    const kernel = filterValues(request.qsParams?.size_kernel as any, ['nearest', 'cubic', 'mitchell', 'lanczos2', 'lanczos3']);
+    const withoutEnlargement = filterValues(request.qsParams?.size_enlargement as any, ['0', '1', 'false', 'true', 'none', 'no', 'yes'], 'boolean');
+    const fastShrinkOnLoad = filterValues(request.qsParams?.size_fastshrink as any, ['0', '1', 'false', 'true', 'none', 'no', 'yes'], 'boolean');
     order.operations.push({
         type: 'resize',
         width: !!width ? width : undefined,

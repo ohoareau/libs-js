@@ -19,7 +19,9 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.1.4"
+    "@ohoareau/aws": "^0.1.4",
+    "path-parser": "^6.1.0",
+    "node-fetch": "^2.6.1"
   },
   "peerDependencies": {
     "aws-sdk": "^2"

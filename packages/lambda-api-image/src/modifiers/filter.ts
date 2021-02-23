@@ -1,7 +1,8 @@
-import {order, request} from '../types';
+import {order} from '../types';
+import {http_request} from '@ohoareau/lambda-utils';
 
-export async function filter(order: order, request: request) {
-    const filter = request.params?.filter;
+export async function filter(order: order, request: http_request) {
+    const filter = request.qsParams?.filter;
     if (!filter) return;
     const filters = Array.isArray(filter) ? filter : [filter];
     return filters.reduce((acc, f) => {

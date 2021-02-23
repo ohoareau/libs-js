@@ -6,6 +6,7 @@ export async function getLambdaConfig() {
 
     config = config || {root, ...(await require(`${root}/config`)())};
     config.statics = {...(config.statics || {}), ...(await require(`${root}/config-statics`)())}
+    config.routes = [...(await require(`${root}/config-routes`)()), ...(config.routes || [])];
 
     return config;
 }

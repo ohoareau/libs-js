@@ -1,8 +1,9 @@
-import {order, request} from '../types';
+import {order} from '../types';
+import {http_request} from '@ohoareau/lambda-utils';
 
-export async function preset(order: order, request: request, config: any) {
-    if (!request?.params?.preset) return;
-    const presets = Array.isArray(request.params.preset) ? request.params.preset : [request.params.preset];
+export async function preset(order: order, request: http_request, config: any) {
+    if (!request.qsParams?.preset) return;
+    const presets = Array.isArray(request.qsParams!.preset) ? request.qsParams!.preset : [request.qsParams!.preset];
     return presets.reduce((acc, p) => {
         let preset = (config.presets || {})[p] || {};
         ('function' === typeof preset) && (preset = preset(request) || {});

@@ -1,7 +1,8 @@
-import {order, request} from '../types';
+import {order} from '../types';
+import {http_request} from '@ohoareau/lambda-utils';
 
-export async function trim(order: order, request: request) {
-    let trim = request.params?.trim;
+export async function trim(order: order, request: http_request) {
+    let trim = request.qsParams?.trim;
     if (!trim) return;
     if (Array.isArray(trim)) trim = trim[0];
     if (!trim) return;
