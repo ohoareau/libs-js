@@ -22,8 +22,10 @@
     "@ohoareau/aws": "^0.1.4",
     "@ohoareau/lambda-utils": "^0.2.0"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2"
+  "peerDependenciesMeta": {
+    "aws-sdk": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "aws-sdk": "^2.843.0"

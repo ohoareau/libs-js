@@ -23,8 +23,10 @@
     "node-fetch": "^2.6.1",
     "path-parser": "^6.1.0"
   },
-  "peerDependencies": {
-    "aws-sdk": "^2"
+  "peerDependenciesMeta": {
+    "aws-sdk": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "aws-sdk": "^2.843.0"
