@@ -309,9 +309,9 @@ export default {
                 let doc;
                 let docs;
                 if ('string' === typeof payload.id) {
-                    doc = {...(await model.delete({id: payload.id}) || {})};
+                    doc = {...(await model.delete({id: payload.id}, payload.options) || {})};
                 } else if(Array.isArray(payload.id)) {
-                    await model.batchDelete(payload.id.map(id => ({id})));
+                    await model.batchDelete(payload.id.map(id => ({id})), payload.options);
                     docs = payload.id.map(id => ({id}));
                 } else if ('object' === typeof payload.id) {
                     const toDeleteIds = (await runQuery(model, {
@@ -321,7 +321,7 @@ export default {
                         offset: undefined,
                         sort: undefined,
                     }) || []);
-                    await model.batchDelete(toDeleteIds.map(doc => ({id: doc.id})));
+                    await model.batchDelete(toDeleteIds.map(doc => ({id: doc.id})), payload.options);
                     docs = toDeleteIds;
                 }
                 if (docs) return [...docs];
@@ -329,16 +329,16 @@ export default {
                 return {...(doc || {})};
             },
             create: async (payload) => {
-                return {...(await model.create({...(payload.data || {})}) || {})};
+                return {...(await model.create({...(payload.data || {})}, payload.options) || {})};
             },
             update: async (payload) => {
                 let doc: any;
                 let docs;
                 let ids = [];
                 if ('string' === typeof payload.id) {
-                    doc = {...(await model.update({id: payload.id}, buildUpdateObject(payload.data)) || {})};
+                    doc = {...(await model.update({id: payload.id}, buildUpdateObject(payload.data), payload.options) as unknown as Promise<any> || {})};
                 } else if (Array.isArray(payload.id)) {
-                    docs = await Promise.all(payload.id.map(async id => await model.update({id}, buildUpdateObject(payload.data)) || {}));
+                    docs = await Promise.all(payload.id.map(async id => await model.update({id}, buildUpdateObject(payload.data), payload.options) as unknown as Promise<any> || {}));
                 } else if ('object' === typeof payload.id) {
                     ids = (await runQuery(model, {
                         criteria: {_: convertToQueryDsl(payload.id)},
@@ -347,7 +347,7 @@ export default {
                         offset: undefined,
                         sort: undefined,
                     }) || []);
-                    docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, buildUpdateObject(payload.data)) || {}));
+                    docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, buildUpdateObject(payload.data), payload.options) as unknown as Promise<any> || {}));
                 }
                 if (docs) return [...docs];
                 if (!doc) throw new DocumentNotFoundError(name, payload.id);
