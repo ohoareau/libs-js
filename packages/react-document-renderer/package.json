@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-document-renderer",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "React Document Renderer",
   "license": "MIT",
   "main": "lib/index.js",
@@ -21,14 +21,14 @@
     "story": "start-storybook -c ../../.storybook"
   },
   "dependencies": {
+    "@jorgeferrero/stream-to-buffer": "^2.0.6",
     "@react-pdf/renderer": "^1.6.13",
     "handlebars": "^4.7.7",
     "jexl": "^2.3.0",
     "object-path": "^0.11.5",
     "qrious": "^4.0.2",
     "remark-parse": "^9.0.0",
-    "unified": "^9.2.0",
-    "@jorgeferrero/stream-to-buffer": "^2.0.6"
+    "unified": "^9.2.0"
   },
   "peerDependencies": {
     "react": "^16.13.1",
