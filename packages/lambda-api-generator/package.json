@@ -9,7 +9,8 @@
     "test": "__tests__"
   },
   "files": [
-    "lib"
+    "lib",
+    "examples"
   ],
   "publishConfig": {
     "access": "public"
