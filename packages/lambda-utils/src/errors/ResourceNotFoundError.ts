@@ -12,6 +12,12 @@ export class ResourceNotFoundError extends Error {
     static buildMessageFromRequest(request: http_request): string {
         return `Resource not found: ${request.uri}`;
     }
+    serialize() {
+        return {
+            httpStatusCode: 404,
+            uri: this.request.uri,
+        }
+    }
 }
 
 export default ResourceNotFoundError

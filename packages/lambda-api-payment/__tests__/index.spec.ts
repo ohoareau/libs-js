@@ -29,10 +29,25 @@ describe('createHandler', () => {
     it('POST /orders (when no data posted, throw error)', async () => {
         const handler = createHandler();
         await expect(handler({requestContext: {http: {path: '/orders', method: 'post'}}}, {})).resolves.toEqual({
-            body: undefined,
-            headers: {},
+            body: {
+                data: {
+                    failures: {
+                        data: [{violation: 'missing'}],
+                    },
+                },
+                message: 'Precondition failed',
+                status: 'error',
+            },
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'application/json;charset=UTF-8',
+                'X-Error-Message': 'Precondition failed',
+                'X-Error-Phase': 'process',
+                'X-Error-Route-Name': 'order-create',
+                'X-Error-Route-Type': 'createOrder',
+            },
             isBase64Encoded: false,
-            statusCode: 500,
+            statusCode: 412,
         });
     })
 })

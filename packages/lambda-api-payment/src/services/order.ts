@@ -1,17 +1,15 @@
-import {http_response} from "@ohoareau/lambda-utils";
+import {http_response, PreconditionFailedError} from "@ohoareau/lambda-utils";
 
 async function create(query): Promise<http_response> {
-    if (!query || !query.data) throw new Error('Missing data');
+    if (!query || !query.data) throw new PreconditionFailedError({data: [{violation: 'missing'}]});
     return {
-        body: {
-        },
+        body: {},
         statusCode: 201,
     };
 }
 async function get(query): Promise<http_response> {
     return {
-        body: {
-        },
+        body: {},
         statusCode: 200,
     };
 }

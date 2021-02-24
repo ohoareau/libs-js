@@ -1,4 +1,5 @@
 import service from '../../src/services/order';
+import {PreconditionFailedError} from "@ohoareau/lambda-utils";
 
 beforeEach(() => {
     jest.resetAllMocks();
@@ -6,6 +7,6 @@ beforeEach(() => {
 
 describe('create', () => {
     it('for missing data throw an error', async () => {
-        await expect(service.create({})).rejects.toThrow(new Error('Missing data'));
+        await expect(service.create({})).rejects.toThrow(new PreconditionFailedError({data: [{violation: 'missing'}]}));
     })
 })

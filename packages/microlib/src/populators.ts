@@ -8,16 +8,17 @@ export const user_id = () => ({user}: any = {}) => (user && user.id) ? user.id :
 export const token = ({size = 16}) => () => require('rand-token').uid(size);
 export const uuid = () => () => require('uuid').v4();
 export const now = () => () => new Date().valueOf();
-export const ref_attribute_field = ({key, prefix, sourceField}) => ({data, contextData}) => {
+export const ref_attribute_field = def => ({data, contextData}) => {
     if (!data) return '**unchanged**';
-    if (key in data) {
-        if (('**clear**' === data[key]) || (undefined === data[key])) {
-            return '**clear**';
-        }
-        if (!data[key]) return '**unchanged**';
-        return (contextData[`${prefix}.${data[key]}`] || {})[sourceField] || undefined;
+    const sources = def.sources ? def.sources : [def];
+    const source = sources.find(s => s.key in data);
+    if (!source) return '**unchanged**';
+    const {key, prefix, sourceField} = source;
+    if (('**clear**' === data[key]) || (undefined === data[key])) {
+        return '**clear**';
     }
-    return '**unchanged**'
+    if (!data[key]) return '**unchanged**';
+    return (contextData[`${prefix}.${data[key]}`] || {})[sourceField] || undefined;
 };
 export const empty = () => () => undefined;
 export const value = ({value}) => () => value;
