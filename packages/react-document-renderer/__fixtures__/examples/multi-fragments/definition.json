@@ -1,0 +1,34 @@
+{
+  "fragments": [
+    {
+      "id": "f1",
+      "content": [
+        {
+          "id": "b1",
+          "type": "paragraph",
+          "text": "# fragment1"
+        }
+      ]
+    },
+    {
+      "id": "f2",
+      "content": [
+        {
+          "id": "b1",
+          "type": "paragraph",
+          "text": "# fragment2"
+        }
+      ]
+    },
+    {
+      "id": "f3",
+      "content": [
+        {
+          "id": "b1",
+          "type": "paragraph",
+          "text": "# fragment3"
+        }
+      ]
+    }
+  ]
+}

@@ -20,7 +20,8 @@
   },
   "dependencies": {
     "@ohoareau/aws": "^0.1.5",
-    "@ohoareau/lambda-utils": "^0.2.2"
+    "@ohoareau/lambda-utils": "^0.2.2",
+    "@ohoareau/react-document-renderer": "^0.4.0"
   },
   "peerDependenciesMeta": {
     "aws-sdk": {

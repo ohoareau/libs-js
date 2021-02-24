@@ -5,9 +5,10 @@ import {ConfigConsumer} from './contexts/ConfigContext';
 import {ContextConsumer} from './contexts/ContextContext';
 import {StylesheetConsumer} from './contexts/StylesheetContext';
 import {SuggestionsConsumer} from './contexts/SuggestionsContext';
-import {styling} from './utils';
-import handlebars from 'handlebars';
+import {styling} from './utils/styling';
 import jexl from 'jexl';
+
+import handlebars from 'handlebars';
 
 handlebars.registerHelper('multiple', (v, options) =>
     // @ts-ignore

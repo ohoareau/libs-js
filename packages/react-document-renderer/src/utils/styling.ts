@@ -21,3 +21,5 @@ export const styling = (type: string|string[], stylesheet: any, forced: any = un
         return acc;
     }, styles);
 };
+
+export default styling

@@ -26,4 +26,16 @@ describe('createHandler', () => {
             statusCode: 200,
         });
     })
+    it('GET /a/demo.pdf', async () => {
+        const handler = createHandler();
+        await expect(handler({requestContext: {http: {path: '/a/demo.pdf', method: 'get'}}}, {})).resolves.toEqual({
+            body: expect.any(String),
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Content-Type': 'application/pdf',
+            },
+            isBase64Encoded: true,
+            statusCode: 200,
+        });
+    })
 })

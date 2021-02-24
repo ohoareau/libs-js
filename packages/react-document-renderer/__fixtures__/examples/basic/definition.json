@@ -1,0 +1,14 @@
+{
+  "fragments": [
+    {
+      "id": "f1",
+      "content": [
+        {
+          "id": "b1",
+          "type": "paragraph",
+          "text": "This is the content in markdown *syntax*"
+        }
+      ]
+    }
+  ]
+}
