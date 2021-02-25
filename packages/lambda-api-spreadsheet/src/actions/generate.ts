@@ -1,8 +1,14 @@
 import {ctx, http_response, UnderlyingExecutionError} from "@ohoareau/lambda-utils";
 import * as availableSources from "../sources";
-import {render} from '@ohoareau/react-document-renderer';
+import XLSX from 'xlsx';
 
-export async function generatePdf(ctx: ctx): Promise<http_response> {
+async function render(def: any) {
+    const wb = XLSX.utils.book_new();
+    // @todo
+    return XLSX.write(wb, {type: 'buffer'});
+}
+
+export async function generate(ctx: ctx): Promise<http_response> {
     const sources = {...availableSources, ...(ctx.config.sources || {})};
     const sourceName = ctx.query.source || 'default';
     const source = sources[sourceName];
@@ -10,10 +16,10 @@ export async function generatePdf(ctx: ctx): Promise<http_response> {
     const sourced = (await source(ctx)) || {};
     if (!sourced || !sourced.definition) return ctx.helpers.httpNotFound();
     try {
-        return ctx.helpers.buffer({contentType: 'application/pdf', ...sourced, buffer: await render(sourced.definition)});
+        return ctx.helpers.buffer({contentType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', ...sourced, buffer: await render(sourced.definition)});
     } catch (e) {
-        throw new UnderlyingExecutionError(e, 'generatePdf', {sourceName});
+        throw new UnderlyingExecutionError(e, 'generate', {sourceName});
     }
 }
 
-export default generatePdf
+export default generate
