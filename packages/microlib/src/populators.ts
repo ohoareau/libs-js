@@ -18,6 +18,13 @@ export const ref_attribute_field = def => ({data, contextData}) => {
         return '**clear**';
     }
     if (!data[key]) return '**unchanged**';
+    if (Array.isArray(sourceField)) {
+        const xxx = sourceField.map(sf => (contextData[`${prefix}.${data[key]}`] || {})[sf] || undefined).filter(x => !!x);
+        if (!xxx.length) {
+            return undefined;
+        }
+        return xxx.join(' ');
+    }
     return (contextData[`${prefix}.${data[key]}`] || {})[sourceField] || undefined;
 };
 export const empty = () => () => undefined;
