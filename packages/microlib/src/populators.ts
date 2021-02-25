@@ -11,7 +11,7 @@ export const now = () => () => new Date().valueOf();
 export const ref_attribute_field = def => ({data, contextData}) => {
     if (!data) return '**unchanged**';
     const sources = def.sources ? def.sources : [def];
-    const source = sources.find(s => s.key in data);
+    const source = sources.find(s => (s.key in data) && (undefined !== data[s.key]));
     if (!source) return '**unchanged**';
     const {key, prefix, sourceField} = source;
     if (('**clear**' === data[key]) || (undefined === data[key])) {

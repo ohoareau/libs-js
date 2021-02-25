@@ -23,3 +23,14 @@ export const image = ({bucket, key, name, contentType, algorithm = 'sha256'}) =>
     const fingerprint = await require('./services/crypto').default.hash(await s3.getFileContent(v), algorithm)
     return {bucket, key, name, contentType, fingerprint};
 }
+export const list = () => v => {
+    // for now, only array of STRINGs
+    let x: any[] = [];
+    if (undefined !== v) {
+        if (!Array.isArray(v)) {
+            if ('string' === typeof v) x = v.split(',');
+            else x = [v];
+        }
+    }
+    return x.length ? x.map(xx => `${xx}`) : undefined;
+}
