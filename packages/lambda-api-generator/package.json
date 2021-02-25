@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-generator",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@ohoareau/aws": "^0.1.5",
-    "@ohoareau/lambda-utils": "^0.2.3",
+    "@ohoareau/lambda-utils": "^0.2.4",
     "@ohoareau/react-document-renderer": "^0.4.1"
   },
   "peerDependenciesMeta": {
