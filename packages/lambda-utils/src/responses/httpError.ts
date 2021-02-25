@@ -16,15 +16,14 @@ export async function httpError({error = undefined, phase = undefined, headers =
 
     }
     const e = error! as Error
-    defaultHeaders['X-Error-Message'] = e.message;
     phase && (defaultHeaders['X-Error-Phase'] = phase);
     const {httpHeaders = {}, httpStatusCode = 500, ...data} = (e['serialize'] ? e['serialize']() : {}) || {};
     return {
-        body: {
+        body: JSON.stringify({
             status: 'error',
             message: e.message,
             data,
-        },
+        }),
         isBase64Encoded: false,
         statusCode: httpStatusCode || 500,
         headers: {
