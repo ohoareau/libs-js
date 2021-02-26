@@ -13121,10 +13121,10 @@ isarray@^2.0.5:
   resolved "https://registry.yarnpkg.com/isarray/-/isarray-2.0.5.tgz#8af1e4c1221244cc62459faf38940d4e644a5723"
   integrity sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==
 
-isbn-util@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/isbn-util/-/isbn-util-1.1.2.tgz#6f37d275a4ad878b194237eb709ce8d08e2e5fb7"
-  integrity sha512-Dk6ocWU6r3YavRWeLFVfma2yuAXa/+ZVCGBzNjC+EeAjQcCXEE0+QnTx6+A/hAr5RoPtjpDN1ntG6s2DGTXdLA==
+isbn3@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/isbn3/-/isbn3-1.1.8.tgz#72e0248982c2b2689bb2a8b7e42063bb8930058e"
+  integrity sha512-lmxlGEy+yYBVCNNBdNfSVjNtTq/1Dxz01AsndDfcNe5A4QR15uJb2FRbIzIP23FRG+Cv8JlHaRUczPTYYLsU0Q==
 
 isexe@^2.0.0:
   version "2.0.0"
