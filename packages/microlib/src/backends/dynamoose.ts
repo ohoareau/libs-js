@@ -1,7 +1,9 @@
 import dynamoose from '../services/dynamoose';
 
 function mutateField(def) {
+    ('string' === typeof def) && (def = {type: def});
     const field: {[key: string]: any} = {type: String};
+    let doNotProcessList = false;
     switch (def.type) {
         case 'string':
             field.type = String;
@@ -14,6 +16,19 @@ function mutateField(def) {
             break;
         case 'object':
             field.type = Object;
+            if (def.list && def.props) {
+                doNotProcessList = true;
+                field.type = 'list';
+                field.list = [
+                    {
+                        type: 'map',
+                        map: Object.entries(def.props).reduce((acc, [k, v]) => {
+                            acc[k] = mutateField(v);
+                            return acc;
+                        }, {}),
+                    }
+                ]
+            }
             break;
         default:
             if (Array.isArray(def.type)) {
@@ -33,7 +48,7 @@ function mutateField(def) {
     if (def.index && (def.index.length > 0)) {
         field.index = def.index.map(i => ({global: true, name: i.name, ...(i.rangeKey ? {rangeKey: i.rangeKey} : {}), throughput: {read: 1, write: 1}, project: true}));
     }
-    return def.list ? [field] : field;
+    return (def.list && !doNotProcessList) ? [field] : field;
 }
 
 export default (model, cfg: {tableName?: string} = {}) => dynamoose.getDb(
