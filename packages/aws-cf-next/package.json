@@ -1,6 +1,6 @@
 {
-  "name": "@ohoareau/sql-parser",
-  "version": "0.1.1",
+  "name": "@ohoareau/aws-cf-next",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -13,10 +13,6 @@
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "node-sql-reader": "^0.1.3",
-    "node-sql-parser": "^3.1.0"
   },
   "scripts": {
     "build": "tsc",

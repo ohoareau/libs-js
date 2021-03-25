@@ -1,0 +1,116 @@
+{
+  "type": "insert",
+  "columns": null,
+  "on_duplicate_update": null,
+  "partition": null,
+  "table": [
+    {"as": null, "db": null, "table": "wpc1_options"}
+  ],
+  "values": [
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "number",
+          "value": 1
+        },
+        {
+          "type": "string",
+          "value": "siteurl"
+        },
+        {
+          "type": "string",
+          "value": "https://somesite.com"
+        },
+        {
+          "type": "string",
+          "value": "yes"
+        }
+      ]
+    },
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "number",
+          "value": 2
+        },
+        {
+          "type": "string",
+          "value": "home"
+        },
+        {
+          "type": "string",
+          "value": "https://somesite.com"
+        },
+        {
+          "type": "string",
+          "value": "yes"
+        }
+      ]
+    },
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "number",
+          "value": 3
+        },
+        {
+          "type": "string",
+          "value": "blogname"
+        },
+        {
+          "type": "string",
+          "value": "SomeSite"
+        },
+        {
+          "type": "string",
+          "value": "yes"
+        }
+      ]
+    },
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "number",
+          "value": 4
+        },
+        {
+          "type": "string",
+          "value": "blogdescription"
+        },
+        {
+          "type": "string",
+          "value": "Some site"
+        },
+        {
+          "type": "string",
+          "value": "yes"
+        }
+      ]
+    },
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "number",
+          "value": 5
+        },
+        {
+          "type": "string",
+          "value": "users_can_register"
+        },
+        {
+          "type": "string",
+          "value": "0"
+        },
+        {
+          "type": "string",
+          "value": "yes"
+        }
+      ]
+    }
+  ]
+}

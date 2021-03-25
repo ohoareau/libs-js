@@ -1,0 +1,24 @@
+{
+  "type": "insert",
+  "columns": null,
+  "on_duplicate_update": null,
+  "partition": null,
+  "table": [
+    {"as": null, "db": null, "table": "mytable"}
+  ],
+  "values": [
+    {
+      "type": "expr_list",
+      "value": [
+        {
+          "type": "string",
+          "value": "v1"
+        },
+        {
+          "type": "string",
+          "value": "v2"
+        }
+      ]
+    }
+  ]
+}

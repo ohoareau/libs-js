@@ -1,0 +1,1 @@
+DROP TABLE `wpc1_options`

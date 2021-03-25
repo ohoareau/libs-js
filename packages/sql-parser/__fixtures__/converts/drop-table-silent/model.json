@@ -1,0 +1,12 @@
+{
+  "keyword": "table",
+  "if_exists": true,
+  "name": [
+    {
+      "as": null,
+      "db": null,
+      "table": "wpc1_options"
+    }
+  ],
+  "type": "drop"
+}

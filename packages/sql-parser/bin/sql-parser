@@ -1,0 +1,8 @@
+#!/usr/bin/env node
+
+const [,, operation, file] = process.argv;
+
+require(`${__dirname}/../lib/index.js`).cli(operation, file).then(() => {}).catch(e => {
+    console.error(e.message);
+    process.exit(1);
+});

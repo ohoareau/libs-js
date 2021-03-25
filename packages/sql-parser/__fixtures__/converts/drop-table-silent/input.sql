@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS `wpc1_options`
