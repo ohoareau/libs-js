@@ -189,7 +189,7 @@ export const runLayer = async (layer, action, actionArgs = []) => {
             await runLayerCommand(layer, {}, 'terraform', 'get');
             break;
         case 'providers-lock':
-            await runLayerCommand(layer, {}, 'terraform', 'providers', 'lock');
+            await runLayerCommand(layer, {}, 'terraform', 'providers', 'lock', '-platform=darwin_amd64', '-platform=linux_amd64', '-platform=windows_amd64');
             break;
         case 'update':
             await runLayerCommand(layer, {}, 'terraform', 'get', '-update');
