@@ -1,0 +1,1494 @@
+{
+  "as": null,
+  "create_definitions": [
+    {
+      "auto_increment": "auto_increment",
+      "collate": null,
+      "column": {
+        "column": "id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": null,
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": [
+          "UNSIGNED"
+        ]
+      },
+      "nullable": {
+        "type": "not null",
+        "value": "not null"
+      },
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "permalink",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "permalink_hash",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 40
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "object_id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "BIGINT",
+        "length": 20,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "object_type",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": null,
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 32
+      },
+      "nullable": {
+        "type": "not null",
+        "value": "not null"
+      },
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "object_sub_type",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 32
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "author_id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "BIGINT",
+        "length": 20,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "post_parent",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "BIGINT",
+        "length": 20,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "title",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "description",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "MEDIUMTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "breadcrumb_title",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "post_status",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 20
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_public",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_protected",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "has_public_posts",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "number_of_pages",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": [
+          "UNSIGNED"
+        ]
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "canonical",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "primary_focus_keyword",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 191
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "primary_focus_keyword_score",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 3,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "readability_score",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 3,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_cornerstone",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_robots_noindex",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_robots_nofollow",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_robots_noarchive",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_robots_noimageindex",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "is_robots_nosnippet",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "twitter_title",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "twitter_image",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "twitter_description",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "twitter_image_id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 191
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "twitter_image_source",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_title",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_description",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_image",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "LONGTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_image_id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 191
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_image_source",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "TEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "open_graph_image_meta",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "MEDIUMTEXT"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "link_count",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "incoming_link_count",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "prominent_words_version",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": [
+          "UNSIGNED"
+        ]
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "created_at",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "DATETIME"
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "updated_at",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "args": {
+            "type": "expr_list",
+            "value": []
+          },
+          "name": "CURRENT_TIMESTAMP",
+          "over": null,
+          "type": "function"
+        }
+      },
+      "definition": {
+        "dataType": "TIMESTAMP"
+      },
+      "nullable": {
+        "type": "not null",
+        "value": "not null"
+      },
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "blog_id",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 1
+        }
+      },
+      "definition": {
+        "dataType": "BIGINT",
+        "length": 20,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": {
+        "type": "not null",
+        "value": "not null"
+      },
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "language",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 32
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "region",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 32
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "schema_page_type",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 64
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "schema_article_type",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "VARCHAR",
+        "length": 64
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "has_ancestors",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "number",
+          "value": 0
+        }
+      },
+      "definition": {
+        "dataType": "TINYINT",
+        "length": 1,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "auto_increment": null,
+      "collate": null,
+      "column": {
+        "column": "estimated_reading_time_minutes",
+        "table": null,
+        "type": "column_ref"
+      },
+      "column_format": null,
+      "comment": null,
+      "default_val": {
+        "type": "default",
+        "value": {
+          "type": "null",
+          "value": null
+        }
+      },
+      "definition": {
+        "dataType": "INT",
+        "length": 11,
+        "parentheses": true,
+        "scale": null,
+        "suffix": []
+      },
+      "nullable": null,
+      "reference_definition": null,
+      "resource": "column",
+      "storage": null,
+      "unique_or_primary": null
+    },
+    {
+      "constraint": null,
+      "constraint_type": "primary key",
+      "definition": [
+        "id"
+      ],
+      "index_options": null,
+      "index_type": null,
+      "keyword": null,
+      "resource": "constraint"
+    },
+    {
+      "definition": [
+        "object_type",
+        "object_sub_type"
+      ],
+      "index": "object_type_and_sub_type",
+      "index_options": null,
+      "index_type": null,
+      "keyword": "key",
+      "resource": "index"
+    },
+    {
+      "definition": [
+        "object_id",
+        "object_type"
+      ],
+      "index": "object_id_and_type",
+      "index_options": null,
+      "index_type": null,
+      "keyword": "key",
+      "resource": "index"
+    },
+    {
+      "definition": [
+        "permalink_hash",
+        "object_type"
+      ],
+      "index": "permalink_hash_and_object_type",
+      "index_options": null,
+      "index_type": null,
+      "keyword": "key",
+      "resource": "index"
+    },
+    {
+      "definition": [
+        "post_parent",
+        "object_type",
+        "post_status",
+        "object_id"
+      ],
+      "index": "subpages",
+      "index_options": null,
+      "index_type": null,
+      "keyword": "key",
+      "resource": "index"
+    },
+    {
+      "definition": [
+        "prominent_words_version",
+        "object_type",
+        "object_sub_type",
+        "post_status"
+      ],
+      "index": "prominent_words",
+      "index_options": null,
+      "index_type": null,
+      "keyword": "key",
+      "resource": "index"
+    }
+  ],
+  "if_not_exists": null,
+  "ignore_replace": null,
+  "keyword": "table",
+  "query_expr": null,
+  "table": [
+    {
+      "as": null,
+      "db": null,
+      "table": "wpc1_yoast_indexable"
+    }
+  ],
+  "table_options": [
+    {
+      "keyword": "engine",
+      "symbol": "=",
+      "value": "INNODB"
+    },
+    {
+      "keyword": "auto_increment",
+      "symbol": "=",
+      "value": 1498
+    },
+    {
+      "keyword": "default charset",
+      "symbol": "=",
+      "value": "utf8mb4"
+    },
+    {
+      "keyword": "collate",
+      "symbol": "=",
+      "value": "utf8mb4_unicode_ci"
+    }
+  ],
+  "temporary": null,
+  "type": "create"
+}

@@ -1,4 +1,4 @@
-import {split, convert} from '../src';
+import {split, clean, convert} from '../src';
 import fs from 'fs';
 
 function sqlFile(group: string, path: string): string {
@@ -42,15 +42,15 @@ describe('split', () => {
     ;
 })
 
-describe('convert', () => {
+describe('clean and convert', () => {
     [
-        ['DROP TABLE IF EXISTS',
-            sqlFile('converts', 'drop-table-silent'),
-            modelFile('converts', 'drop-table-silent')
-        ],
         ['DROP TABLE',
             sqlFile('converts', 'drop-table'),
             modelFile('converts', 'drop-table')
+        ],
+        ['DROP TABLE - CLEAN - IF EXISTS',
+            sqlFile('converts', 'drop-table-clean-if-exists'),
+            modelFile('converts', 'drop-table-clean-if-exists')
         ],
         ['INSERT INTO',
             sqlFile('converts', 'insert'),
@@ -68,14 +68,34 @@ describe('convert', () => {
             sqlFile('converts', 'create-table'),
             modelFile('converts', 'create-table')
         ],
-        ['CREATE TABLE - 2',
-            sqlFile('converts', 'create-table-2'),
-            modelFile('converts', 'create-table-2')
+        ['CREATE TABLE - CLEAN - COLLATE',
+            sqlFile('converts', 'create-table-clean-collate'),
+            modelFile('converts', 'create-table-clean-collate')
+        ],
+        ['CREATE TABLE - CLEAN - KEY LENGTH',
+            sqlFile('converts', 'create-table-clean-key-length'),
+            modelFile('converts', 'create-table-clean-key-length')
+        ],
+        ['CREATE TABLE - CLEAN - KEY LENGTH DOUBLE',
+            sqlFile('converts', 'create-table-clean-key-length-double'),
+            modelFile('converts', 'create-table-clean-key-length-double')
+        ],
+        ['CREATE TABLE - CLEAN - KEY LENGTH DOUBLE BOTH',
+            sqlFile('converts', 'create-table-clean-key-length-double-both'),
+            modelFile('converts', 'create-table-clean-key-length-double-both')
+        ],
+        ['CREATE TABLE - CLEAN - KEY LENGTH N',
+            sqlFile('converts', 'create-table-clean-key-length-n'),
+            modelFile('converts', 'create-table-clean-key-length-n')
+        ],
+        ['CREATE TABLE - CLEAN - ON UPDATE',
+            sqlFile('converts', 'create-table-clean-on-update'),
+            modelFile('converts', 'create-table-clean-on-update')
         ],
     ]
         .forEach(
-            ([name, input, expected]) => it(name as string, () => {
-                expect(convert(input as string)).toStrictEqual(expected);
+            ([name, input, expected]) => it(name as string, async () => {
+                expect(await convert(...((await clean(input)) as [string, any]))).toStrictEqual(expected);
             })
         )
     ;
