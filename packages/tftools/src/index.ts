@@ -191,7 +191,7 @@ export const runLayer = async (layer, action, actionArgs = []) => {
         case 'providers-lock-delete':
             await runLayerCommand(layer, {}, 'rm', '-f', '.terraform.lock.hcl');
             break;
-        case 'clean-caches':
+        case 'clean-dirs':
             await runLayerCommand(layer, {}, 'rm', '-rf', '.terraform/plugins', '.terraform/providers');
             break;
         case 'providers-lock':
