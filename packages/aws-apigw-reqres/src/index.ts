@@ -1,11 +1,12 @@
 import Stream from 'stream';
 import queryString from 'querystring';
 import http from 'http';
+import vx from '@ohoareau/aws-apigw-vx';
 
 // inspired from the work of Daniel Conde Marin (in https://github.com/serverless-nextjs/serverless-next.js)
 
 function wrapper(callback: (req, res) => any) {
-    return async (event, context) => {
+    return vx(async (event, context) => {
         const {req, res, promise, reject} = convertEventToReqRes(event, context);
         try {
             await callback(req, res);
@@ -14,7 +15,7 @@ function wrapper(callback: (req, res) => any) {
             reject(e);
         }
         return promise;
-    }
+    });
 }
 
 function convertEventToReqRes(event, context) {
