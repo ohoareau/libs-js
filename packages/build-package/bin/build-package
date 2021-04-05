@@ -4,7 +4,7 @@ mkdir -p build
 rm -f "build/package.zip"
 rm -rf node_modules
 yarn --silent install --prod >/dev/null || exit 2
-zip -r -X "build/package-temp.zip" * -x@package-excludes.lst >/dev/null || exit 3
+zip -r -X "build/package-temp.zip" . -x@package-excludes.lst >/dev/null || exit 3
 
 if [ -f "build/package.zip" ]; then
   unzip build/package.zip -d build/package-old-unzipped >/dev/null
