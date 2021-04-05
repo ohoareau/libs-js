@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
+    "test": "cd __fixtures__/my-app && yarn install --silent -p && yarn build >/dev/null && cd ../../ && ../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
     "@ohoareau/aws-apigw-reqres": "^0.1.0"
