@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.13.13",
+    "version": "0.13.14",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
     },
     "dependencies": {
         "@ohoareau/aws": "^0.1.5",
-        "@ohoareau/build-package": "^0.1.0",
+        "@ohoareau/build-package": "^0.1.1",
         "@ohoareau/deploy-package": "^0.1.0",
         "@ohoareau/errors": "^0.1.0",
         "bcryptjs": "^2.4.3",
