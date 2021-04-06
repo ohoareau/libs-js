@@ -1,0 +1,9 @@
+{
+  "name": "some-app",
+  "version": "0.0.0",
+  "license": "MIT",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}

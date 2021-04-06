@@ -20,8 +20,5 @@
   },
   "devDependencies": {
     "express": "^4.17.1"
-  },
-  "dependencies": {
-    "@ohoareau/aws-apigw-vx": "^0.2.0"
   }
 }
