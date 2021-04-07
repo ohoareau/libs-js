@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/aws-lambda-express",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "test": "cd __fixtures__/my-app && yarn install --silent -p && cd ../../ && ../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws-lambda-reqres": "^0.0.0"
+    "@ohoareau/aws-lambda-reqres": "^0.1.0"
   },
   "peerDependencies": {
     "express": "^4.17.1"
