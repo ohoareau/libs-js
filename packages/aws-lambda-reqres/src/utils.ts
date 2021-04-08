@@ -1,6 +1,6 @@
 import Stream from "stream";
 
-export function buildResolvableResponse(resolve, {headerFormat = 'flat', headersKey = 'headers'}: any = {}) {
+export function buildResolvableResponse(resolve, mapErrorToResponse, {headerFormat = 'flat', headersKey = 'headers'}: any = {}) {
     const base64Support = !!process.env.BINARY_SUPPORT;
     const response: any = {isBase64Encoded: base64Support, headers: {}};
     const res: any = new Stream();
@@ -87,5 +87,20 @@ export function buildResolvableResponse(resolve, {headerFormat = 'flat', headers
         resolve(response);
     };
 
-    return { res };
+    return { res, mapErrorToResponse };
+}
+
+export function convertFactory(toReq, toRes) {
+    return function (event, context, resolve) {
+        const {req, debug} = toReq(event, context);
+
+        return {
+            req,
+            debug,
+            ...toRes(event, context, x => {
+                debug && console.log('response', JSON.stringify(x, null, 4));
+                return resolve(x);
+            }),
+        };
+    };
 }

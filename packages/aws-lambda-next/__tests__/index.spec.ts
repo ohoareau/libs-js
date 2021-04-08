@@ -42,4 +42,35 @@ describe('next', () => {
             statusCode: 200,
         })
     });
-})
+    it('home (cf edge origin req)', async () => {
+        await expect(handler({
+            Records: [
+                {
+                    cf: {
+                        config: {
+                            eventType: 'origin-request',
+                        },
+                        request: {
+                            method: 'GET',
+                            uri: '/',
+                            headers: {
+                                //'x-lambda-debug': [{name: 'X-Lambda-Debug', value: '1'}]
+                            }
+                        }
+                    }
+                }
+            ]
+        }, {})).resolves.toEqual({
+            headers: {
+                'content-length': [{name: 'Content-Length', value: expect.any(Number)}],
+                'content-type': [{name: 'Content-Type', value: "text/html; charset=utf-8"}],
+                "cache-control": [{name: 'Cache-Control', 'value': 's-maxage=31536000, stale-while-revalidate'}],
+                'etag': [{name: 'Etag', value: expect.any(String)}],
+                'x-powered-by': [{name: 'X-Powered-By', value: 'Next.js'}],
+            },
+            status: '200',
+            statusDescription: "EDGE GENERATED",
+            body: expect.stringContaining('Welcome to'),
+            bodyEncoding: 'text',
+        });
+    });})

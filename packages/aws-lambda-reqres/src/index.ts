@@ -1,16 +1,27 @@
 // inspired from the work of Daniel Conde Marin (in https://github.com/serverless-nextjs/serverless-next.js)
 import detect from '@ohoareau/aws-event-detector';
 
-function wrapper(callback: (req, res) => any) {
-    return async (event, context) => {
-        const {req, res, promise, reject} = convertEventToReqRes(event, context);
+function wrapper(callback: (req, res) => any|Promise<any>) {
+    return async function (event, context) {
+        const {req, res, promise, reject, debug, mapErrorToResponse} = convertEventToReqRes(event, context);
+        debug && console.log(
+            'event/context',
+            JSON.stringify(event, null, 4),
+            JSON.stringify(context, null, 4)
+        );
         try {
             await callback(req, res);
         } catch (e) {
-            // @todo convert error to proper api gateway response payload
+            debug && console.error('prepare-error', e);
             reject(e);
         }
-        return promise;
+        try {
+            // the `return await` is required to trigger the potential error and use the try/catch
+            return await promise;
+        } catch (e) {
+            debug && console.error('execute-error', e);
+            return mapErrorToResponse(e);
+        }
     };
 }
 
@@ -19,6 +30,7 @@ function convertEventToReqRes(event, context) {
     let reject: any = undefined;
     const promise = new Promise((a, b) => { resolve = a; reject = b; })
     return {
+        debug: false,
         ...require(`./converters/${detect(event, context)}`).default(event, context, resolve),
         promise,
         reject,

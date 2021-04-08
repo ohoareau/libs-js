@@ -1,13 +1,8 @@
 import Stream from "stream";
 import http from "http";
-import {buildResolvableResponse} from "../utils";
+import {buildResolvableResponse, convertFactory} from "../utils";
 
-function convert(event, context, resolve) {
-    return {
-        ...toReq(event, context),
-        ...toRes(event, context, resolve),
-    };
-}
+export const convert = convertFactory(toReq, toRes);
 
 // noinspection JSUnusedLocalSymbols
 function toReq(event, context) {
@@ -44,18 +39,28 @@ function toReq(event, context) {
     r.body && r.body.data && req.push(r.body.data, r.body.encoding);
     req.push(null);
 
-    return {req};
+    return {req, debug: !!req.getHeader('x-lambda-debug')};
 }
 
 function toRes(event, context, resolve) {
     return buildResolvableResponse(result => {
-        resolve({
+        return resolve({
             status: String(result.statusCode),
             statusDescription: 'EDGE GENERATED',
             headers: result.headers,
             body: result.body,
             bodyEncoding: result.isBase64Encoded ? 'base64' : 'text',
         });
+    }, e => {
+        return {
+            status: 500,
+            statusDescription: 'EDGE GENERATED',
+            headers: {
+                'content-type': [{name: 'Content-Type', value: 'application/json;charset=UTF-8'}]
+            },
+            body: JSON.stringify({status: 'error', message: e.message}),
+            bodyEncoding: 'text',
+        }
     }, {headerFormat: 'multi-named'})
 }
 

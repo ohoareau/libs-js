@@ -1,13 +1,8 @@
 import Stream from "stream";
 import http from "http";
-import {buildResolvableResponse} from "../utils";
+import {buildResolvableResponse, convertFactory} from "../utils";
 
-function convert(event, context, resolve) {
-    return {
-        ...toReq(event, context),
-        ...toRes(event, context, resolve),
-    };
-}
+export const convert = convertFactory(toReq, toRes);
 
 // noinspection JSUnusedLocalSymbols
 function toReq(event, context) {
@@ -43,11 +38,20 @@ function toReq(event, context) {
     event.body && req.push(event?.requestContext?.body, event?.requestContext?.isBase64Encoded ? "base64" : undefined);
     req.push(null);
 
-    return {req};
+    return {req, debug: !!req.getHeader('x-lambda-debug')};
 }
 
 function toRes(event, context, resolve) {
-    return buildResolvableResponse(resolve, {headerFormat: 'flat'})
+    return buildResolvableResponse(resolve, e => {
+        return {
+            statusCode: 500,
+            headers: {
+                'content-type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify({status: 'error', message: e.message}),
+            isBase64Encoded: false,
+        }
+    }, {headerFormat: 'flat'})
 }
 
 export default convert
