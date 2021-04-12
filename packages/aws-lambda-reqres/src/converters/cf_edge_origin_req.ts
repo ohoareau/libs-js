@@ -44,16 +44,19 @@ function toReq(event, context) {
 
 function toRes(event, context, resolve) {
     return buildResolvableResponse(result => {
-        return resolve({
+        const x: any = {
             status: String(result.statusCode),
             statusDescription: 'EDGE GENERATED',
             headers: result.headers,
-            body: result.body,
-            bodyEncoding: result.isBase64Encoded ? 'base64' : 'text',
-        });
+        };
+        if (result.body) {
+            x.body = result.body;
+            x.bodyEncoding = result.isBase64Encoded ? 'base64' : 'text';
+        }
+        return resolve(x);
     }, e => {
         return {
-            status: 500,
+            status: String(500),
             statusDescription: 'EDGE GENERATED',
             headers: {
                 'content-type': [{name: 'Content-Type', value: 'application/json;charset=UTF-8'}]

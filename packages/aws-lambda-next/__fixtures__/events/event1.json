@@ -1,0 +1,189 @@
+{
+  "Records": [
+    {
+      "cf": {
+        "config": {
+          "distributionDomainName": "dpr774n6skmxx.cloudfront.net",
+          "distributionId": "E27DS916KT0VX",
+          "eventType": "origin-request",
+          "requestId": "Thx5Nu9CJoP0WVNIEgncS1lWctaY0wyjMGXClGARXtbAhjqeHFEwhg=="
+        },
+        "request": {
+          "body": {
+            "action": "read-only",
+            "data": "",
+            "encoding": "base64",
+            "inputTruncated": false
+          },
+          "clientIp": "70.110.150.100",
+          "headers": {
+            "host": [
+              {
+                "key": "Host",
+                "value": "dev.xx.co"
+              }
+            ],
+            "cloudfront-is-mobile-viewer": [
+              {
+                "key": "CloudFront-Is-Mobile-Viewer",
+                "value": "false"
+              }
+            ],
+            "cloudfront-is-tablet-viewer": [
+              {
+                "key": "CloudFront-Is-Tablet-Viewer",
+                "value": "false"
+              }
+            ],
+            "cloudfront-is-smarttv-viewer": [
+              {
+                "key": "CloudFront-Is-SmartTV-Viewer",
+                "value": "false"
+              }
+            ],
+            "cloudfront-is-desktop-viewer": [
+              {
+                "key": "CloudFront-Is-Desktop-Viewer",
+                "value": "true"
+              }
+            ],
+            "accept-language": [
+              {
+                "key": "Accept-Language",
+                "value": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7"
+              }
+            ],
+            "accept": [
+              {
+                "key": "Accept",
+                "value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+              }
+            ],
+            "cloudfront-forwarded-proto": [
+              {
+                "key": "CloudFront-Forwarded-Proto",
+                "value": "https"
+              }
+            ],
+            "user-agent": [
+              {
+                "key": "User-Agent",
+                "value": "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.114 Safari/537.36"
+              }
+            ],
+            "via": [
+              {
+                "key": "Via",
+                "value": "1.1 xx.cloudfront.net (CloudFront)"
+              }
+            ],
+            "cache-control": [
+              {
+                "key": "cache-control",
+                "value": "max-age=0"
+              }
+            ],
+            "sec-ch-ua": [
+              {
+                "key": "sec-ch-ua",
+                "value": "\"Google Chrome\";v=\"89\", \"Chromium\";v=\"89\", \";Not A Brand\";v=\"99\""
+              }
+            ],
+            "sec-ch-ua-mobile": [
+              {
+                "key": "sec-ch-ua-mobile",
+                "value": "?0"
+              }
+            ],
+            "upgrade-insecure-requests": [
+              {
+                "key": "upgrade-insecure-requests",
+                "value": "1"
+              }
+            ],
+            "sec-fetch-site": [
+              {
+                "key": "sec-fetch-site",
+                "value": "none"
+              }
+            ],
+            "sec-fetch-mode": [
+              {
+                "key": "sec-fetch-mode",
+                "value": "navigate"
+              }
+            ],
+            "sec-fetch-user": [
+              {
+                "key": "sec-fetch-user",
+                "value": "?1"
+              }
+            ],
+            "sec-fetch-dest": [
+              {
+                "key": "sec-fetch-dest",
+                "value": "document"
+              }
+            ],
+            "accept-encoding": [
+              {
+                "key": "accept-encoding",
+                "value": "gzip, deflate, br"
+              }
+            ],
+            "cloudfront-viewer-country": [
+              {
+                "key": "CloudFront-Viewer-Country",
+                "value": "FR"
+              }
+            ]
+          },
+          "method": "GET",
+          "origin": {
+            "custom": {
+              "customHeaders": {
+                "x-cloudfront-edge-next-at-edge": [
+                  {
+                    "key": "X-CloudFront-Edge-Next-At-Edge",
+                    "value": "1"
+                  }
+                ],
+                "x-cloudfront-edge-next-debug": [
+                  {
+                    "key": "X-CloudFront-Edge-Next-Debug",
+                    "value": "1"
+                  }
+                ],
+                "x-cloudfront-edge-next-statics": [
+                  {
+                    "key": "X-CloudFront-Edge-Next-Statics",
+                    "value": "1"
+                  }
+                ],
+                "x-forwarded-for": [
+                  {
+                    "key": "X-Forwarded-For",
+                    "value": "dev.gotombola.co"
+                  }
+                ]
+              },
+              "domainName": "dev-xx.s3-website.eu-west-3.amazonaws.com",
+              "keepaliveTimeout": 5,
+              "path": "",
+              "port": 80,
+              "protocol": "http",
+              "readTimeout": 30,
+              "sslProtocols": [
+                "TLSv1",
+                "TLSv1.1",
+                "TLSv1.2"
+              ]
+            }
+          },
+          "querystring": "",
+          "uri": "/contact/"
+        }
+      }
+    }
+  ]
+}

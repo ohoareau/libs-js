@@ -25,6 +25,7 @@ module.exports = {
                 presets: ['@babel/preset-typescript', '@babel/preset-react'],
             },
         });
+
         config.resolve.extensions.push('.ts', '.tsx');
         config.module.rules = config.module.rules.map(rule => {
             if (
@@ -42,6 +43,10 @@ module.exports = {
             test: /\.svg$/,
             use: ["@svgr/webpack", "url-loader"],
         })
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            'fs': require('path').resolve(__dirname, 'fsMock.js')
+        };
         return config;
     },
 };

@@ -73,4 +73,29 @@ describe('next', () => {
             body: expect.stringContaining('Welcome to'),
             bodyEncoding: 'text',
         });
-    });})
+    });
+    it('cf edge event 1', async () => {
+        await expect(handler(require(`${__dirname}/../__fixtures__/events/event1.json`), {})).resolves.toEqual({
+            headers: {
+                'location': [{name: 'Location', 'value': '/contact'}],
+                'refresh': [{name: 'Refresh', 'value': '0;url=/contact'}],
+            },
+            status: '308',
+            statusDescription: "EDGE GENERATED",
+        });
+    });
+    it('cf edge event 2', async () => {
+        await expect(handler(require(`${__dirname}/../__fixtures__/events/event2.json`), {})).resolves.toEqual({
+            headers: {
+                'content-length': [{name: 'Content-Length', value: expect.any(Number)}],
+                'content-type': [{name: 'Content-Type', value: "text/html; charset=utf-8"}],
+                'etag': [{name: 'Etag', value: expect.any(String)}],
+                'x-powered-by': [{name: 'X-Powered-By', value: 'Next.js'}],
+            },
+            body: expect.any(String),
+            bodyEncoding: 'text',
+            status: '404',
+            statusDescription: "EDGE GENERATED",
+        });
+    });
+})

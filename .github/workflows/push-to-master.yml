@@ -8,7 +8,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - uses: actions/checkout@v2
@@ -32,9 +32,15 @@ jobs:
           branch: ${{github.base_ref}}
 
       - name: Install
+        shell: 'script -q -e -c "bash {0}"'
         run: make install
+        env:
+          FORCE_COLOR: 3
+          CI: true
 
       - name: Test
+        shell: 'script -q -e -c "bash {0}"'
         run: make test
         env:
+          FORCE_COLOR: 3
           CI: true

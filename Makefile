@@ -1,5 +1,8 @@
 b ?= master
 
+export CI
+export FORCE_COLOR
+
 all: install
 
 build:

@@ -7,7 +7,7 @@ project_git_url: git@github.com:ohoareau/libs-js.git
 npm_scope: ohoareau
 scm: github
 license: MIT
-node_version: 14.3.0
+node_version: 14.16.0
 
 ignores:
   - generated/

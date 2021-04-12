@@ -2180,20 +2180,55 @@
     unique-filename "^1.1.1"
     which "^1.3.1"
 
-"@genjs/genjs-plugin-cicd-github@^0.3.6":
-  version "0.3.6"
-  resolved "https://registry.yarnpkg.com/@genjs/genjs-plugin-cicd-github/-/genjs-plugin-cicd-github-0.3.6.tgz#d85775799f5b07cedf54a74d1e8808b3bf87bbbf"
-  integrity sha512-hnClZBVRRx7hMO92aKu8tgvf7NwbjKlUprYc5eTD6pJf26hKvP/mQUntHGWFCbJU3h+/CdZWnZABN3qa2IGnCQ==
+"@genjs/genjs-bundle-aws@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-bundle-aws/-/genjs-bundle-aws-0.1.0.tgz#4b58f4f28fbe6021bf90a913a75f90b99216508f"
+  integrity sha512-IaPiR64GnleuI5PZKeGy1WmFXVIW0Xv30dTPuf1H8jhgPQDgLFlZObkd87XNeCFCAAGYnxJL85p8fe/o1Bylvw==
 
-"@genjs/genjs-plugin-monorepo-js-libs@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@genjs/genjs-plugin-monorepo-js-libs/-/genjs-plugin-monorepo-js-libs-0.3.4.tgz#4f208ea6e04d935c67920f9cc25d26a5498b1504"
-  integrity sha512-wvBpBHvD/NaanbnxL+sdKbHoI2t1l6nUMkeQnh0KTZCmC+jz/4jyXeAE65OeRgfysuH8hboy87kdweroJtRCAw==
+"@genjs/genjs-bundle-cicd@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-bundle-cicd/-/genjs-bundle-cicd-0.1.0.tgz#63daa0fc3ac0ed6a54c18e9e8ca13db0cbd4d43a"
+  integrity sha512-FRfKJd+6WxpmJr27wy9le6/zbDJSJAWfqgR4M37Ge9A5mM+l55HMWcj4MNtPuHrMDLrg+FOGwMppAGzwBtgYpw==
 
-"@genjs/genjs@^0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@genjs/genjs/-/genjs-0.3.4.tgz#d8408f1ee3c18e7c3fef995847593b198a520709"
-  integrity sha512-XSTByXqWSGqvZSuf4uMGdQ3MCm291ZXoDlgfN/n2T0PyWuanIT88K6qPaxmJjVcZol/n5gjh+dN3m//O0ln0QQ==
+"@genjs/genjs-bundle-javascript@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-bundle-javascript/-/genjs-bundle-javascript-0.1.0.tgz#b2ef050a2e75a3d091fb63d716637fa43f31e57f"
+  integrity sha512-qJZBZG3a6HdmTzrJRq2z9LwX1A+Q1MNgMMlICs+CcHtiWDdtaBHwuKtn5Ybp+svZxCS8YhAqZKW9bKN3sImc/g==
+  dependencies:
+    "@genjs/genjs-bundle-package" "^0.1.0"
+
+"@genjs/genjs-bundle-package@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-bundle-package/-/genjs-bundle-package-0.1.0.tgz#87dd0d82bbbc2935d2b022d61bd39cc90ba13a42"
+  integrity sha512-grQauMh+lxncRjoTDltKYmqRDuxVy+tF7vvcOXNhLxgELECD0Ft5rBQdi4MiXzkrWU0LzV1RcD9AHnJBlPA31w==
+
+"@genjs/genjs-bundle-typescript@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-bundle-typescript/-/genjs-bundle-typescript-0.1.0.tgz#86fb22c26f21788a69eed0891a030736694246c7"
+  integrity sha512-rkkpeo0RTCmrPoAlDTMTJnCDApUo1VJ/QNel8OeORzNs2sRrOd+z1rf1mWL03WyCDV3mApNNrwVvuz7aWOYjZw==
+  dependencies:
+    "@genjs/genjs-bundle-package" "^0.1.0"
+
+"@genjs/genjs-plugin-cicd-github@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-plugin-cicd-github/-/genjs-plugin-cicd-github-0.4.0.tgz#0bb43c80019a4bdb9cdec51099cc5f7854c5087a"
+  integrity sha512-dU24AmFqCLTGCCIi6GdYlVJV0soZeqwWqfTxL9Sqiol0VAv0wqPXRpIkvKIMniFd2b1qRISTRelZyFhMKfGmtQ==
+  dependencies:
+    "@genjs/genjs-bundle-cicd" "^0.1.0"
+
+"@genjs/genjs-plugin-monorepo-js-libs@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs-plugin-monorepo-js-libs/-/genjs-plugin-monorepo-js-libs-0.4.0.tgz#30adb09fd40da28b16df3e4f6ee612650e720a5b"
+  integrity sha512-g+JGWQnI34ecTo1IXN27zZRA/8ZwJGbIEvbeLQQ4TM7Eojk3KWvGULliDLSyRXaNFfljepeleVgsqKzmznmudQ==
+  dependencies:
+    "@genjs/genjs-bundle-aws" "^0.1.0"
+    "@genjs/genjs-bundle-javascript" "^0.1.0"
+    "@genjs/genjs-bundle-typescript" "^0.1.0"
+
+"@genjs/genjs@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@genjs/genjs/-/genjs-0.4.0.tgz#f07c6d44b5eeacacbfa23dd5da3a2a9e017716dc"
+  integrity sha512-soYNrdjtIc6Jyi0WTGkB6kEqFbB+vQGdJvp/tg0s14DyjtjjomS7EUoGpAiheBCiwjVtWkjJYtZzAGd8LNJVdA==
   dependencies:
     "@ohoareau/aws-parse" "^0.2.0"
     "@ohoareau/dir2obj" "^0.3.1"
