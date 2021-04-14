@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-redirect",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,8 +19,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.1.5",
-    "@ohoareau/lambda-utils": "^0.2.4"
+    "@ohoareau/aws": "^0.1.6",
+    "@ohoareau/lambda-utils": "^0.2.5"
   },
   "peerDependenciesMeta": {
     "aws-sdk": {
