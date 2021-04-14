@@ -18,4 +18,4 @@ export async function file(ctx: ctx): Promise<http_response> {
     }
 }
 
-export default generate
+export default file
