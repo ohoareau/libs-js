@@ -16,7 +16,7 @@ export async function s3(ctx: ctx): Promise<any|undefined> {
         location: (await awss3.getFileViewUrl({
             ...x,
             contentType: 'application/pdf',
-            name: file ? basename(file as string) : undefined,
+            name: file ? `${basename(file as string)}.pdf` : undefined,
         })).viewUrl,
     }
 }
