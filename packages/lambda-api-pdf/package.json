@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-pdf",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,8 +20,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.1.6",
-    "@ohoareau/lambda-utils": "^0.2.5",
+    "@ohoareau/aws": "^0.1.7",
+    "@ohoareau/lambda-utils": "^0.2.6",
     "@ohoareau/react-document-renderer": "^0.4.1"
   },
   "peerDependenciesMeta": {
