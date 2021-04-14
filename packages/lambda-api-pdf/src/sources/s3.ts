@@ -6,6 +6,9 @@ export async function s3(ctx: ctx): Promise<{definition: document_definition}|un
     let {bucket, name} = ctx.query;
     const bucketName = (ctx.config?.buckets || {})[bucket];
     if (!bucketName) return undefined;
+    if ('function' === typeof bucketName) {
+
+    }
     return {
         definition: await awss3.fromJsonFile(bucketName, `${name}.json`),
     };

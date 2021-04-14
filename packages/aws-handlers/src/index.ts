@@ -9,5 +9,6 @@ export const createHandler = (type, config = {}) => {
 }
 
 export const createS3eventHandler = config => createHandler('s3event', config);
+export const createSQSeventHandler = config => createHandler('sqsevent', config);
 
 export default createHandler

@@ -53,12 +53,13 @@ const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((res
     );
 });
 
-const getFileDownloadUrl = async ({bucket, key, name}) => {
+const getFileDownloadUrl = async ({bucket, key, name, ttl = undefined}: {bucket: string, key: string, name: string, ttl?: number}) => {
     const fileName = name || path.basename(key);
     const url = await awss3.getSignedUrlPromise('getObject', {
         Bucket: bucket,
         Key: key,
         ResponseContentDisposition: `attachment; filename="${fileName}"`,
+        ...(ttl ? {Expires: ttl} : {}),
     });
     return {
         downloadUrl: url,
@@ -68,12 +69,13 @@ const getFileDownloadUrl = async ({bucket, key, name}) => {
     }
 };
 
-const getFileViewUrl = async ({bucket, key, contentType}) => {
+const getFileViewUrl = async ({bucket, key, contentType, ttl = undefined}: {bucket: string, key: string, contentType: string, ttl?: number}) => {
     const url = await awss3.getSignedUrlPromise('getObject', {
         Bucket: bucket,
         Key: key,
         ...(contentType ? {ResponseContentType: contentType} : {}),
         ResponseContentDisposition: 'inline',
+        ...(ttl ? {Expires: ttl} : {}),
     });
     return {
         viewUrl: url,
