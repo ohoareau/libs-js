@@ -9,8 +9,9 @@ export function convertTableDataToItem(model, data, t: any) {
     (data['create_definitions'] || []).reduce((acc, c) => {
         switch (c['resource']) {
             case 'column':
-                if (!t || !t.fields || !!t.fields.includes(c['column']['column'])) {
-                    acc.attributes[c['column']['column']] = convertTableColumnToAttribute(c);
+                const d = (!t || !t.fields) ? {} : describeColumn(t.fields, c['column']['column']);
+                if (d) {
+                    acc.attributes[c['column']['column']] = {...d, ...convertTableColumnToAttribute(c)};
                 }
                 acc.attributeList.push(c['column']['column']);
                 break;
@@ -18,6 +19,17 @@ export function convertTableDataToItem(model, data, t: any) {
         return acc;
     }, item);
     return item;
+}
+
+function describeColumn(cols, c) {
+    let x = cols.find(col => {
+        if ('string' === typeof col) return col === c;
+        return col.name === c;
+    });
+    if ('string' === typeof x) {
+        x = {name: x};
+    }
+    return x;
 }
 
 export default convertTableDataToItem

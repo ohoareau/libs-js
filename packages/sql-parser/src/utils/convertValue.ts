@@ -8,7 +8,8 @@ const mapper = {
 };
 
 export function convertValue(raw, def) {
-    return (mapper[`${raw['type']}>${def['type']}`] || mapper['*'])(raw['value']);
+    const x = (mapper[`${raw['type']}>${def['type']}`] || mapper['*'])(raw['value']);
+    return (def && def.format) ? def.format(x) : x;
 }
 
 export default convertValue
