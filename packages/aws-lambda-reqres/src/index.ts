@@ -10,14 +10,18 @@ function wrapper(callback: (req, res) => any|Promise<any>) {
             JSON.stringify(context, null, 4)
         );
         try {
+            debug && console.log('executing callback');
             await callback(req, res);
         } catch (e) {
             debug && console.error('prepare-error', e);
             reject(e);
         }
         try {
+            debug && console.log('awaiting promise');
             // the `return await` is required to trigger the potential error and use the try/catch
-            return await promise;
+            const r = await promise;
+            debug && console.log('result', JSON.stringify(r, null, 4));
+            return r;
         } catch (e) {
             debug && console.error('execute-error', e);
             return mapErrorToResponse(e);
