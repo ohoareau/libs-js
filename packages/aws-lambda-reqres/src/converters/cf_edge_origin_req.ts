@@ -59,7 +59,7 @@ function toRes(event, context, resolve) {
             status: String(500),
             statusDescription: 'EDGE GENERATED',
             headers: {
-                'content-type': [{name: 'Content-Type', value: 'application/json;charset=UTF-8'}]
+                'content-type': [{key: 'Content-Type', value: 'application/json;charset=UTF-8'}]
             },
             body: JSON.stringify({status: 'error', message: e.message}),
             bodyEncoding: 'text',

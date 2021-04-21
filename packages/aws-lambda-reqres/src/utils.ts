@@ -68,7 +68,7 @@ export function buildResolvableResponse(resolve, mapErrorToResponse, {headerForm
                     if (!Array.isArray(response.headers[key])) {
                         response.headers[key] = [response.headers[key]];
                     }
-                    response.headers[key] = response.headers[key].map(value => ({name: key.split(/-/g).map(x => `${x.slice(0, 1).toUpperCase()}${x.slice(1)}`).join('-'), value}));
+                    response.headers[key] = response.headers[key].map(value => ({key: key.split(/-/g).map(x => `${x.slice(0, 1).toUpperCase()}${x.slice(1)}`).join('-'), value}));
                 }
                 break;
             default:

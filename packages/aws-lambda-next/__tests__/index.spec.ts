@@ -54,7 +54,7 @@ describe('next', () => {
                             method: 'GET',
                             uri: '/',
                             headers: {
-                                //'x-lambda-debug': [{name: 'X-Lambda-Debug', value: '1'}]
+                                //'x-lambda-debug': [{key: 'X-Lambda-Debug', value: '1'}]
                             }
                         }
                     }
@@ -62,11 +62,11 @@ describe('next', () => {
             ]
         }, {})).resolves.toEqual({
             headers: {
-                'content-length': [{name: 'Content-Length', value: expect.any(Number)}],
-                'content-type': [{name: 'Content-Type', value: "text/html; charset=utf-8"}],
-                "cache-control": [{name: 'Cache-Control', 'value': 's-maxage=31536000, stale-while-revalidate'}],
-                'etag': [{name: 'Etag', value: expect.any(String)}],
-                'x-powered-by': [{name: 'X-Powered-By', value: 'Next.js'}],
+                'content-length': [{key: 'Content-Length', value: expect.any(Number)}],
+                'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
+                "cache-control": [{key: 'Cache-Control', 'value': 's-maxage=31536000, stale-while-revalidate'}],
+                'etag': [{key: 'Etag', value: expect.any(String)}],
+                'x-powered-by': [{key: 'X-Powered-By', value: 'Next.js'}],
             },
             status: '200',
             statusDescription: "EDGE GENERATED",
@@ -77,8 +77,8 @@ describe('next', () => {
     it('cf edge event 1', async () => {
         await expect(handler(require(`${__dirname}/../__fixtures__/events/event1.json`), {})).resolves.toEqual({
             headers: {
-                'location': [{name: 'Location', 'value': '/contact'}],
-                'refresh': [{name: 'Refresh', 'value': '0;url=/contact'}],
+                'location': [{key: 'Location', 'value': '/contact'}],
+                'refresh': [{key: 'Refresh', 'value': '0;url=/contact'}],
             },
             status: '308',
             statusDescription: "EDGE GENERATED",
@@ -87,10 +87,10 @@ describe('next', () => {
     it('cf edge event 2', async () => {
         await expect(handler(require(`${__dirname}/../__fixtures__/events/event2.json`), {})).resolves.toEqual({
             headers: {
-                'content-length': [{name: 'Content-Length', value: expect.any(Number)}],
-                'content-type': [{name: 'Content-Type', value: "text/html; charset=utf-8"}],
-                'etag': [{name: 'Etag', value: expect.any(String)}],
-                'x-powered-by': [{name: 'X-Powered-By', value: 'Next.js'}],
+                'content-length': [{key: 'Content-Length', value: expect.any(Number)}],
+                'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
+                'etag': [{key: 'Etag', value: expect.any(String)}],
+                'x-powered-by': [{key: 'X-Powered-By', value: 'Next.js'}],
             },
             body: expect.any(String),
             bodyEncoding: 'text',

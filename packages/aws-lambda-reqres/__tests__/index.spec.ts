@@ -65,10 +65,10 @@ describe('express', () => {
             ]
         }, {})).resolves.toEqual({
             headers: {
-                'content-length': [{name: 'Content-Length', value: expect.any(String)}],
-                'content-type': [{name: 'Content-Type', value: "text/html; charset=utf-8"}],
-                'etag': [{name: 'Etag', value: expect.any(String)}],
-                'x-powered-by': [{name: 'X-Powered-By', value: 'Express'}],
+                'content-length': [{key: 'Content-Length', value: expect.any(String)}],
+                'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
+                'etag': [{key: 'Etag', value: expect.any(String)}],
+                'x-powered-by': [{key: 'X-Powered-By', value: 'Express'}],
             },
             status: '200',
             statusDescription: "EDGE GENERATED",
