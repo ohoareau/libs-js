@@ -1,6 +1,6 @@
 {
-  "name": "@ohoareau/aws-lambda-reqres",
-  "version": "0.2.4",
+  "name": "@ohoareau/aws-header-allowed",
+  "version": "0.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -17,12 +17,5 @@
   "scripts": {
     "build": "tsc",
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
-  },
-  "dependencies": {
-    "@ohoareau/aws-event-detector": "^0.1.0",
-    "@ohoareau/aws-header-allowed": "^0"
-  },
-  "devDependencies": {
-    "express": "^4.17.1"
   }
 }

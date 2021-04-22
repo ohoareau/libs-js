@@ -1,6 +1,7 @@
 import Stream from "stream";
 import http from "http";
 import {buildResolvableResponse, convertFactory} from "../utils";
+import isHeaderAllowed from "@ohoareau/aws-header-allowed";
 
 export const convert = convertFactory(toReq, toRes);
 
@@ -48,6 +49,7 @@ function toRes(event, context, resolve) {
             status: String(result.statusCode),
             statusDescription: 'EDGE GENERATED',
             headers: Object.entries(result.headers).reduce((acc, [k, v]) => {
+                if (!isHeaderAllowed(k, 'cf_edge_origin_req')) return acc;
                 acc[k] = Array.isArray(v) ? v.map(vv => ({...vv, value: String(vv.value)})) : [];
                 return acc;
             }, {}),

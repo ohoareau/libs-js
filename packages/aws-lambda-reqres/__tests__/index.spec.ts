@@ -65,7 +65,6 @@ describe('express', () => {
             ]
         }, {})).resolves.toEqual({
             headers: {
-                'content-length': [{key: 'Content-Length', value: expect.any(String)}],
                 'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
                 'etag': [{key: 'Etag', value: expect.any(String)}],
                 'x-powered-by': [{key: 'X-Powered-By', value: 'Express'}],
