@@ -3,15 +3,15 @@ import next from 'next';
 import {parse} from 'url';
 
 export const handler = wrapper(
-    async (req, res) => next({
-        dev: (process.env.NODE_ENV !== 'production') && !process.env.AWS_NEXT_PRODUCTION,
-        dir: process.env.AWS_NEXT_PROJECT_DIR || '.',
-        quiet: !!process.env.AWS_NEXT_VERBOSE,
-    }).getRequestHandler()(
-        req,
-        res,
-        parse(req.url, true)
-    )
+    async (req, res) => {
+        const app = next({
+            dev: (process.env.NODE_ENV !== 'production') && !process.env.AWS_NEXT_PRODUCTION,
+            dir: process.env.AWS_NEXT_PROJECT_DIR || '.',
+            quiet: !process.env.AWS_NEXT_VERBOSE,
+        });
+        await app.prepare();
+        return app.getRequestHandler()(req, res, parse(req.url, true))
+    }
 );
 
 export default handler
