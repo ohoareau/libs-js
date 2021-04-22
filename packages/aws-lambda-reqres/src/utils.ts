@@ -1,7 +1,7 @@
 import Stream from "stream";
 
 export function buildResolvableResponse(resolve, mapErrorToResponse, {headerFormat = 'flat', headersKey = 'headers'}: any = {}) {
-    const base64Support = !!process.env.BINARY_SUPPORT;
+    const base64Support = (('undefined' !== typeof process.env.BINARY_SUPPORT) && !!process.env.BINARY_SUPPORT) || !!process.env.LAMBDA_TASK_ROOT;
     const response: any = {isBase64Encoded: base64Support, headers: {}};
     const res: any = new Stream();
     Object.defineProperty(res, "statusCode", {
