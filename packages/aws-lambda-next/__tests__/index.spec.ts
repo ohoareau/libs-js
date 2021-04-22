@@ -62,7 +62,7 @@ describe('next', () => {
             ]
         }, {})).resolves.toEqual({
             headers: {
-                'content-length': [{key: 'Content-Length', value: expect.any(Number)}],
+                'content-length': [{key: 'Content-Length', value: expect.any(String)}],
                 'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
                 "cache-control": [{key: 'Cache-Control', 'value': 's-maxage=31536000, stale-while-revalidate'}],
                 'etag': [{key: 'Etag', value: expect.any(String)}],
@@ -87,7 +87,7 @@ describe('next', () => {
     it('cf edge event 2', async () => {
         await expect(handler(require(`${__dirname}/../__fixtures__/events/event2.json`), {})).resolves.toEqual({
             headers: {
-                'content-length': [{key: 'Content-Length', value: expect.any(Number)}],
+                'content-length': [{key: 'Content-Length', value: expect.any(String)}],
                 'content-type': [{key: 'Content-Type', value: "text/html; charset=utf-8"}],
                 'etag': [{key: 'Etag', value: expect.any(String)}],
                 'x-powered-by': [{key: 'X-Powered-By', value: 'Next.js'}],

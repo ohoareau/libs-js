@@ -47,7 +47,10 @@ function toRes(event, context, resolve) {
         const x: any = {
             status: String(result.statusCode),
             statusDescription: 'EDGE GENERATED',
-            headers: result.headers,
+            headers: Object.entries(result.headers).reduce((acc, [k, v]) => {
+                acc[k] = Array.isArray(v) ? v.map(vv => ({...vv, value: String(vv.value)})) : [];
+                return acc;
+            }, {}),
         };
         if (result.body) {
             x.body = result.body;
