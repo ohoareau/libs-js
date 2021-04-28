@@ -42,11 +42,39 @@ describe('express', () => {
             statusCode: 500,
         });
     });
+    it('express - existing page (apigw v2)', async () => {
+        const app = express()
+        app.post('/', (req, res) => {
+            res.send(`Hello ${req.body}!`)
+        })
+        const handler = wrapper((app as any).handle.bind(app));
+
+        await expect(handler({
+            version: '2.0',
+            body: 'Olivier',
+            requestContext: {
+                http: {
+                    path: '/',
+                    method: 'POST',
+                },
+            },
+        }, {})).resolves.toEqual({
+            body: 'Hello Olivier!',
+            isBase64Encoded: false,
+            headers: {
+                'content-length': expect.any(String),
+                'content-type': "text/html; charset=utf-8",
+                'etag': expect.any(String),
+                'x-powered-by': 'Express',
+            },
+            statusCode: 200,
+        });
+    });
     it('express (cf edge origin req)', async () => {
         const app = express()
         app.get('/', (req, res) => {
             res.send('Hello World!')
-        })
+        });
         const handler = wrapper((app as any).handle.bind(app));
 
         await expect(handler({

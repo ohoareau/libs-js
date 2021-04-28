@@ -35,7 +35,7 @@ function toReq(event, context) {
     };
     req.connection = {};
 
-    event.body && req.push(event?.requestContext?.body, event?.requestContext?.isBase64Encoded ? "base64" : undefined);
+    event.body && req.push(event?.body, event?.isBase64Encoded ? "base64" : undefined);
     req.push(null);
 
     return {req, debug: !!req.getHeader('x-lambda-debug')};
