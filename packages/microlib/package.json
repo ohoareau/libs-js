@@ -1,6 +1,6 @@
 {
     "name": "@ohoareau/microlib",
-    "version": "0.13.16",
+    "version": "0.13.17",
     "license": "MIT",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
         "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
     },
     "dependencies": {
-        "@ohoareau/aws": "^0.1.7",
+        "@ohoareau/aws": "^0.1.8",
         "@ohoareau/build-package": "^0.1.1",
         "@ohoareau/deploy-package": "^0.1.0",
         "@ohoareau/errors": "^0.1.0",
