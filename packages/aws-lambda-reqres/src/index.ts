@@ -48,12 +48,14 @@ function convertEventToReqRes(event, context) {
     let resolve: any = undefined;
     let reject: any = undefined;
     const promise = new Promise((a, b) => { resolve = a; reject = b; })
-    return {
+    const x = {
         debug: false,
         ...require(`./converters/${detect(event, context)}`).default(event, context, resolve),
         promise,
         reject,
     };
+    !!process.env.LAMBDA_DEBUG && (x.debug = true);
+    return x;
 }
 
 export default wrapper;
