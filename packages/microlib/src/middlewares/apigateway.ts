@@ -1,7 +1,16 @@
+import {decode as decodeQueryString} from 'querystring';
+
 const injectData = req => {
     req.params = req.params || {};
     const z = req.params;
-    const x = JSON.parse(req.body || '{}');
+    const u = req.isBase64Encoded ? new Buffer(req.body, 'base64').toString('utf-8') : req.body;
+    // noinspection JSUnusedAssignment
+    let x: any = undefined;
+    if (req && req.headers && ((req.headers['content-type'] || '').toLowerCase() === 'application/x-www-form-urlencoded')) {
+        x = decodeQueryString(u);
+    } else {
+        x = JSON.parse(u || '{}');
+    }
     if (x) {
         z.data = z.data || {};
         if (x.data) {
