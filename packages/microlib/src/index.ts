@@ -42,7 +42,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             try {
                 await apply(fn ? [...ms, async (req, res) => res.send(await fn(req))] : ms, [req, res]);
             } catch (e) {
-                debugException('%O', e)
+                debugException('%j', e)
                 await apply([...ems, async e => { throw e; }], [e, req, res]);
             }
             (res.formatters[res.headers['Content-Type']] || res.formatters['default'])(res);
@@ -50,7 +50,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             debugResult('%j', x);
             return x;
         } catch (e) {
-            debugException('%O', e);
+            debugException('%j', e);
             const x = {statusCode: 500, body: JSON.stringify({status: 'error', message: e.message})};
             debugResult('%j', x)
             return x;

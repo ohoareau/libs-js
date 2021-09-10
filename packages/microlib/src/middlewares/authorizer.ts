@@ -22,9 +22,9 @@ function buildAuthorizerConfig({authorization = undefined, z}) {
 export default (cfg) => {
     const {o} = cfg;
     const builtConfig = buildAuthorizerConfig(cfg);
-    debugAuthorizerMiddleware('config %j', builtConfig);
     const authorizer = createAuthorizer(builtConfig);
     return async (req, res, next) => {
+        debugAuthorizerMiddleware('config %j', builtConfig);
         req.authorization = {
             authorized: false,
             user: req.user,

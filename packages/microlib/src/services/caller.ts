@@ -15,7 +15,7 @@ const inferArnIfPossible = dsn => {
 };
 
 const executeLocal = async (operation, params, dir: string|undefined = undefined) => {
-    debugServiceCallerExecuteLocal('call %O', {operation, params, dir})
+    debugServiceCallerExecuteLocal('call %j', {operation, params, dir})
     const tokens = operation.split(/_/g);
     const op = tokens.pop();
     let r: any;
@@ -24,14 +24,14 @@ const executeLocal = async (operation, params, dir: string|undefined = undefined
     } else {
         r = await require(`@ohoareau/microlib/lib/services/${tokens.join('_')}`).default[op](...(Array.isArray(params) ? params : [params]));
     }
-    debugServiceCallerExecuteLocal('result %O', r)
+    debugServiceCallerExecuteLocal('result %j', r)
     return r;
 };
 
 const executeRemoteLambda = async (arn, params, options = {}) => {
-    debugServiceCallerExecuteRemote('call %O', {arn, params, options})
+    debugServiceCallerExecuteRemote('call %j', {arn, params, options})
     const r = await require('./aws/lambda').default.execute(arn, {params}, options);
-    debugServiceCallerExecuteRemote('result %O', r)
+    debugServiceCallerExecuteRemote('result %j', r)
     return r;
 };
 

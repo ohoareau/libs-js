@@ -61,6 +61,6 @@ export default (model, cfg: {tableName?: string} = {}) => {
         if (model.requiredFields && model.requiredFields[k]) acc.schema[k].required = true;
         return acc;
     }, {name: cfg.tableName || model.name, schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}});
-    debugBackendDynamoose('schema %O', schema);
+    debugBackendDynamoose('schema %j', schema);
     return dynamoose.getDb(schema);
 }

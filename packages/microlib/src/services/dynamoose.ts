@@ -275,15 +275,15 @@ export default {
         );
         return {
             find: async (payload) => {
-                debugServiceDynamooseFind('payload %O', payload);
+                debugServiceDynamooseFind('payload %j', payload);
                 const decodedPayload = decodePayload(payload);
-                debugServiceDynamooseFind('decodedPayload %O', payload);
+                debugServiceDynamooseFind('decodedPayload %j', payload);
                 const r = buildPage(await runQuery(model, decodedPayload));
-                debugServiceDynamooseFind('result %O', r);
+                debugServiceDynamooseFind('result %j', r);
                 return r;
             },
             get: async (payload) => {
-                debugServiceDynamooseGet('payload %O', payload);
+                debugServiceDynamooseGet('payload %j', payload);
                 let doc;
                 let docs;
                 let idValue;
@@ -322,11 +322,11 @@ export default {
                 } else {
                     r = {...(doc || {})};
                 }
-                debugServiceDynamooseGet('result %O', r);
+                debugServiceDynamooseGet('result %j', r);
                 return r;
             },
             delete: async (payload) => {
-                debugServiceDynamooseDelete('payload %O', payload);
+                debugServiceDynamooseDelete('payload %j', payload);
                 let doc;
                 let docs;
                 if ('string' === typeof payload.id) {
@@ -353,17 +353,17 @@ export default {
                 } else {
                     r = {...(doc || {})};
                 }
-                debugServiceDynamooseDelete('result %O', r);
+                debugServiceDynamooseDelete('result %j', r);
                 return r;
             },
             create: async (payload) => {
-                debugServiceDynamooseCreate('payload %O', payload);
+                debugServiceDynamooseCreate('payload %j', payload);
                 const r =  {...(await model.create({...(payload.data || {})}, payload.options) || {})};
-                debugServiceDynamooseCreate('result %O', r);
+                debugServiceDynamooseCreate('result %j', r);
                 return r;
             },
             update: async (payload) => {
-                debugServiceDynamooseUpdate('payload %O', payload);
+                debugServiceDynamooseUpdate('payload %j', payload);
                 let doc: any;
                 let docs;
                 let ids = [];
@@ -389,7 +389,7 @@ export default {
                 } else {
                     r = {...(doc || {})};
                 }
-                debugServiceDynamooseUpdate('result %O', r);
+                debugServiceDynamooseUpdate('result %j', r);
                 return r;
             },
         };
