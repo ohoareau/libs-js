@@ -1,4 +1,7 @@
 import dynamoose from '../services/dynamoose';
+import d from 'debug';
+
+const debugBackendDynamoose = d('micro:middleware:dynamoose');
 
 function mutateField(def) {
     ('string' === typeof def) && (def = {type: def});
@@ -51,11 +54,13 @@ function mutateField(def) {
     return (def.list && !doNotProcessList) ? [field] : field;
 }
 
-export default (model, cfg: {tableName?: string} = {}) => dynamoose.getDb(
-    Object.entries(model.fields || {}).reduce((acc, [k, def]: [string, any]) => {
+export default (model, cfg: {tableName?: string} = {}) => {
+    const schema = Object.entries(model.fields || {}).reduce((acc, [k, def]: [string, any]) => {
         if (def.volatile) return acc;
         acc.schema[k] = mutateField(def);
         if (model.requiredFields && model.requiredFields[k]) acc.schema[k].required = true;
         return acc;
-    }, {name: cfg.tableName || model.name, schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}})
-)
+    }, {name: cfg.tableName || model.name, schema: {}, schemaOptions: {}, options: {create: false, update: false, waitForActive: false}});
+    debugBackendDynamoose('schema %O', schema);
+    return dynamoose.getDb(schema);
+}

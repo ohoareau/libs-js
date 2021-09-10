@@ -1,5 +1,12 @@
 import dynamoose from 'dynamoose';
 import DocumentNotFoundError from '../errors/DocumentNotFoundError';
+import d from 'debug';
+
+const debugServiceDynamooseFind = d('micro:service:dynamoose:find');
+const debugServiceDynamooseGet = d('micro:service:dynamoose:get');
+const debugServiceDynamooseCreate = d('micro:service:dynamoose:create');
+const debugServiceDynamooseDelete = d('micro:service:dynamoose:delete');
+const debugServiceDynamooseUpdate = d('micro:service:dynamoose:update');
 
 const globalOptions = ({name}) => ({
     prefix: process.env[`DYNAMODB_${name.toUpperCase()}_TABLE_PREFIX`] || process.env.DYNAMODB_TABLE_PREFIX || undefined,
@@ -268,9 +275,15 @@ export default {
         );
         return {
             find: async (payload) => {
-                return buildPage(await runQuery(model, decodePayload(payload)));
+                debugServiceDynamooseFind('payload %O', payload);
+                const decodedPayload = decodePayload(payload);
+                debugServiceDynamooseFind('decodedPayload %O', payload);
+                const r = buildPage(await runQuery(model, decodedPayload));
+                debugServiceDynamooseFind('result %O', r);
+                return r;
             },
             get: async (payload) => {
+                debugServiceDynamooseGet('payload %O', payload);
                 let doc;
                 let docs;
                 let idValue;
@@ -301,11 +314,19 @@ export default {
                         sort: undefined,
                     }) || []).map(d => ({...(d || {})}));
                 }
-                if (docs) return [...docs];
-                if (!doc) throw new DocumentNotFoundError(name, idValue);
-                return {...(doc || {})};
+                let r: any = undefined;
+                if (docs) {
+                    r = [...docs];
+                } else if (!doc) {
+                    throw new DocumentNotFoundError(name, idValue);
+                } else {
+                    r = {...(doc || {})};
+                }
+                debugServiceDynamooseGet('result %O', r);
+                return r;
             },
             delete: async (payload) => {
+                debugServiceDynamooseDelete('payload %O', payload);
                 let doc;
                 let docs;
                 if ('string' === typeof payload.id) {
@@ -324,14 +345,25 @@ export default {
                     await model.batchDelete(toDeleteIds.map(doc => ({id: doc.id})), payload.options);
                     docs = toDeleteIds;
                 }
-                if (docs) return [...docs];
-                if (!doc) throw new DocumentNotFoundError(name, payload.id);
-                return {...(doc || {})};
+                let r: any = undefined;
+                if (docs) {
+                    r = [...docs];
+                } else if (!doc) {
+                    throw new DocumentNotFoundError(name, payload.id);
+                } else {
+                    r = {...(doc || {})};
+                }
+                debugServiceDynamooseDelete('result %O', r);
+                return r;
             },
             create: async (payload) => {
-                return {...(await model.create({...(payload.data || {})}, payload.options) || {})};
+                debugServiceDynamooseCreate('payload %O', payload);
+                const r =  {...(await model.create({...(payload.data || {})}, payload.options) || {})};
+                debugServiceDynamooseCreate('result %O', r);
+                return r;
             },
             update: async (payload) => {
+                debugServiceDynamooseUpdate('payload %O', payload);
                 let doc: any;
                 let docs;
                 let ids = [];
@@ -349,9 +381,16 @@ export default {
                     }) || []);
                     docs = await Promise.all(ids.map(async doc => await model.update({id: (<any>doc).id}, buildUpdateObject(payload.data), payload.options) as unknown as Promise<any> || {}));
                 }
-                if (docs) return [...docs];
-                if (!doc) throw new DocumentNotFoundError(name, payload.id);
-                return {...(doc || {})};
+                let r:any = undefined;
+                if (docs) {
+                    r = [...docs];
+                } else if (!doc) {
+                    throw new DocumentNotFoundError(name, payload.id);
+                } else {
+                    r = {...(doc || {})};
+                }
+                debugServiceDynamooseUpdate('result %O', r);
+                return r;
             },
         };
     },

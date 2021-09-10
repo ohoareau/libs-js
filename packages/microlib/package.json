@@ -25,7 +25,8 @@
         "@ohoareau/errors": "^0.1.0",
         "bcryptjs": "^2.4.3",
         "currency-codes": "^2.1.0",
-        "uuid": "^7.0.3"
+        "uuid": "^7.0.3",
+        "debug": "^4.3.2"
     },
     "peerDependencies": {
         "cors": "^2.8.5",

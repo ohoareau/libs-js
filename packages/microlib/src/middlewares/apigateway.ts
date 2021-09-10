@@ -1,4 +1,7 @@
 import {decode as decodeQueryString} from 'querystring';
+import d from 'debug';
+
+const debugApigatewayMiddleware = d('micro:middleware:apigateway');
 
 const injectData = req => {
     req.params = req.params || {};
@@ -56,7 +59,9 @@ export const detectVersion: (any) => 'v1' | 'v2' = (req: any) =>
 ;
 
 export default () => async (req, res, next) => {
-    switch (detectVersion(req)) {
+    const v = detectVersion(req);
+    debugApigatewayMiddleware('version %s', v);
+    switch (v) {
         case 'v2': populateFromV2(req, res); break;
         default:
         case 'v1': populateFromV1(req, res); break;
