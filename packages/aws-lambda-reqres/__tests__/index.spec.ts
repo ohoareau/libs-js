@@ -44,14 +44,19 @@ describe('express', () => {
     });
     it('express - existing page (apigw v2)', async () => {
         const app = express()
+        app.use(express.json())
         app.post('/', (req, res) => {
-            res.send(`Hello ${req.body}!`)
+            res.send(`Hello ${req.body.name}!`)
         })
         const handler = wrapper((app as any).handle.bind(app));
 
         await expect(handler({
             version: '2.0',
-            body: 'Olivier',
+            body: '{"name": "Olivier"}',
+            headers: {
+                "content-length": "19",
+                'content-type': 'application/json',
+            },
             requestContext: {
                 http: {
                     path: '/',

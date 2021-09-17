@@ -1,20 +1,6 @@
 // inspired from the work of Daniel Conde Marin (in https://github.com/serverless-nextjs/serverless-next.js)
 import detect from '@ohoareau/aws-event-detector';
 
-async function readBody(req) {
-    return new Promise((resolve) => {
-        const buffer: any[] = [];
-        req.on('data', data => {
-            buffer.push(data);
-        })
-        req.on('end', () => {
-            resolve(buffer.length
-                ? Buffer.concat(buffer).toString('utf8')
-                : undefined
-            );
-        })
-    })
-}
 function wrapper(callback: (req, res) => any|Promise<any>) {
     return async function (event, context) {
         const {req, res, promise, reject, debug, mapErrorToResponse} = convertEventToReqRes(event, context);
@@ -25,7 +11,6 @@ function wrapper(callback: (req, res) => any|Promise<any>) {
         );
         try {
             debug && console.log('executing callback');
-            req.body = await readBody(req);
             await callback(req, res);
         } catch (e) {
             debug && console.error('prepare-error', e);

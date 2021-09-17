@@ -1,4 +1,7 @@
 export const boolean = () => ({test: v => 'boolean' === typeof v, message: v => `Not a boolean (actual: ${v})`});
+export const ipv4 = () => match({pattern: '^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$', message: 'Not a valid IP v4 address'});
+export const even = () => ({test: v => 0 === (v % 2), message: v => `Even number expected (${v})`});
+export const odd = () => ({test: v => 1 === (v % 2), message: v => `Odd number expected (${v})`});
 export const min = ({value: x}) => ({test: v => v >= x, message: v => `Min not satisfied (${v} < ${x})`});
 export const max = ({value: x}) => ({test: v => v <= x, message: v => `Max not satisfied (${v} > ${x})`});
 export const integer = () => ({test: Number.isInteger, message: v => `Must be an integer (actual: ${v})`});
