@@ -50,6 +50,7 @@ export const micro = (ms: any[] = [], ems: any[] = [], fn: Function|undefined, o
             debugResult('%j', x);
             return x;
         } catch (e) {
+            if (context?.throwError) throw e;
             debugException('%j', e);
             const x = {statusCode: 500, body: JSON.stringify({status: 'error', message: e.message})};
             debugResult('%j', x)
