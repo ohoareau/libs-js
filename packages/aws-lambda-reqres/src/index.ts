@@ -1,7 +1,7 @@
 // inspired from the work of Daniel Conde Marin (in https://github.com/serverless-nextjs/serverless-next.js)
 import detect from '@ohoareau/aws-event-detector';
 
-function wrapper(callback: (req, res) => any|Promise<any>) {
+export function wrapper(callback: (req, res) => any|Promise<any>) {
     return async function (event, context) {
         const {req, res, promise, reject, debug, mapErrorToResponse} = convertEventToReqRes(event, context);
         debug && console.log(
