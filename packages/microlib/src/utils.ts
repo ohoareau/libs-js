@@ -100,7 +100,7 @@ export const createHelpers = (model, dir) => {
             }
         };
         const requires = async (query) => hook('@requires', query);
-        const dynamics = async (result, query) => hook('@dynamics', [result, query]);
+        const dynamics = async (result, query, mode = 'item') => hook('@dynamics', [result, query, mode]);
         const validate = async (query, required = true) => hook('@validate', query, {required});
         const authorize = async (query) => hook('@authorize', query);
         const prefetch = async query => hook('@prefetch', query);
