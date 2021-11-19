@@ -1,5 +1,31 @@
 import {replaceVars} from "./utils";
 
+export const slug = ({sep = '-'}) => v => {
+    v = v || '';
+    v = v.toLowerCase();
+    v = v.replace(/[éèêëęėē]/, 'e');
+    v = v.replace(/[àâªáäãåā]/, 'a');
+    v = v.replace(/[ÿ]/, 'y');
+    v = v.replace(/[ûùüúū]/, 'u');
+    v = v.replace(/[îïìíįī]/, 'i');
+    v = v.replace(/[ôºöòóõøō]/, 'o');
+    v = v.replace(/[çćč]/, 'c');
+    v = v.replace(/[ñń]/, 'n');
+    v = v.replace(/[œ]/, 'oe');
+    v = v.replace(/[æ]/, 'ae');
+    v = v.replace(/[$]/, ' dollar');
+    v = v.replace(/[€]/, ' euro');
+    v = v.replace(/[@]/, ' at');
+    v = v.replace(/[&]/, ' and');
+    v = v.replace(/[§]/, ' s ');
+    v = v.replace(/[%]/, ' percent ');
+
+    v = v.replace(/[a-z0-9-]+/, ' ').replace(/[\s]+/, ' ')
+    v = v.trim();
+    v = v.replace(/[\s]+/, sep);
+
+    return v;
+};
 export const truncate = ({length}) => v => (undefined !== length) ? v.slice(0, length) : v;
 export const prefix = ({prefix}) => v => `${prefix || ''}${v}`;
 export const suffix = ({suffix}) => v => `${v}${suffix || ''}`;
