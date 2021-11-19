@@ -1,6 +1,6 @@
 import {replaceVars} from "./utils";
 
-export const slug = ({sep = '-'}) => v => {
+export const slug = ({sep = '-'}: any = {}) => v => {
     v = v || '';
     v = v.toLowerCase();
     v = v.replace(/[éèêëęėē]/, 'e');
