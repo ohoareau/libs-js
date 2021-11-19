@@ -231,19 +231,47 @@ const buildUpdateObject = (data = {}) => {
     const addKw = dcfg('update', 'addKeyword');
     const setKw = dcfg('update', 'setKeyword');
     const x = Object.entries(data).reduce((acc, [k, v]: [string, any]) => {
-        if (undefined === v) {
-            acc[removeKw][k] = null;
-        } else {
-            if ('string' === typeof v) {
-                if ('**clear**' === v) {
-                    acc[removeKw].push(k);
-                } else if ('**unchanged**' !== v) {
-                    // @todo implement detection of increment/add
-                    acc[setKw][k] = v;
+        switch (k) {
+            case '$inc':
+                acc = Object.entries(v as any).reduce((acc2, [kk, vv]) => {
+                    acc2[addKw][kk] = vv;
+                    return acc2;
+                }, acc);
+                break;
+            case '$dec':
+                acc = Object.entries(v as any).reduce((acc2, [kk, vv]) => {
+                    acc2[addKw][kk] = - (vv as any);
+                    return acc2;
+                }, acc);
+                break;
+            case '$unset':
+                acc = (v as string[]).reduce((acc2, [kk, vv]) => {
+                    acc2[removeKw][kk] = null;
+                    return acc2;
+                }, acc);
+                break;
+            case '$set':
+                acc = Object.entries(v as any).reduce((acc2, [kk, vv]) => {
+                    acc2[setKw][kk] = vv;
+                    return acc2;
+                }, acc);
+                break;
+            default:
+                if (undefined === v) {
+                    acc[removeKw][k] = null;
+                } else {
+                    if ('string' === typeof v) {
+                        if ('**clear**' === v) {
+                            acc[removeKw][k] = null;
+                        } else if ('**unchanged**' !== v) {
+                            // @todo implement detection of increment/add
+                            acc[setKw][k] = v;
+                        }
+                    } else {
+                        acc[setKw][k] = v;
+                    }
                 }
-            } else {
-                acc[setKw][k] = v;
-            }
+                break;
         }
         return acc;
     }, {

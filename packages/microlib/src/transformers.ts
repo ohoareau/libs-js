@@ -1,5 +1,8 @@
 import {replaceVars} from "./utils";
 
+export const truncate = ({length}) => v => (undefined !== length) ? v.slice(0, length) : v;
+export const prefix = ({prefix}) => v => `${prefix || ''}${v}`;
+export const suffix = ({suffix}) => v => `${v}${suffix || ''}`;
 export const upper = () => v => `${v}`.toUpperCase();
 export const lower = () => v => `${v}`.toLowerCase();
 export const json2string = () => v => JSON.stringify(v);
