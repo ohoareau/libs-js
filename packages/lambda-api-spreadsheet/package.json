@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-spreadsheet",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,8 +20,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.1.11",
-    "@ohoareau/lambda-utils": "^0.2.10",
+    "@ohoareau/aws": "^0.1.12",
+    "@ohoareau/lambda-utils": "^0.2.11",
     "xlsx": "^0.16.9"
   },
   "peerDependenciesMeta": {
