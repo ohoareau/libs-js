@@ -36,4 +36,5 @@ export const eventbridge = {
     putEvent,
 };
 
+
 export default eventbridge;
