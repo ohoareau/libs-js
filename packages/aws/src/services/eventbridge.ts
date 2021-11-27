@@ -11,7 +11,7 @@ export type ebEvent = {
 }
 
 async function putEvents(events: ebEvent[]) {
-    return awseb.putEvents(events.map(e => ({
+    return awseb.putEvents({Entries: events.map(e => ({
         Detail: JSON.stringify(e.data),
         DetailType: e.type,
         Source: `${process.env.EVENTBRIDGE_SOURCE_PREFIX || ''}${e.source}`,
@@ -19,7 +19,7 @@ async function putEvents(events: ebEvent[]) {
         Time: e.time,
         Resources: e.resources,
         TraceHeader: e.traceHeader,
-    }))).promise();
+    }))}).promise();
 }
 
 async function putEvent(event: ebEvent) {
