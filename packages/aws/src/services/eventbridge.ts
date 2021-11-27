@@ -30,10 +30,10 @@ async function send(type: string, data: object, source: string, options?: Omit<e
     return putEvent({...options, type, data, source});
 }
 
-const service = {
+export const eventbridge = {
     send,
     putEvents,
     putEvent,
 };
 
-export default service;
+export default eventbridge;
