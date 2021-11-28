@@ -15,10 +15,10 @@ async function putEvents(events: ebEvent[]) {
         Detail: JSON.stringify(e.data),
         DetailType: e.type,
         Source: `${process.env.EVENTBRIDGE_SOURCE_PREFIX || ''}${e.source}`,
-        EventBusName: e.bus,
-        Time: e.time,
-        Resources: e.resources,
-        TraceHeader: e.traceHeader,
+        ...(e.bus ? {EventBusName: e.bus} : {}),
+        ...(e.time ? {Time: e.time} : {}),
+        ...((e.resources && e.resources.length) ? {Resources: e.resources} : {}),
+        ...(e.traceHeader ? {TraceHeader: e.traceHeader} : {}),
     }))}).promise();
 }
 
