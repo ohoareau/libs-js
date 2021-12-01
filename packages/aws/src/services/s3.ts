@@ -6,8 +6,8 @@ const getFile = async ({bucket, key, raw = false}) => {
     return {body: (f && f.Body) ? (raw ? f.Body : f.Body.toString()) : undefined};
 };
 
-const setFile = async ({bucket, key, metadata = undefined, contentType = undefined}: any, content) =>
-    awss3.putObject({Bucket: bucket, Key: key, Body: content, ...(contentType ? {ContentType: contentType} : {}), ...(metadata ? {Metadata: metadata}: {})}).promise()
+const setFile = async ({bucket, key, metadata = undefined, contentType = undefined, acl = undefined}: any, content) =>
+    awss3.putObject({Bucket: bucket, Key: key, Body: content, ...(contentType ? {ContentType: contentType} : {}), ...(acl ? {ACL: acl} : {}), ...(metadata ? {Metadata: metadata}: {})}).promise()
 ;
 const deleteFile = async ({bucket, key}) =>
     awss3.deleteObject({Bucket: bucket, Key: key}).promise()
@@ -34,7 +34,7 @@ const getFileContent = async query => (await getFile(query)).body;
 const setFileContent = setFile;
 
 const fromJsonFile = async (bucket, key) => JSON.parse(await getFileContent({bucket, key}));
-const toJsonFile = async (bucket, key, data, metadata = undefined, contentType = 'application/json') => setFileContent({bucket, key, metadata, contentType}, JSON.stringify(data));
+const toJsonFile = async (bucket, key, data, metadata = undefined, contentType = 'application/json', acl = undefined) => setFileContent({bucket, key, metadata, contentType, acl}, JSON.stringify(data));
 
 const getFileUploadUrl = async ({bucket, key, expires = 60}) => new Promise((resolve, reject) => {
     awss3.createPresignedPost(
