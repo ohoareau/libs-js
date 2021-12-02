@@ -1,0 +1,11 @@
+query {
+    findSales {
+        items {
+            id
+            tickets
+            owner
+            status
+            godfather
+        }
+    }
+}

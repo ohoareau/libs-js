@@ -1,0 +1,15 @@
+{
+  "fields": [
+    "id",
+    "logoImage"
+  ],
+  "selections": {
+    "logoImage": {
+      "fields": [
+        "bucket"
+      ],
+      "selections": {
+      }
+    }
+  }
+}

@@ -1,0 +1,19 @@
+query {
+    findOrganizations {
+        items {
+            id
+            code
+            name
+            publicPageUrl
+            statGames
+            games {
+                items {
+                    id
+                    code
+                    name
+                    publicPageUrl
+                }
+            }
+        }
+    }
+}

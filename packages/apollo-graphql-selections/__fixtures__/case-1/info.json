@@ -1,0 +1,449 @@
+{
+    "fieldName": "getGame",
+    "fieldNodes": [
+        {
+            "kind": "Field",
+            "name": {
+                "kind": "Name",
+                "value": "getGame",
+                "loc": {
+                    "start": 4,
+                    "end": 11
+                }
+            },
+            "arguments": [
+                {
+                    "kind": "Argument",
+                    "name": {
+                        "kind": "Name",
+                        "value": "id",
+                        "loc": {
+                            "start": 12,
+                            "end": 14
+                        }
+                    },
+                    "value": {
+                        "kind": "StringValue",
+                        "value": "822974cc-2231-4de6-8a86-af384a82d845",
+                        "block": false,
+                        "loc": {
+                            "start": 16,
+                            "end": 54
+                        }
+                    },
+                    "loc": {
+                        "start": 12,
+                        "end": 54
+                    }
+                }
+            ],
+            "directives": [],
+            "selectionSet": {
+                "kind": "SelectionSet",
+                "selections": [
+                    {
+                        "kind": "Field",
+                        "name": {
+                            "kind": "Name",
+                            "value": "id",
+                            "loc": {
+                                "start": 62,
+                                "end": 64
+                            }
+                        },
+                        "arguments": [],
+                        "directives": [],
+                        "loc": {
+                            "start": 62,
+                            "end": 64
+                        }
+                    },
+                    {
+                        "kind": "Field",
+                        "name": {
+                            "kind": "Name",
+                            "value": "logoImage",
+                            "loc": {
+                                "start": 69,
+                                "end": 78
+                            }
+                        },
+                        "arguments": [],
+                        "directives": [],
+                        "selectionSet": {
+                            "kind": "SelectionSet",
+                            "selections": [
+                                {
+                                    "kind": "Field",
+                                    "name": {
+                                        "kind": "Name",
+                                        "value": "bucket",
+                                        "loc": {
+                                            "start": 87,
+                                            "end": 93
+                                        }
+                                    },
+                                    "arguments": [],
+                                    "directives": [],
+                                    "loc": {
+                                        "start": 87,
+                                        "end": 93
+                                    }
+                                }
+                            ],
+                            "loc": {
+                                "start": 79,
+                                "end": 99
+                            }
+                        },
+                        "loc": {
+                            "start": 69,
+                            "end": 99
+                        }
+                    }
+                ],
+                "loc": {
+                    "start": 56,
+                    "end": 103
+                }
+            },
+            "loc": {
+                "start": 4,
+                "end": 103
+            }
+        }
+    ],
+    "returnType": "Game",
+    "parentType": "Query",
+    "path": {
+        "key": "getGame"
+    },
+    "schema": {
+        "__validationErrors": [],
+        "astNode": {
+            "kind": "SchemaDefinition",
+            "directives": [],
+            "operationTypes": [
+                {
+                    "kind": "OperationTypeDefinition",
+                    "operation": "query",
+                    "type": {
+                        "kind": "NamedType",
+                        "name": {
+                            "kind": "Name",
+                            "value": "Query",
+                            "loc": {
+                                "start": 18,
+                                "end": 23
+                            }
+                        },
+                        "loc": {
+                            "start": 18,
+                            "end": 23
+                        }
+                    },
+                    "loc": {
+                        "start": 11,
+                        "end": 23
+                    }
+                },
+                {
+                    "kind": "OperationTypeDefinition",
+                    "operation": "mutation",
+                    "type": {
+                        "kind": "NamedType",
+                        "name": {
+                            "kind": "Name",
+                            "value": "Mutation",
+                            "loc": {
+                                "start": 36,
+                                "end": 44
+                            }
+                        },
+                        "loc": {
+                            "start": 36,
+                            "end": 44
+                        }
+                    },
+                    "loc": {
+                        "start": 26,
+                        "end": 44
+                    }
+                }
+            ],
+            "loc": {
+                "start": 0,
+                "end": 46
+            }
+        },
+        "__allowedLegacyNames": [],
+        "_queryType": "Query",
+        "_mutationType": "Mutation",
+        "_subscriptionType": null,
+        "_directives": [
+            "@cacheControl",
+            "@skip",
+            "@include",
+            "@deprecated"
+        ],
+        "_typeMap": {
+            "Query": "Query",
+            "ID": "ID",
+            "Game": "Game",
+            "String": "String",
+            "Boolean": "Boolean",
+            "Int": "Int",
+            "FeaturePage": "FeaturePage",
+            "Feature": "Feature",
+            "TypedParam": "TypedParam",
+            "KeywordPage": "KeywordPage",
+            "Keyword": "Keyword",
+            "SalePage": "SalePage",
+            "Sale": "Sale",
+            "OwnedTicketPage": "OwnedTicketPage",
+            "Ticket": "Ticket",
+            "Float": "Float",
+            "TicketPage": "TicketPage",
+            "GodfatherPage": "GodfatherPage",
+            "Godfather": "Godfather",
+            "Image": "Image",
+            "Campaign": "Campaign",
+            "User": "User",
+            "Organization": "Organization",
+            "GamePage": "GamePage",
+            "Sticker": "Sticker",
+            "Background": "Background",
+            "ColorTheme": "ColorTheme",
+            "Design": "Design",
+            "Invitation": "Invitation",
+            "Module": "Module",
+            "ModuleParam": "ModuleParam",
+            "ModuleParamType": "ModuleParamType",
+            "Integration": "Integration",
+            "Transaction": "Transaction",
+            "PaymentPage": "PaymentPage",
+            "Payment": "Payment",
+            "Tenant": "Tenant",
+            "OrganizationPage": "OrganizationPage",
+            "UserPage": "UserPage",
+            "CampaignPage": "CampaignPage",
+            "SmsMo": "SmsMo",
+            "SmsMt": "SmsMt",
+            "StickerPage": "StickerPage",
+            "BackgroundPage": "BackgroundPage",
+            "ColorThemePage": "ColorThemePage",
+            "DesignPage": "DesignPage",
+            "ModulePage": "ModulePage",
+            "IntegrationPage": "IntegrationPage",
+            "TransactionPage": "TransactionPage",
+            "TenantPage": "TenantPage",
+            "SmsMoPage": "SmsMoPage",
+            "SmsMtPage": "SmsMtPage",
+            "Mutation": "Mutation",
+            "MigrateResponse": "MigrateResponse",
+            "CreateAuthTokenInput": "CreateAuthTokenInput",
+            "AuthTokenResponse": "AuthTokenResponse",
+            "RefreshAuthTokenInput": "RefreshAuthTokenInput",
+            "CreateCampaignInput": "CreateCampaignInput",
+            "UpdateCampaignInput": "UpdateCampaignInput",
+            "DeleteResponse": "DeleteResponse",
+            "CreateGodfatherInput": "CreateGodfatherInput",
+            "UpdateGodfatherInput": "UpdateGodfatherInput",
+            "CreateGameInput": "CreateGameInput",
+            "UpdateGameInput": "UpdateGameInput",
+            "CreateUserInput": "CreateUserInput",
+            "UpdateUserInput": "UpdateUserInput",
+            "CreateOrganizationInput": "CreateOrganizationInput",
+            "CreateCurrentUserOrganizationInput": "CreateCurrentUserOrganizationInput",
+            "UpdateOrganizationInput": "UpdateOrganizationInput",
+            "CreateStickerInput": "CreateStickerInput",
+            "UpdateStickerInput": "UpdateStickerInput",
+            "CreateBackgroundInput": "CreateBackgroundInput",
+            "UpdateBackgroundInput": "UpdateBackgroundInput",
+            "CreateColorThemeInput": "CreateColorThemeInput",
+            "UpdateColorThemeInput": "UpdateColorThemeInput",
+            "CreateDesignInput": "CreateDesignInput",
+            "UpdateDesignInput": "UpdateDesignInput",
+            "RegisterInput": "RegisterInput",
+            "RegisteredUser": "RegisteredUser",
+            "CreateInvitationInput": "CreateInvitationInput",
+            "AcceptInvitationInput": "AcceptInvitationInput",
+            "ChangeCurrentUserPasswordInput": "ChangeCurrentUserPasswordInput",
+            "UpdateCurrentUserInput": "UpdateCurrentUserInput",
+            "CreateModuleInput": "CreateModuleInput",
+            "ModuleParamInput": "ModuleParamInput",
+            "UpdateModuleInput": "UpdateModuleInput",
+            "CreateIntegrationInput": "CreateIntegrationInput",
+            "IntegrationParamInput": "IntegrationParamInput",
+            "UpdateIntegrationInput": "UpdateIntegrationInput",
+            "CreateFeatureInput": "CreateFeatureInput",
+            "UpdateFeatureInput": "UpdateFeatureInput",
+            "CreateKeywordInput": "CreateKeywordInput",
+            "UpdateKeywordInput": "UpdateKeywordInput",
+            "CreateSaleInput": "CreateSaleInput",
+            "UpdateSaleInput": "UpdateSaleInput",
+            "CreateTransactionInput": "CreateTransactionInput",
+            "UpdateTransactionInput": "UpdateTransactionInput",
+            "CreatePaymentInput": "CreatePaymentInput",
+            "UpdatePaymentInput": "UpdatePaymentInput",
+            "CreateTenantInput": "CreateTenantInput",
+            "UpdateTenantInput": "UpdateTenantInput",
+            "CreateTicketInput": "CreateTicketInput",
+            "UpdateTicketInput": "UpdateTicketInput",
+            "CreateSmsMoInput": "CreateSmsMoInput",
+            "UpdateSmsMoInput": "UpdateSmsMoInput",
+            "CreateSmsMtInput": "CreateSmsMtInput",
+            "UpdateSmsMtInput": "UpdateSmsMtInput",
+            "__Schema": "__Schema",
+            "__Type": "__Type",
+            "__TypeKind": "__TypeKind",
+            "__Field": "__Field",
+            "__InputValue": "__InputValue",
+            "__EnumValue": "__EnumValue",
+            "__Directive": "__Directive",
+            "__DirectiveLocation": "__DirectiveLocation",
+            "CacheControlScope": "CacheControlScope",
+            "Upload": "Upload"
+        },
+        "_possibleTypeMap": {},
+        "_implementations": {},
+        "_extensionsEnabled": true
+    },
+    "fragments": {},
+    "operation": {
+        "kind": "OperationDefinition",
+        "operation": "query",
+        "variableDefinitions": [],
+        "directives": [],
+        "selectionSet": {
+            "kind": "SelectionSet",
+            "selections": [
+                {
+                    "kind": "Field",
+                    "name": {
+                        "kind": "Name",
+                        "value": "getGame",
+                        "loc": {
+                            "start": 4,
+                            "end": 11
+                        }
+                    },
+                    "arguments": [
+                        {
+                            "kind": "Argument",
+                            "name": {
+                                "kind": "Name",
+                                "value": "id",
+                                "loc": {
+                                    "start": 12,
+                                    "end": 14
+                                }
+                            },
+                            "value": {
+                                "kind": "StringValue",
+                                "value": "822974cc-2231-4de6-8a86-af384a82d845",
+                                "block": false,
+                                "loc": {
+                                    "start": 16,
+                                    "end": 54
+                                }
+                            },
+                            "loc": {
+                                "start": 12,
+                                "end": 54
+                            }
+                        }
+                    ],
+                    "directives": [],
+                    "selectionSet": {
+                        "kind": "SelectionSet",
+                        "selections": [
+                            {
+                                "kind": "Field",
+                                "name": {
+                                    "kind": "Name",
+                                    "value": "id",
+                                    "loc": {
+                                        "start": 62,
+                                        "end": 64
+                                    }
+                                },
+                                "arguments": [],
+                                "directives": [],
+                                "loc": {
+                                    "start": 62,
+                                    "end": 64
+                                }
+                            },
+                            {
+                                "kind": "Field",
+                                "name": {
+                                    "kind": "Name",
+                                    "value": "logoImage",
+                                    "loc": {
+                                        "start": 69,
+                                        "end": 78
+                                    }
+                                },
+                                "arguments": [],
+                                "directives": [],
+                                "selectionSet": {
+                                    "kind": "SelectionSet",
+                                    "selections": [
+                                        {
+                                            "kind": "Field",
+                                            "name": {
+                                                "kind": "Name",
+                                                "value": "bucket",
+                                                "loc": {
+                                                    "start": 87,
+                                                    "end": 93
+                                                }
+                                            },
+                                            "arguments": [],
+                                            "directives": [],
+                                            "loc": {
+                                                "start": 87,
+                                                "end": 93
+                                            }
+                                        }
+                                    ],
+                                    "loc": {
+                                        "start": 79,
+                                        "end": 99
+                                    }
+                                },
+                                "loc": {
+                                    "start": 69,
+                                    "end": 99
+                                }
+                            }
+                        ],
+                        "loc": {
+                            "start": 56,
+                            "end": 103
+                        }
+                    },
+                    "loc": {
+                        "start": 4,
+                        "end": 103
+                    }
+                }
+            ],
+            "loc": {
+                "start": 0,
+                "end": 105
+            }
+        },
+        "loc": {
+            "start": 0,
+            "end": 105
+        }
+    },
+    "variableValues": {},
+    "cacheControl": {
+        "cacheHint": {
+            "maxAge": 0
+        }
+    }
+}

@@ -1,0 +1,18 @@
+{
+  "fields": [
+    "items"
+  ],
+  "selections": {
+    "items": {
+      "fields": [
+        "id",
+        "tickets",
+        "owner",
+        "status",
+        "godfather"
+      ],
+      "selections": {
+      }
+    }
+  }
+}

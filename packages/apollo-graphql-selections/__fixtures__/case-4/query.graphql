@@ -1,0 +1,9 @@
+query {
+    getGameByCode(code: "GKPP711") {
+        id
+        name
+        something: logoImage {
+            bucket
+        }
+    }
+}

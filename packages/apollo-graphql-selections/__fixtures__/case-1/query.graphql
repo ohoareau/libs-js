@@ -1,0 +1,8 @@
+query {
+    getGame(id: "822974cc-2231-4de6-8a86-af384a82d845") {
+        id
+        logoImage {
+            bucket
+        }
+    }
+}

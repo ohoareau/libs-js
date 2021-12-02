@@ -1,0 +1,35 @@
+{
+  "fields": [
+    "items"
+  ],
+  "selections": {
+    "items": {
+      "fields": [
+        "id",
+        "code",
+        "name",
+        "publicPageUrl",
+        "statGames",
+        "games"
+      ],
+      "selections": {
+        "games": {
+          "fields": [
+            "items"
+          ],
+          "selections": {
+            "items": {
+              "fields": [
+                "id",
+                "code",
+                "name",
+                "publicPageUrl"
+              ],
+              "selections": {}
+            }
+          }
+        }
+      }
+    }
+  }
+}
