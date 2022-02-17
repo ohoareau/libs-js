@@ -22,9 +22,9 @@
     "@ohoareau/aws-lambda-reqres": "^0.2.10"
   },
   "peerDependencies": {
-    "next": "^10.2.3"
+    "next": "^12.1.0"
   },
   "devDependencies": {
-    "next": "^10.2.3"
+    "next": "^12.1.0"
   }
 }
