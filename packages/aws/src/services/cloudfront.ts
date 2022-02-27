@@ -15,6 +15,19 @@ const createInvalidation = async (distribution, uri: string|string[], invalidati
     }).promise();
 };
 
+const listInvalidations = async (distribution, {limit, offset}: {limit?: number, offset?: any} = {}): Promise<any> => {
+    return awscf.listInvalidations({
+        DistributionId: distribution,
+        ...(limit ? {MaxItems: `${limit}`} : {}),
+        ...(offset ? {Marker: `${offset}`} : {}),
+    }).promise();
+}
+const getInvalidation = async (distribution: string, id: string): Promise<any> => {
+    return awscf.getInvalidation({
+        DistributionId: distribution,
+        Id: id,
+    }).promise();
+}
 const invalidateUri = async (distribution, uri: string|string[], invalidationReference?: string): Promise<any> =>
     createInvalidation(distribution, uri, invalidationReference)
 ;
@@ -22,6 +35,8 @@ const invalidateUri = async (distribution, uri: string|string[], invalidationRef
 export const cloudfront = {
     invalidateUri,
     createInvalidation,
+    listInvalidations,
+    getInvalidation,
 }
 
 export default cloudfront
