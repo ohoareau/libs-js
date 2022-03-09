@@ -5,6 +5,11 @@ export type resize_operation = {
     type: 'resize',
     width?: bigint,
     height?: bigint,
+    enlarge?: boolean,
+    reduce?: boolean,
+    bgcolor?: string,
+    position?: string,
+    fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside',
 }
 
 export type round_corner_operation = {
