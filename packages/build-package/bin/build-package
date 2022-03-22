@@ -3,18 +3,21 @@
 case "$PACKAGE_NPM_CLIENT" in
   "yarn")
     PACKAGE_INSTALL_PROD="yarn --silent install --prod"
-    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent install-prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent build-install-prod"
     PACKAGE_INSTALL="yarn --silent install"
+    PACKAGE_INSTALL_CUSTOM="yarn --silent build-install"
     ;;
   "npm")
     PACKAGE_INSTALL_PROD="npm install --production"
-    PACKAGE_INSTALL_PROD_CUSTOM="npm run install-prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="npm run build-install-prod"
     PACKAGE_INSTALL="npm install"
+    PACKAGE_INSTALL_CUSTOM="npm run build-install"
     ;;
   *)
     PACKAGE_INSTALL_PROD="yarn --silent install --prod"
-    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent install-prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent build-install-prod"
     PACKAGE_INSTALL="yarn --silent install"
+    PACKAGE_INSTALL_CUSTOM="yarn --silent build-install"
     ;;
 esac
 mkdir -p build
@@ -49,4 +52,11 @@ else
   mv build/package-temp.zip build/package.zip
 fi
 
-$PACKAGE_INSTALL >/dev/null || exit 4
+case "$PACKAGE_TARGET" in
+  "custom")
+    $PACKAGE_INSTALL_CUSTOM >/dev/null || exit 4
+    ;;
+  *)
+    $PACKAGE_INSTALL >/dev/null || exit 4
+    ;;
+esac
