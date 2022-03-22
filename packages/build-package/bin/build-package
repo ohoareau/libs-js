@@ -9,6 +9,14 @@ case "$PACKAGE_NPM_CLIENT" in
     PACKAGE_INSTALL_PROD="npm install --production"
     PACKAGE_INSTALL="npm install"
     ;;
+  "yarn-custom")
+    PACKAGE_INSTALL_PROD="yarn --silent install-prod"
+    PACKAGE_INSTALL="yarn --silent install"
+    ;;
+  "npm-custom")
+    PACKAGE_INSTALL_PROD="npm run install-prod"
+    PACKAGE_INSTALL="npm install"
+    ;;
   *)
     PACKAGE_INSTALL_PROD="yarn --silent install --prod"
     PACKAGE_INSTALL="yarn --silent install"
