@@ -3,22 +3,17 @@
 case "$PACKAGE_NPM_CLIENT" in
   "yarn")
     PACKAGE_INSTALL_PROD="yarn --silent install --prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent install-prod"
     PACKAGE_INSTALL="yarn --silent install"
     ;;
   "npm")
     PACKAGE_INSTALL_PROD="npm install --production"
-    PACKAGE_INSTALL="npm install"
-    ;;
-  "yarn-custom")
-    PACKAGE_INSTALL_PROD="yarn --silent install-prod"
-    PACKAGE_INSTALL="yarn --silent install"
-    ;;
-  "npm-custom")
-    PACKAGE_INSTALL_PROD="npm run install-prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="npm run install-prod"
     PACKAGE_INSTALL="npm install"
     ;;
   *)
     PACKAGE_INSTALL_PROD="yarn --silent install --prod"
+    PACKAGE_INSTALL_PROD_CUSTOM="yarn --silent install-prod"
     PACKAGE_INSTALL="yarn --silent install"
     ;;
 esac
@@ -28,6 +23,9 @@ rm -rf node_modules
 case "$PACKAGE_TARGET" in
   "lambda")
     npm_config_arch=x64 npm_config_platform=linux $PACKAGE_INSTALL_PROD >/dev/null || exit 2
+    ;;
+  "custom")
+    $PACKAGE_INSTALL_PROD_CUSTOM >/dev/null || exit 2
     ;;
   *)
     $PACKAGE_INSTALL_PROD >/dev/null || exit 2
