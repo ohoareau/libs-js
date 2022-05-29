@@ -14,7 +14,7 @@ export function serverFactory(app: {listen: Function}) {
         awsRegion = undefined;
     }
     app.listen(port, () => {
-        console.log(`🚀 Server ready at ${url}${awsRegion ? `(AWS region is ${awsRegion})` : ''}`);
+        console.log(`🚀 Server ready at ${url}${awsRegion ? ` (AWS region is ${awsRegion})` : ''}`);
     });
 }
 
