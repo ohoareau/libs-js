@@ -6,6 +6,57 @@ export const datetimify = t => {
     const d = new Date(parseInt(t));
     return `${digitize(d.getDate())}/${digitize(d.getMonth() + 1)}/${d.getFullYear()} @ ${digitize(d.getHours())}:${digitize(d.getMinutes())}`;
 };
+export const slugify = (v: any, sep: string = '-') => {
+    v = v || '';
+    v = v.toLowerCase();
+    v = lowerUnstress(v);
+    v = v.replace(/[^a-z0-9-]+/g, ' ').replace(/[\s]+/g, ' ')
+    v = v.trim();
+    v = v.replace(/[\s]+/g, sep);
+    return !!v ? v : undefined;
+};
+export const unstress = (v: any) => upperUnstress(lowerUnstress(v));
+export const lowerUnstress = (v: any) => {
+    v = v || '';
+    v = v.replace(/[éèêëęėē]/g, 'e');
+    v = v.replace(/[àâªáäãåā]/g, 'a');
+    v = v.replace(/[ÿ]/g, 'y');
+    v = v.replace(/[ûùüúū]/g, 'u');
+    v = v.replace(/[îïìíįī]/g, 'i');
+    v = v.replace(/[ôºöòóõøō]/g, 'o');
+    v = v.replace(/[çćč]/g, 'c');
+    v = v.replace(/[ñń]/g, 'n');
+    v = v.replace(/[œ]/g, 'oe');
+    v = v.replace(/[æ]/g, 'ae');
+    v = v.replace(/[$]/g, ' dollar');
+    v = v.replace(/[€]/g, ' euro');
+    v = v.replace(/[@]/g, ' at');
+    v = v.replace(/[&]/g, ' and');
+    v = v.replace(/[§]/g, ' s ');
+    v = v.replace(/[%]/g, ' percent ');
+    return v;
+};
+export const upperUnstress = (v: any) => {
+    v = v || '';
+    v = v.replace(/[ÉÈÊËĘĖĒ]/g, 'E');
+    v = v.replace(/[ÉÈÊËĘĖĒéèêëęėē]/g, 'E');
+    v = v.replace(/[ÀÂÁÄÃÅĀ]/g, 'A');
+    v = v.replace(/[Ÿ]/g, 'Y');
+    v = v.replace(/[ÛÙÜÚŪ]/g, 'U');
+    v = v.replace(/[ÎÏÌÍĮĪ]/g, 'I');
+    v = v.replace(/[ÔÖÒÓÕØŌ]/g, 'O');
+    v = v.replace(/[ÇĆČ]/g, 'C');
+    v = v.replace(/[ÑŃ]/g, 'N');
+    v = v.replace(/[Œ]/g, 'OE');
+    v = v.replace(/[Æ]/g, 'AE');
+    v = v.replace(/[$]/g, ' DOLLAR');
+    v = v.replace(/[€]/g, ' EURO');
+    v = v.replace(/[@]/g, ' AT');
+    v = v.replace(/[&]/g, ' AND');
+    v = v.replace(/[§]/g, ' S ');
+    v = v.replace(/[%]/g, ' PERCENT ');
+    return !!v ? v : undefined;
+};
 export const titlize = (def, item) => {
     switch (def.type) {
         case 'person_full':
