@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/react-dynamic",
-  "version": "0.6.9",
+  "version": "0.6.10",
   "description": "React Dynamic",
   "license": "MIT",
   "main": "lib/index.js",
@@ -30,8 +30,8 @@
     "@ohoareau/react-component": "^0.3.0",
     "@ohoareau/react-error-boundary": "^0.3.0",
     "@ohoareau/react-modal": "^0.3.6",
-    "@ohoareau/react-moduled": "^0.3.0",
-    "@ohoareau/string": "^0.2.0",
+    "@ohoareau/react-moduled": "^0.3.1",
+    "@ohoareau/string": "^0.2.1",
     "@ohoareau/validator": "^0.2.0",
     "react-dropzone-uploader": "^2.11.0",
     "react-image": "^2.4.0",

@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/service-project",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,6 +19,6 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/service-specs": "^0.1.6"
+    "@ohoareau/service-specs": "^0.1.7"
   }
 }
