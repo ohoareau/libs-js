@@ -86,7 +86,7 @@ export const getSvgFileConfig = async (filePath: string, options: any = {}): Pro
 // noinspection JSUnusedLocalSymbols
 export const convertSvgFileNameToReactComponentFileName = (filePath: string, options: any = {}): string => {
     const n = (filePath.match(/([^/]+)\.svg$/) || [])[1].split(/[-_]+/).map(x => `${x.slice(0, 1).toUpperCase()}${x.slice(1)}`).join('');
-    return `${n}.tsx`;
+    return `${n}${options?.suffix || ''}.tsx`;
 };
 
 export const convertSvgToReactComponent = async (svg: string, options: any = {}): Promise<string> =>
