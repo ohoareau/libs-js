@@ -1,6 +1,6 @@
 module.exports = {
     addons: [
-        '@storybook/addon-viewport/register',
+//        '@storybook/addon-viewport/register',
         {
             name: '@storybook/addon-storysource',
             options: {
@@ -13,8 +13,8 @@ module.exports = {
                 },
             },
         },
-        '@storybook/addon-knobs/register',
-        '@storybook/addon-actions/register',
+//        '@storybook/addon-knobs/register',
+//        '@storybook/addon-actions/register',
     ],
     stories: [`${process.cwd()}/__stories__/**/*.stories.tsx`],
     webpackFinal: async config => {
