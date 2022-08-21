@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/aws-handlers",
-  "version": "0.1.28",
+  "version": "0.2.0",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -15,7 +15,7 @@
     "access": "public"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.1.18",
+    "@ohoareau/aws": "^0.2.0",
     "@ohoareau/topper": "^0.1.4"
   },
   "scripts": {
