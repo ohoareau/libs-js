@@ -25,6 +25,7 @@
     "@testing-library/dom": "^7.2.1",
     "@genjs/genjs": "^0.4.0",
     "@genjs/genjs-plugin-monorepo-js-libs": "^0.4.0",
-    "@genjs/genjs-plugin-cicd-github": "^0.4.0"
+    "@genjs/genjs-plugin-cicd-github": "^0.4.0",
+    "@babel/helper-string-parser": "^7.19.4"
   }
 }
