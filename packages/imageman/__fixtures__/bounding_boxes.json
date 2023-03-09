@@ -1,0 +1,29 @@
+[
+  {
+    "type": "bounding_boxes",
+    "boxes": [
+      {
+        "borderColor": "blue",
+        "borderWidth": 5,
+        "points": [
+          {
+            "x": 100,
+            "y": 100
+          },
+          {
+            "x": 300,
+            "y": 100
+          },
+          {
+            "x": 300,
+            "y": 200
+          },
+          {
+            "x": 100,
+            "y": 200
+          }
+        ]
+      }
+    ]
+  }
+]

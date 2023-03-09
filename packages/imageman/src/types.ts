@@ -12,6 +12,22 @@ export type resize_operation = {
     fit?: 'cover' | 'contain' | 'fill' | 'inside' | 'outside',
 }
 
+export type bounding_box_point = {
+    x: number;
+    y: number;
+}
+export type bounding_box = {
+    points: bounding_box_point[];
+    bgColor?: string;
+    borderColor?: string;
+    borderWidth?: number;
+    borderStyle?: string;
+}
+export type bounding_boxes_operation = {
+    type: 'bounding_boxes',
+    boxes?: bounding_box[];
+}
+
 export type round_corner_operation = {
     type: 'round-corner',
     rx: bigint,
