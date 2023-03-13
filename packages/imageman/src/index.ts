@@ -3,16 +3,17 @@ import sharp from 'sharp';
 import * as availableOperations from './operations'
 import {applyFormat, describeTarget, save, fetch} from "./utils";
 
-async function build({input, operations = [], output, format = undefined, sourceTypes = {}, targetTypes = {}}: imageman_args) {
-    const source = await fetch(input, sourceTypes) as Buffer|ReadableStream
+async function build({input, operations = [], output, format = undefined, sourceTypes = {}, targetTypes = {}, registerAvailableOperations = {}}: imageman_args) {
+    const source = await fetch(input, sourceTypes) as Buffer|ReadableStream;
+    const allAvailableOperations = {...availableOperations, ...(registerAvailableOperations || {})};
     let img = (await operations.reduce(async (acc, operation) => {
         acc = (await acc) || acc;
         try{
-            if (!availableOperations[operation.type]) {
+            if (!allAvailableOperations[operation.type]) {
                 // noinspection ExceptionCaughtLocallyJS
                 throw new Error(`Unknown operation: ${operation.type}`);
             }
-            return (await availableOperations[operation.type](acc, operation)) || acc ;
+            return (await allAvailableOperations[operation.type](acc, operation)) || acc ;
         } catch (e) {
             console.warn(`Warning: ${operation.type} - ${e.message}`);
             return acc;

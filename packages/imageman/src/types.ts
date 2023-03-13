@@ -1,6 +1,10 @@
 export type input = string;
 export type output = string;
 
+export type flatten_operation = {
+    background: string;
+};
+
 export type resize_operation = {
     type: 'resize',
     width?: bigint,
@@ -70,5 +74,6 @@ export type imageman_args = {
     format?: format,
     sourceTypes?: {[key: string]: source_type},
     targetTypes?: {[key: string]: target_type},
+    registerAvailableOperations?: Record<string, Function>;
 };
 
