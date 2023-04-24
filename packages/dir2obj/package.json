@@ -19,6 +19,6 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "yaml": "^1.10.0"
+    "yaml": "^2.2.2"
   }
 }
