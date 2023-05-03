@@ -22,6 +22,12 @@ const deleteFile = async ({bucket, key}) =>
     awss3.deleteObject({Bucket: bucket, Key: key}).promise()
 ;
 
+const listFiles = async ({bucket, key, raw = false, from}: {bucket: string, key?: string, raw?: boolean, from?: string}) => {
+    const files = await awss3.listObjects({Bucket: bucket, ...(key ? {Prefix: `${key}/`} : {}), ...(from ? {Marker: from} : {})}).promise();
+    if (!files || !files.Contents || !files.Contents.length) return [];
+    return raw ? [...files.Contents] : files.Contents.map(f => f.Key);
+};
+
 const deleteDirectory = async ({bucket, key}) => {
     const files = await awss3.listObjects({Bucket: bucket, Prefix: `${key}/`}).promise();
     if (!files || !files.Contents || !files.Contents.length) return [];
@@ -107,6 +113,7 @@ export const s3 = {
     setFile,
     setFileContent,
     getFileMetadata,
+    listFiles,
 }
 
 export default s3
