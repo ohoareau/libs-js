@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-image",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,9 +20,9 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.3.2",
+    "@ohoareau/aws": "^0.3.3",
     "@ohoareau/imageman": "^0.1.5",
-    "@ohoareau/lambda-utils": "^0.4.2"
+    "@ohoareau/lambda-utils": "^0.4.3"
   },
   "peerDependenciesMeta": {
     "aws-sdk": {
