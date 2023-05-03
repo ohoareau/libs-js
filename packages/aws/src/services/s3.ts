@@ -22,8 +22,8 @@ const deleteFile = async ({bucket, key}) =>
     awss3.deleteObject({Bucket: bucket, Key: key}).promise()
 ;
 
-const listFiles = async ({bucket, key, raw = false, from}: {bucket: string, key?: string, raw?: boolean, from?: string}) => {
-    const files = await awss3.listObjects({Bucket: bucket, ...(key ? {Prefix: `${key}/`} : {}), ...(from ? {Marker: from} : {})}).promise();
+const listFiles = async ({bucket, key, raw = false, from, limit}: {bucket: string, key?: string, raw?: boolean, from?: string, limit?: number}) => {
+    const files = await awss3.listObjects({...(limit ? {MaxKeys: limit} : {}), Bucket: bucket, ...(key ? {Prefix: `${key}/`} : {}), ...(from ? {Marker: from} : {})}).promise();
     if (!files || !files.Contents || !files.Contents.length) return [];
     return raw ? [...files.Contents] : files.Contents.map(f => f.Key);
 };
