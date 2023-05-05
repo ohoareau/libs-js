@@ -21,6 +21,16 @@ const setFile = async ({bucket, key, metadata = undefined, contentType = undefin
 const deleteFile = async ({bucket, key}) =>
     awss3.deleteObject({Bucket: bucket, Key: key}).promise()
 ;
+const copyFile = async ({bucket, key, targetKey, targetBucket}: {bucket: string, key: string, targetKey?: string, targetBucket?: string}) => {
+    const a = {bucket, key};
+    const b = {bucket: targetBucket || bucket, key: targetKey || key};
+
+    return awss3.copyObject({Bucket: b.bucket, Key: b.key, CopySource: `/${a.bucket}/${a.key}`}).promise()
+};
+const moveFile = async (opts: {bucket: string, key: string, targetKey?: string, targetBucket?: string}) => {
+    await copyFile(opts);
+    return deleteFile({bucket: opts.bucket, key: opts.key});
+};
 
 const listFiles = async ({bucket, key, raw = false, from, limit}: {bucket: string, key?: string, raw?: boolean, from?: string, limit?: number}) => {
     const files = await awss3.listObjects({...(limit ? {MaxKeys: limit} : {}), Bucket: bucket, ...(key ? {Prefix: `${key}/`} : {}), ...(from ? {Marker: from} : {})}).promise();
@@ -114,6 +124,8 @@ export const s3 = {
     setFileContent,
     getFileMetadata,
     listFiles,
+    moveFile,
+    copyFile,
 }
 
 export default s3
