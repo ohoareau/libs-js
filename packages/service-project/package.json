@@ -19,6 +19,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/service-specs": "^0.1.7"
+    "@ohoareau/service-specs": "^0.1.7",
+    "@ohoareau/react-scope": "^0.4.3"
   }
 }

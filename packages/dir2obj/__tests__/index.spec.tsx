@@ -10,7 +10,7 @@ describe('dir2obj', () => {
         ['dir6', new Error(`${__dirname}/../__fixtures__/dir6/a/b/c.yml: Plain value cannot start with reserved character @ at line 1, column 4:
 
 a: @badvalue
-   ^^^^^^^^^
+   ^
 `)],
         ['dir7', {plugins: ['plugin1', 'plugin2', 'plugin3', 'plugin4', 'plugin 4']}],
     ]

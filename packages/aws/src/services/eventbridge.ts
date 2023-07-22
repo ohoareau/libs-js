@@ -1,5 +1,12 @@
 const awseb = new (require('aws-sdk/clients/eventbridge'));
 
+function defaultBigIntJsonSerialize(value: any) {
+    if ('bigint' !== typeof value) return value;
+    const s = value?.toString?.();
+    if (s > String(Number.MAX_SAFE_INTEGER)) return s;
+    return Number(s);
+}
+
 export type ebEvent = {
     type: string;
     bus?: string;
@@ -12,7 +19,11 @@ export type ebEvent = {
 
 async function putEvents(events: ebEvent[]) {
     return awseb.putEvents({Entries: events.map(e => ({
-        Detail: JSON.stringify(e.data),
+        Detail: JSON.stringify(e.data, ((_: any, key: string, value: any) => {
+            // @ts-ignore
+            if ('bigint' === typeof value && !BigInt.prototype.toJSON) return defaultBigIntJsonSerialize(value);
+            return value;
+        }) as any),
         DetailType: e.type,
         Source: `${process.env.EVENTBRIDGE_SOURCE_PREFIX || ''}${e.source}`,
         ...(e.bus ? {EventBusName: e.bus} : {}),

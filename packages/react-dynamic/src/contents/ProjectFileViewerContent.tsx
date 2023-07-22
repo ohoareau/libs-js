@@ -10,7 +10,7 @@ export const ProjectFileViewerContent = component<ProjectFileViewerContentProps>
     const project = context.context.project.id;
     const file = data.path;
     const contentType = data.type || 'application/octet-stream';
-    const {data: d, loading, error} = useQuery(getGraphQLQuery('GET_PROJECT_FILE_VIEW_URL'), {variables: {project, file, contentType}});
+    const {data: d, loading, error} = useQuery(getGraphQLQuery('GET_PROJECT_FILE_VIEW_URL') as any, {variables: {project, file, contentType}});
     if (error) return <div>Error! ({error.message})</div>;
     if (loading) return <div>...</div>;
     const props = {data, context, path: (d || {})['getProjectFileViewUrl']['viewUrl'], contentType};

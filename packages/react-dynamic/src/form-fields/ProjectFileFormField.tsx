@@ -6,7 +6,7 @@ import FormField, {FormFieldProps} from '../FormField';
 
 export const ProjectFileFormField: ComponentType<ProjectFileFormFieldProps> = ({context, ...props}: ProjectFileFormFieldProps) => {
     const project = context.context.project.id;
-    const [upload] = useMutation(getGraphQLQuery('REQUEST_PROJECT_FILE_UPLOAD_URL'));
+    const [upload] = useMutation(getGraphQLQuery('REQUEST_PROJECT_FILE_UPLOAD_URL') as any);
     const getUploadParams = useCallback(async ({ meta: { name } }) => {
         const { data: {requestProjectFileUploadUrl: {fields: rawFields, uploadUrl, fileUrl}}} = await upload({
             variables: {project, file: name}});

@@ -7,7 +7,7 @@ async function build({input, operations = [], output, format = undefined, source
     const source = await fetch(input, sourceTypes) as Buffer|ReadableStream;
     const allAvailableOperations = {...availableOperations, ...(registerAvailableOperations || {})};
     let img = (await operations.reduce(async (acc, operation) => {
-        acc = (await acc) || acc;
+        acc = (((await acc) || (acc as any)) as any);
         try{
             if (!allAvailableOperations[operation.type]) {
                 // noinspection ExceptionCaughtLocallyJS
@@ -19,7 +19,7 @@ async function build({input, operations = [], output, format = undefined, source
             return acc;
         }
 
-    }, Promise.resolve(sharp(source, {sequentialRead: true}))));
+    }, Promise.resolve(sharp(source as any, {sequentialRead: true}))));
     const {format: finalFormat, target} = await describeTarget(output, format);
     finalFormat && (img = await applyFormat(img, finalFormat));
     return save(img, target, targetTypes);
