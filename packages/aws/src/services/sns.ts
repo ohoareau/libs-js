@@ -1,7 +1,7 @@
 const awssns = new (require('aws-sdk/clients/sns'));
 
 export const sns = {
-    publish: async ({message, attributes, topic, group }) => awssns.publish({
+    publish: async ({message, attributes, topic, group }: {message: any; attributes: Record<string, any>; topic: string; group?: string;}) => awssns.publish({
         Message: JSON.stringify(await message),
         ...(group ? {MessageGroupId:group} : {}),
         MessageAttributes: Object.entries(attributes).reduce((acc, [k, v]) => {
