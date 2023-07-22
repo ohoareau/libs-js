@@ -19,7 +19,7 @@ export type ebEvent = {
 
 async function putEvents(events: ebEvent[]) {
     return awseb.putEvents({Entries: events.map(e => ({
-        Detail: JSON.stringify(e.data, ((_: any, key: string, value: any) => {
+        Detail: JSON.stringify(e.data, ((key: string, value: any) => {
             // @ts-ignore
             if ('bigint' === typeof value && !BigInt.prototype.toJSON) return defaultBigIntJsonSerialize(value);
             return value;
