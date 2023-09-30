@@ -62,7 +62,7 @@ const buildGetParams = (table, key, index = undefined, returns = undefined) => (
     ...buildParams(table, key, returns),
 });
 const buildCreateParams = (table, key, data: any = {}, returns = undefined) => ({
-    Attributes: data,
+    Item: data,
     ...buildParams(table, key, returns),
 });
 const buildScanParams = (table, filter = {}, index = undefined) => ({
