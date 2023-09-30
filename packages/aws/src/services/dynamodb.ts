@@ -32,7 +32,7 @@ const buildOperationString = (v, kk, i) => {
     }
     return [[[`:v${i}`, v]], `${kk} = :v${i}`];
 };
-const buildParams = (table, key, returns: any = undefined, extra = {}) => ({TableName: buildTableName(table), Key: key, ...buildReturns(returns), ...extra});
+const buildParams = (table, key, returns: any = undefined, extra = {}) => ({TableName: buildTableName(table), ...(key ? {Key: key} : {}), ...buildReturns(returns), ...extra});
 const buildExpressionParams = (filter, prefix, first, between, operationMode = true) =>
     (!filter || !Object.keys(filter).length)
         ? {}
@@ -61,9 +61,9 @@ const buildGetParams = (table, key, index = undefined, returns = undefined) => (
     ...(index ? {IndexName: index} : {}),
     ...buildParams(table, key, returns),
 });
-const buildCreateParams = (table, key, data: any = {}, returns = undefined) => ({
+const buildCreateParams = (table, data: any = {}, returns = undefined) => ({
     Item: data,
-    ...buildParams(table, key, returns),
+    ...buildParams(table, undefined, returns),
 });
 const buildScanParams = (table, filter = {}, index = undefined) => ({
     TableName: buildTableName(table),
@@ -89,7 +89,7 @@ const mutateWriteResult = r => ({
 });
 export const dynamodb = {
     delete: async (table, key, returns: any = undefined) => mutateWriteResult(await awsdb.delete(buildParams(table, key, returns)).promise()),
-    create: async (table, key, data, returns: any = undefined) => mutateCreateResult(await awsdb.put(buildCreateParams(table, key, data, returns)).promise()),
+    create: async (table, data, returns: any = undefined) => mutateCreateResult(await awsdb.put(buildCreateParams(table, data, returns)).promise()),
     upsert: async (table, key, data, returns: any = undefined) => mutateWriteResult(await awsdb.update(buildUpdateParams(table, key, data, returns)).promise()),
     queryIndex: async (table, index, key) => mutateReadResult(await awsdb.query(buildQueryParams(table, key, index)).promise()),
     get: async (table, key, returns: any = undefined) => mutateGetResult(await awsdb.get(buildGetParams(table, key, undefined, returns)).promise()),
