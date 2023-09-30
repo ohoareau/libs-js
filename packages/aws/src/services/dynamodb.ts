@@ -57,6 +57,14 @@ const buildQueryParams = (table, key, index = undefined) => ({
     ...(index ? {IndexName: index} : {}),
     ...buildExpressionParams(key, 'KeyCondition', '', ' and '),
 });
+const buildGetParams = (table, key, index = undefined, returns = undefined) => ({
+    ...(index ? {IndexName: index} : {}),
+    ...buildParams(table, key, returns),
+});
+const buildCreateParams = (table, key, data: any = {}, returns = undefined) => ({
+    Attributes: data,
+    ...buildParams(table, key, returns),
+});
 const buildScanParams = (table, filter = {}, index = undefined) => ({
     TableName: buildTableName(table),
     ...(index ? {IndexName: index} : {}),
@@ -69,6 +77,8 @@ const mutateReadResult = r => ({
     consumedCapacity: r.ConsumedCapacity,
     itemCollectionMetrics: r.ItemCollectionMetrics,
 });
+const mutateGetResult = r => r.Item;
+const mutateCreateResult = r => r.Item;
 const mutateWriteResult = r => ({
     attributes: r.Attributes,
     consumedCapacity: r.ConsumedCapacity,
@@ -76,8 +86,10 @@ const mutateWriteResult = r => ({
 });
 export const dynamodb = {
     delete: async (table, key, returns: any = undefined) => mutateWriteResult(await awsdb.delete(buildParams(table, key, returns)).promise()),
+    create: async (table, key, data, returns: any = undefined) => mutateCreateResult(await awsdb.put(buildCreateParams(table, key, data, returns)).promise()),
     upsert: async (table, key, data, returns: any = undefined) => mutateWriteResult(await awsdb.update(buildUpdateParams(table, key, data, returns)).promise()),
     queryIndex: async (table, index, key) => mutateReadResult(await awsdb.query(buildQueryParams(table, key, index)).promise()),
+    get: async (table, key, returns: any = undefined) => mutateGetResult(await awsdb.get(buildGetParams(table, key, undefined, returns)).promise()),
     query: async (table, key) => mutateReadResult(await awsdb.query(buildQueryParams(table, key)).promise()),
     scanIndex: async (table, index, filter = {}) => mutateReadResult(await awsdb.scan(buildScanParams(table, filter, index)).promise()),
     scan: async (table, filter = {}) => mutateReadResult(await awsdb.scan(buildScanParams(table, filter)).promise()),
