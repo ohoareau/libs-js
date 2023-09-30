@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-api-document",
-  "version": "0.3.10",
+  "version": "0.3.11",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -20,8 +20,8 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.3.10",
-    "@ohoareau/lambda-utils": "^0.4.10",
+    "@ohoareau/aws": "^0.3.11",
+    "@ohoareau/lambda-utils": "^0.4.11",
     "docx": "^5.5.0",
     "docx-templates": "^4.5.3"
   },
