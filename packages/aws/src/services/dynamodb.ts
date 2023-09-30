@@ -81,7 +81,7 @@ const mutateGetResult = r => {
     if (r && r.Item) return r.Item;
     throw new Error(`Unknown document`);
 }
-const mutateCreateResult = r => r.Item;
+const mutateCreateResult = (r, data) => data;
 const mutateWriteResult = r => ({
     attributes: r.Attributes,
     consumedCapacity: r.ConsumedCapacity,
@@ -89,7 +89,7 @@ const mutateWriteResult = r => ({
 });
 export const dynamodb = {
     delete: async (table, key, returns: any = undefined) => mutateWriteResult(await awsdb.delete(buildParams(table, key, returns)).promise()),
-    create: async (table, data, returns: any = undefined) => mutateCreateResult(await awsdb.put(buildCreateParams(table, data, returns)).promise()),
+    create: async (table, data, returns: any = undefined) => mutateCreateResult(await awsdb.put(buildCreateParams(table, data, returns)).promise(), data),
     upsert: async (table, key, data, returns: any = undefined) => mutateWriteResult(await awsdb.update(buildUpdateParams(table, key, data, returns)).promise()),
     queryIndex: async (table, index, key) => mutateReadResult(await awsdb.query(buildQueryParams(table, key, index)).promise()),
     get: async (table, key, returns: any = undefined) => mutateGetResult(await awsdb.get(buildGetParams(table, key, undefined, returns)).promise()),
