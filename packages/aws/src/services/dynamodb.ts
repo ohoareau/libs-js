@@ -77,7 +77,10 @@ const mutateReadResult = r => ({
     consumedCapacity: r.ConsumedCapacity,
     itemCollectionMetrics: r.ItemCollectionMetrics,
 });
-const mutateGetResult = r => r.Item;
+const mutateGetResult = r => {
+    if (r && r.Item) return r.Item;
+    throw new Error(`Unknown document`);
+}
 const mutateCreateResult = r => r.Item;
 const mutateWriteResult = r => ({
     attributes: r.Attributes,
