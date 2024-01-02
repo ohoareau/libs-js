@@ -12,8 +12,9 @@ function formatArgumentValue(val: { kind: string, value: any, block: boolean }) 
 }
 export function subSelect(selections: any[]) {
     return selections.filter(x => x.kind === 'Field').reduce((acc, selection) => {
-        const na = selection?.alias?.value || selection.name.value;
-        if (selection?.alias?.value) {
+        const alias = selection?.alias?.value;
+        const na = alias || selection.name.value;
+        if (alias) {
             acc.selections[selection.name.value] = acc.selections[selection.name.value] || {};
             acc.selections[selection.name.value].aliases = acc.selections[selection.name.value].aliases || [];
             acc.selections[selection.name.value].aliases.push(selection?.alias?.value)
@@ -22,7 +23,7 @@ export function subSelect(selections: any[]) {
         if (selection.selectionSet?.selections?.length) {
             const old = acc.selections[na] || {};
             const ss = subSelect(selection.selectionSet?.selections || []);
-            acc.selections[na] = {...old, ...ss, ...(old.aliases ? {aliases: [...old.aliases, ...(ss.aliases ? ss.aliases : [])]} : {})};
+            acc.selections[na] = {...old, ...ss, ...(old.aliases ? {aliases: [...old.aliases, ...(ss.aliases ? ss.aliases : [])]} : {}), ...(alias ? {aliasing: selection.name.value} : {})};
         }
         if (selection.arguments?.length) {
             if (!acc.arguments) acc.arguments = {};
