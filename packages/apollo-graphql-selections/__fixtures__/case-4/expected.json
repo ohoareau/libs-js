@@ -2,10 +2,10 @@
   "fields": [
     "id",
     "name",
-    "logoImage"
+    "something"
   ],
   "selections": {
-    "logoImage": {
+    "something": {
       "fields": [
         "bucket"
       ],

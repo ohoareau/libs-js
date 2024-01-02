@@ -12,13 +12,14 @@ function formatArgumentValue(val: { kind: string, value: any, block: boolean }) 
 }
 export function subSelect(selections: any[]) {
     return selections.filter(x => x.kind === 'Field').reduce((acc, selection) => {
-        acc.fields.push(selection.name.value);
+        const na = selection?.alias?.value || selection.name.value;
+        acc.fields.push(na);
         if (selection.selectionSet?.selections?.length) {
-            acc.selections[selection.name.value] = subSelect(selection.selectionSet?.selections || []);
+            acc.selections[na] = subSelect(selection.selectionSet?.selections || []);
         }
         if (selection.arguments?.length) {
             if (!acc.arguments) acc.arguments = {};
-            acc.arguments[selection.name.value] = selection.arguments.reduce((acc, arg) => {
+            acc.arguments[na] = selection.arguments.reduce((acc, arg) => {
                 acc[arg.name.value] = formatArgumentValue(arg.value);
                 return acc;
             }, {} as any);
