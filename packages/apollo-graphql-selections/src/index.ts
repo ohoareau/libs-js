@@ -24,6 +24,11 @@ export function subSelect(selections: any[]) {
             const old = acc.selections[na] || {};
             const ss = subSelect(selection.selectionSet?.selections || []);
             acc.selections[na] = {...old, ...ss, ...(old.aliases ? {aliases: [...old.aliases, ...(ss.aliases ? ss.aliases : [])]} : {}), ...(alias ? {aliasing: selection.name.value} : {})};
+        } else {
+            if (alias) {
+                const old = acc.selections[na] || {};
+                acc.selections[na] = {...old, aliasing: selection.name.value};
+            }
         }
         if (selection.arguments?.length) {
             if (!acc.arguments) acc.arguments = {};
