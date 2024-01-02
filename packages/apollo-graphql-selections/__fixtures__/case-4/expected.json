@@ -5,6 +5,9 @@
     "something"
   ],
   "selections": {
+    "logoImage": {
+      "aliases": ["something"]
+    },
     "something": {
       "fields": [
         "bucket"
