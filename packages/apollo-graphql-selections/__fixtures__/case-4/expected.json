@@ -2,14 +2,10 @@
   "fields": [
     "id",
     "name",
-    "something"
+    "logoImage"
   ],
   "selections": {
     "logoImage": {
-      "aliases": ["something"]
-    },
-    "something": {
-      "aliasing": "logoImage",
       "fields": [
         "bucket"
       ],
