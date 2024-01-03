@@ -3,10 +3,13 @@ export function select(info: any) {
     return subSelect((info?.fieldNodes || [])[0]?.selectionSet?.selections || []);
 }
 
-function formatArgumentValue(val: { kind: string, value: any, block: boolean }) {
+function formatArgumentValue(val: { kind: string, value: any, block: boolean, values?: any, fields?: any }) {
     switch (val.kind) {
         case 'StringValue': return String(val.value);
         case 'IntValue': return parseInt(val.value);
+        case 'ListValue': return val.values?.map(formatArgumentValue) || [];
+        case 'ObjectValue': return val.fields?.reduce((acc, f) => Object.assign(acc, {[f.name.value]: formatArgumentValue(f)}), {}) || {};
+        case 'ObjectField': return formatArgumentValue(val.value);
         default: return String(val.value);
     }
 }
