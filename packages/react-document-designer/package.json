@@ -35,7 +35,7 @@
     "@react-pdf/renderer": "^1.6.8",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-pdf": "^4.1.0"
+    "react-pdf": "^7.7.3"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.9.5",
@@ -51,7 +51,7 @@
     "babel-loader": "^8.1.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-pdf": "^4.1.0",
+    "react-pdf": "^7.7.3",
     "source-map-loader": "^0.2.4"
   }
 }
