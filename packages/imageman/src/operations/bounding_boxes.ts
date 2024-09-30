@@ -3,7 +3,7 @@ import sharp from 'sharp';
 
 // noinspection JSUnusedLocalSymbols
 export default async function operate(img, config: bounding_boxes_operation) {
-    return sharp(await sharp(await img.toBuffer())
+    return sharp(await sharp(await img.toBuffer(), {animated: true})
         .composite([
             {
                 input: Buffer.from(buildSvgFromBoundingBoxesConfig(config, await img.metadata())),
@@ -11,7 +11,8 @@ export default async function operate(img, config: bounding_boxes_operation) {
                 left: 0,
             },
         ])
-        .toBuffer()
+        .toBuffer(),
+        {animated: true}
     );
 }
 

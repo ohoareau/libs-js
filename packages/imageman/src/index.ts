@@ -19,7 +19,7 @@ async function build({input, operations = [], output, format = undefined, source
             return acc;
         }
 
-    }, Promise.resolve(sharp(source as any, {sequentialRead: true}))));
+    }, Promise.resolve(sharp(source as any, {sequentialRead: true, animated: true}))));
     const {format: finalFormat, target} = await describeTarget(output, format);
     finalFormat && (img = await applyFormat(img, finalFormat));
     return save(img, target, targetTypes);
