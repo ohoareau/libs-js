@@ -1,6 +1,6 @@
 {
   "name": "@ohoareau/lambda-utils",
-  "version": "0.4.13",
+  "version": "0.4.14",
   "license": "MIT",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -19,7 +19,7 @@
     "test": "../../node_modules/.bin/jest -c ../../jest.config.js --rootDir=`pwd`"
   },
   "dependencies": {
-    "@ohoareau/aws": "^0.3.13",
+    "@ohoareau/aws": "^0.3.14",
     "node-fetch": "^2.6.1",
     "path-parser": "^6.1.0"
   },
