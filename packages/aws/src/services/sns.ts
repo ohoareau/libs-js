@@ -14,10 +14,10 @@ export const sns = {
         ...(group ? {MessageGroupId: group} : {}),
         ...(deduplication ? {MessageDeduplicationId: deduplication} : {}),
         ...(subject ? {Subject: subject} : {}),
-        MessageAttributes: Object.entries(attributes).reduce((acc, [k, v]) => {
+        ...(!!attributes ? {MessageAttributes: Object.entries(attributes).reduce((acc, [k, v]) => {
             acc[k] = {DataType: 'String', StringValue: v};
             return acc;
-        }, {}),
+        }, {})} : {}),
         TopicArn: topic,
     }).promise(),
 }
