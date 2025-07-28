@@ -15,6 +15,7 @@ export function buildResolvableResponse(resolve, mapErrorToResponse, {headerForm
     res.writeHead = (status, headers: any = undefined) => {
         response.statusCode = status;
         if (headers) response.headers = Object.assign(response.headers, headers);
+        return res;
     };
     res.write = (chunk) => {
         if (!response.body) {
@@ -27,6 +28,7 @@ export function buildResolvableResponse(resolve, mapErrorToResponse, {headerForm
                 : Buffer.from(response.body),
             Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk)
         ]);
+        return res;
     };
     res.setHeader = (name, value) => {
         response.headers[name.toLowerCase()] = value;
