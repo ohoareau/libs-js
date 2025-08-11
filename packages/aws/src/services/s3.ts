@@ -3,7 +3,8 @@ const awss3 = new (require('aws-sdk/clients/s3'));
 
 const getFile = async ({bucket, key, raw = false}) => {
     const f = await awss3.getObject({Bucket: bucket, Key: key}).promise();
-    return {body: (f && f.Body) ? (raw ? f.Body : f.Body.toString()) : undefined};
+    if (!(f && f.Body)) return { body: undefined, length: 0};
+    return {body: (raw ? f.Body : f.Body.toString()), length: f.ContentLength};
 };
 
 const setFile = async ({bucket, key, metadata = undefined, contentType = undefined, acl = undefined, cacheControl = undefined, expires = undefined}: any, content) =>
