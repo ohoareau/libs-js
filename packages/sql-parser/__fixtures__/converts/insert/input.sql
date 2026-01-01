@@ -1,1 +1,0 @@
-INSERT INTO mytable VALUES ('v1', 'v2')

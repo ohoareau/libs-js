@@ -1,5 +1,0 @@
-This is the
-multiline content
-of
-
-    the robots.txt file.

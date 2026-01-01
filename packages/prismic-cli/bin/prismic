@@ -1,9 +1,0 @@
-#!/usr/bin/env node
-
-require(`${__dirname}/../lib/index`).default()
-    .then(() => {})
-    .catch(e => {
-        console.log(`Error: ${e.message}`);
-        process.exit(1);
-    })
-;
