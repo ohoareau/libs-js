@@ -16,7 +16,7 @@
     "access": "public"
   },
   "dependencies": {
-    "ajv": "6.12.6"
+    "ajv": "8.18.0"
   },
   "scripts": {
     "build": "tsc",
